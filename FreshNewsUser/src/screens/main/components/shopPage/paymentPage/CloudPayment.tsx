@@ -1,0 +1,36 @@
+import React, {Component} from 'react';
+import {Text, View} from 'react-native';
+import {size20} from '../../../../../share/consts';
+import {LinearGradient} from 'expo-linear-gradient';
+import {MontserratSemiBold} from '../../../../../share/fonts';
+import {NavigationProps} from '../../../../../share/interfaces';
+
+export class CloudPayment extends Component<NavigationProps> {
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.props.navigation.navigate('MainScreen')
+        }, 3000)
+    }
+
+    render() {
+        return (
+            <View style={{flex: 1}}>
+                <LinearGradient
+                    style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                    // locations={[0, 1]}
+                    colors={['#A6ED4A', '#8AC83E']}>
+                    <Text
+                        style={{
+                            fontFamily: MontserratSemiBold,
+                            fontSize: size20,
+                            color: '#FFFFFF',
+                        }}
+                    >
+                        CLOUD PAYMENT
+                    </Text>
+                </LinearGradient>
+            </View>
+        );
+    }
+}
