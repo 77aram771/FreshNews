@@ -90,7 +90,7 @@ class ShopsStore {
     };
 
     @action
-    getAllOrders = async (id: number) => {
+    getAllOrders = async () => {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)

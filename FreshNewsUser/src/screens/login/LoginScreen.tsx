@@ -15,6 +15,7 @@ import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
 import {PulseIndicator} from 'react-native-indicators';
+import authStore from "../../stores/AuthStore";
 
 @observer
 export default class LoginScreen extends React.Component<NavigationProps> {
@@ -104,9 +105,10 @@ export default class LoginScreen extends React.Component<NavigationProps> {
             })
             await verify(Number(this.state.formattedValue), Number(this.state.confirmationPin))
                 .then(res => {
-                    const Token = JSON.stringify(res.data.token)
-                    AsyncStorage.setItem('Token', Token)
+                    const Token = JSON.stringify(res.data.token);
+                    AsyncStorage.setItem('Token', Token);
                     if (res.status === 200) {
+                        authStore.getUser(true);
                         this.props.navigation.navigate('MainScreen')
                         this.setState({
                             smsStatus: false,

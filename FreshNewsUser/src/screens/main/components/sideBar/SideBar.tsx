@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Animated, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-// @ts-ignore
 import {observer} from 'mobx-react';
 import {MenuTitle} from '../MenuTitle';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -13,11 +12,13 @@ import {
     size28,
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
+    size18,
 } from '../../../../share/consts';
 import {NavigationProps} from "../../../../share/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {imagesPaths} from "../../../../share/info";
 import modalsStore from '../../../../stores/ModalsStore';
+import authStore from "../../../../stores/AuthStore";
 
 interface SideBarProps {
     navigation: any;
@@ -25,6 +26,16 @@ interface SideBarProps {
 
 @observer
 export default class SideBar extends Component<NavigationProps, SideBarProps> {
+
+    async componentDidMount() {
+        let getToken = await AsyncStorage.getItem('Token')
+        console.log('getToken -------', getToken);
+        if (getToken === null) {
+            authStore.getUser(false);
+        } else {
+            authStore.getUser(true);
+        }
+    }
 
     handleNavigateToCart() {
         modalsStore.onChangeView()
@@ -47,9 +58,10 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
     };
 
     logOut() {
-        AsyncStorage.removeItem('Token')
-        modalsStore.onChangeView()
-        this.props.navigation.navigate('Login')
+        AsyncStorage.removeItem('Token');
+        authStore.getUser(false);
+        modalsStore.onChangeView();
+        this.props.navigation.navigate('Login');
     }
 
     render() {
@@ -68,6 +80,8 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
             isShowSideBar
         } = modalsStore;
 
+        const {isUser} = authStore;
+
         const viewSideBarOpacity = animatedValue.interpolate({
             inputRange: [0, 0.5, 1],
             outputRange: [0, 0.5, 1],
@@ -85,14 +99,10 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                     style={{
                         backgroundColor: '#FFFFFF',
                         justifyContent: 'space-between',
-                        height: WINDOW_HEIGHT * 80 / 100,
+                        height: WINDOW_HEIGHT,
                     }}
                 >
-                    <View
-                        style={{
-                            paddingLeft: 24,
-                        }}
-                    >
+                    <View style={{paddingLeft: 24}}>
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Стать курьером'}
@@ -123,80 +133,124 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                             title={'Пользовательское соглашение'}
                             handleClick={onCloseViewAndShowTermsOfUse}
                         />
-                        <>
-                            <TouchableOpacity
-                                onPress={() => this.handleNavigateToMyData()}
-                                style={styles.bottomMenuContainer}
-                            >
-                                <FontAwesome
-                                    name={'user'}
-                                    size={size20}
-                                    color={'#BABABA'}
-                                    style={{paddingLeft: 3}}
-                                />
-                                <Text style={styles.bottomMenuTitle}>Мои данные</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.bottomMenuContainer}
-                                onPress={() => this.handleNavigateToCart()}
-                            >
-                                <FontAwesome5
-                                    name={'shopping-cart'}
-                                    size={size16}
-                                    color={'#BABABA'}
-                                />
-                                <Text style={styles.bottomMenuTitle}>Мои заказы</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.bottomMenuContainer}
-                                onPress={() => this.handleNavigateToHistory()}
-                            >
-                                <FontAwesome5
-                                    name={'history'}
-                                    size={size16}
-                                    color={'#BABABA'}
-                                />
-                                <Text style={styles.bottomMenuTitle}>История заказов</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => this.logOut()}
-                                style={styles.bottomMenuContainer}
-                            >
-                                <Image
-                                    resizeMode={'cover'}
-                                    source={imagesPaths.exitIconImage}
-                                    style={{width: size20, height: size20}}
-                                />
-                                <Text style={styles.bottomMenuTitle}>Выход</Text>
-                            </TouchableOpacity>
-                        </>
-
+                        {
+                            isUser
+                                ? (
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={() => this.handleNavigateToMyData()}
+                                            style={styles.bottomMenuContainer}
+                                        >
+                                            <FontAwesome
+                                                name={'user'}
+                                                size={size20}
+                                                color={'#BABABA'}
+                                                style={{paddingLeft: 3}}
+                                            />
+                                            <Text style={styles.bottomMenuTitle}>Мои данные</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.bottomMenuContainer}
+                                            onPress={() => this.handleNavigateToCart()}
+                                        >
+                                            <FontAwesome5
+                                                name={'shopping-cart'}
+                                                size={size16}
+                                                color={'#BABABA'}
+                                            />
+                                            <Text style={styles.bottomMenuTitle}>Мои заказы</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.bottomMenuContainer}
+                                            onPress={() => this.handleNavigateToHistory()}
+                                        >
+                                            <FontAwesome5
+                                                name={'history'}
+                                                size={size16}
+                                                color={'#BABABA'}
+                                            />
+                                            <Text style={styles.bottomMenuTitle}>История заказов</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => this.logOut()}
+                                            style={styles.bottomMenuContainer}
+                                        >
+                                            <Image
+                                                resizeMode={'cover'}
+                                                source={imagesPaths.exitIconImage}
+                                                style={{width: size20, height: size20}}
+                                            />
+                                            <Text style={styles.bottomMenuTitle}>Выход</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )
+                                : <View/>
+                        }
                     </View>
+                    {
+                        isUser
+                            ? (
+                                <TouchableOpacity
+                                    style={styles.footerTitle}
+                                    onPress={() => this.handleNavigateToShop()}
+                                >
+                                    <FontAwesome5
+                                        name={'shopping-cart'}
+                                        size={size16}
+                                        color={'#8cc83f'}
+                                    />
+                                    <Text style={styles.bottomMenuTitle}>Магазины</Text>
+                                </TouchableOpacity>
+                            )
+                            : (
+                                <View
+                                    style={{
+                                        marginTop: 40,
+                                        flexDirection: 'row',
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        style={styles.footerButton1}
+                                        onPress={() => this.handleNavigateToShop()}
+                                    >
+                                        <FontAwesome5
+                                            name={'shopping-cart'}
+                                            size={size16}
+                                            color={'#8cc83f'}
+                                        />
+                                        <Text style={styles.bottomMenuTitle}>Магазины</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.footerButton2}
+                                        onPress={() => this.props.navigation.navigate('Login')}
+                                    >
+                                        <FontAwesome5
+                                            name={'user-alt'}
+                                            size={size18}
+                                            color={'#8cc83f'}
+                                        />
+                                        <Text style={styles.bottomMenuTitle}>Вход</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                    }
                     <TouchableOpacity
-                        style={styles.footerTitle}
-                        onPress={() => this.handleNavigateToShop()}
-                    >
-                        <FontAwesome5
-                            name={'shopping-cart'}
-                            size={size16}
-                            color={'#8cc83f'}
-                        />
-                        <Text style={styles.bottomMenuTitle}>Магазины</Text>
-                    </TouchableOpacity>
+                        activeOpacity={1}
+                        onPress={onChangeView}
+                        style={{
+                            flex: 1,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            // height: WINDOW_HEIGHT * 60 / 100
+                        }}
+                    />
                 </View>
-                <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={onChangeView}
-                    style={{
-                        flex: 1,
-                        backgroundColor: 'rgba(0,0,0,0.3)',
-                        height: WINDOW_HEIGHT * 30 / 100
-                    }}
-                />
             </Animated.View>
         );
     }
 }
+
 const styles = StyleSheet.create({
     menuTitle: {
         color: '#000000',
@@ -215,10 +269,29 @@ const styles = StyleSheet.create({
         fontFamily: MontserratRegular,
     },
     footerTitle: {
+        marginTop: 40,
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'center',
         padding: 35,
         backgroundColor: '#F5F4F4'
+    },
+
+    footerButton1: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        padding: 35,
+        backgroundColor: '#F5F4F4'
+    },
+
+    footerButton2: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        padding: 35,
+        backgroundColor: '#eeeded'
     },
 });

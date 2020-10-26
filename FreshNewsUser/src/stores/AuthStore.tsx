@@ -1,18 +1,13 @@
 import {action, observable} from 'mobx';
 
 class AuthStore {
-  @observable phone: string = '';
-  @observable code: string = '';
+  @observable isUser: boolean = false;
 
   @action
-  changePhone = (phone: string) => {
-    this.phone = phone;
+  getUser = (status: boolean) => {
+    this.isUser = status;
   };
 
-  @action
-  changeCode = (code: string) => {
-    this.code = code;
-  };
 }
 
 const authStore = new AuthStore();

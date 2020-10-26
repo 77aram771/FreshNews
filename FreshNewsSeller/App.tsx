@@ -9,7 +9,6 @@ import LoginScreen from "./src/screens/login/LoginScreen";
 import HomeSellerPage from "./src/screens/sellers/HomeSellerPage";
 import DeliveryOrdersScreen from './src/screens/sellers/screens/DeliveryOrdersScreen';
 import ScannerScreen from './src/screens/sellers/screens/ScannerScreen';
-import { NavigationContainer } from '@react-navigation/native';
 
 console.disableYellowBox = true;
 

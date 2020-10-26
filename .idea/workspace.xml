@@ -10,9 +10,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e4d9de0-6f87-4393-9bdd-770c28f84dde" name="Default Changelist" comment="Fix Project Courier">
-      <change afterPath="$PROJECT_DIR$/FreshNewsSeller/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FreshNewsUser/.gitignore" afterDir="false" />
+    <list default="true" id="7e4d9de0-6f87-4393-9bdd-770c28f84dde" name="Default Changelist" comment="Fix Project Seller and User">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +43,12 @@
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/FreshNewsUser" />
+      <recent name="$PROJECT_DIR$/FreshNewsSeller" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -52,7 +57,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1603638898340</updated>
-      <workItem from="1603638899402" duration="1216000" />
+      <workItem from="1603638899402" duration="1512000" />
     </task>
     <task id="LOCAL-00001" summary="Add Project">
       <created>1603638994884</created>
@@ -75,7 +80,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603639887125</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fix Project Seller and User">
+      <created>1603640449170</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1603640449170</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -95,7 +107,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add Project" />
     <MESSAGE value="Fix Project Courier" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Project Courier" />
+    <MESSAGE value="Fix Project Seller and User" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix Project Seller and User" />
   </component>
   <component name="WindowStateProjectService">
     <state x="221" y="60" key="SettingsEditor" timestamp="1603639159381">
@@ -103,10 +116,10 @@
     </state>
     <state x="221" y="60" key="SettingsEditor/0.23.1440.797@0.23.1440.797" timestamp="1603639114684" />
     <state x="221" y="60" key="SettingsEditor/0.23.1440.798@0.23.1440.798" timestamp="1603639159381" />
-    <state x="320" y="161" key="Vcs.Push.Dialog.v2" timestamp="1603639897239">
+    <state x="320" y="161" key="Vcs.Push.Dialog.v2" timestamp="1603640466851">
       <screen x="0" y="23" width="1440" height="797" />
     </state>
-    <state x="320" y="161" key="Vcs.Push.Dialog.v2/0.23.1440.797@0.23.1440.797" timestamp="1603639897239" />
+    <state x="320" y="161" key="Vcs.Push.Dialog.v2/0.23.1440.797@0.23.1440.797" timestamp="1603640466851" />
     <state x="320" y="161" key="Vcs.Push.Dialog.v2/0.23.1440.798@0.23.1440.798" timestamp="1603639211460" />
   </component>
 </project>

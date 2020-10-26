@@ -7,24 +7,18 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-// @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
-// @ts-ignore
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../../../share/interfaces';
-import {categories, imagesPaths, shopItems} from '../../../../share/info';
-import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
+import {MontserratSemiBold} from '../../../../share/fonts';
 import HeaderInfo from './HeaderInfo';
 import {ShopListItem} from './ShopListItem';
-import FooterComponent from '../footer/FooterComponent';
 import {FooterPanel} from './FooterPanel';
 import {
     HEADER_HEIGHT,
-    size16,
     size20,
     WINDOW_WIDTH,
 } from '../../../../share/consts';
-// @ts-ignore
 import Modal from 'react-native-modal';
 import ProductPage from './productPage/ProductPage';
 import MainHeader from '../../../../share/components/MainHeader';

@@ -23,6 +23,9 @@ import basketStore from '../../../../../stores/BasketStore';
 import paymentStore from "../../../../../stores/PaymentStore";
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
+import ProductPage from "../productPage/ProductPage";
+import Modal from "react-native-modal";
+import ErrorMode from "../../ErrorMode";
 let moment = require('moment');
 
 @observer
@@ -33,7 +36,9 @@ export default class AssemblyPage extends Component<NavigationProps> {
         disabledBool: true,
         shopData: [],
         selectAddress: '',
-        data: ''
+        date: '',
+        errorCode: '',
+        errorMessage: ''
     }
 
     componentDidMount() {
@@ -46,8 +51,15 @@ export default class AssemblyPage extends Component<NavigationProps> {
         orderUserTime()
         this.setState({
             shopData: cartUserInfo
-        })
-    }
+        });
+        console.log('paymentStore.Error', paymentStore.Error)
+        if(paymentStore.Error !== null){
+            alert('test1234')
+        }
+        else {
+            alert('test53241')
+        }
+    };
 
     renderList(item: any): any {
         return (
@@ -93,45 +105,55 @@ export default class AssemblyPage extends Component<NavigationProps> {
                 </View>
             </View>
         )
-    }
+    };
 
     handlePayment() {
         console.log('paymentStore.selectAddress', toJS(paymentStore.selectAddress))
         const {userData} = userInfo;
         const {addresses} = userData;
-        // toJS(addresses).find((item: any) =>  {
-        //     if(item.address === paymentStore.selectAddress){
-        //         console.log('true')
-        //         this.setState({
-        //             selectAddress: item
-        //         }, () => {
-        //             console.log('selectAddress', this.state.selectAddress);
-        //             const {address, floor, intercom, porch} = this.state.selectAddress;
-        //             paymentStore.orderUserCheckout(address, porch, 1, floor, intercom, '', this.state.data, paymentStore.selectTime)
-        //             this.props.navigation.navigate('CloudPayment')
-        //         })
-        //     }
-        // });
         toJS(addresses).find((item: any) =>  {
             if(item.address === paymentStore.selectAddress){
                 console.log('true 4')
-                paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.data, paymentStore.selectTime)
-                this.props.navigation.navigate('CloudPayment')
+                paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
+                if(paymentStore.Error !== null){
+                    // this.props.navigation.navigate('CloudPayment')
+                    console.log('paymentStore.Error if', paymentStore.Error)
+                }
+                else {
+                    console.log('paymentStore.Error else', paymentStore.Error)
+                }
             }
             else {
                 console.log('false')
             }
         });
-    }
+    };
 
     render() {
 
         const {allPrice} = basketStore;
 
-        const {disabledBool, shopData} = this.state;
+        const {disabledBool, shopData, errorCode, errorMessage} = this.state;
+
+        const {Error, closeErrorModal} = paymentStore;
 
         return (
             <>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={closeErrorModal}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={closeErrorModal}
+                    style={{margin: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.3)',}}
+                    isVisible={Error}
+                >
+                    <ErrorMode
+                        errorCode={errorCode}
+                        errorMassage={errorMessage}
+                    />
+                </Modal>
                 <Header
                     style={styles.headers}
                     headerLeft={
@@ -433,8 +455,8 @@ export default class AssemblyPage extends Component<NavigationProps> {
                     disabledBool
                         ? (
                             <TouchableOpacity
-                                // onPress={() => this.props.navigation.navigate('FinishOfferPage')}
-                                onPress={() => this.handlePayment()}
+                                onPress={() => this.props.navigation.navigate('FinishOfferPage')}
+                                // onPress={() => this.handlePayment()}
                                 style={{
                                     backgroundColor: '#8CC83F',
                                     justifyContent: 'center',
@@ -465,6 +487,7 @@ export default class AssemblyPage extends Component<NavigationProps> {
         )
     }
 }
+
 const styles = StyleSheet.create({
     headers: {
         width: WINDOW_WIDTH,

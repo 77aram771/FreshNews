@@ -18,6 +18,6 @@ export const size34 = WINDOW_WIDTH / 13;
 export const size36 = WINDOW_WIDTH / 12;
 export const size44 = WINDOW_WIDTH / 10;
 
-export const Google_Map_Key = 'AIzaSyAUdb9tYJu3YLJEOnY03r5YudJN04tRkqI';
+export const GOOGLE_MAPS_APIKEY = 'AIzaSyAUdb9tYJu3YLJEOnY03r5YudJN04tRkqI';
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Animated, BackHandler, View} from 'react-native';
+import {Animated, View} from 'react-native';
 import {NavigationProps} from '../../share/interfaces';
 import {observer} from 'mobx-react';
 import ShopsList from './components/shops/ShopsList';
@@ -11,16 +11,58 @@ import userInfo from '../../stores/UserInfo';
 import shopsStore from '../../stores/ShopsStore';
 import modalsStore from "../../stores/ModalsStore";
 import paymentStore from "../../stores/PaymentStore";
+import Geolocation from 'react-native-geolocation-service';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import GetLocation from 'react-native-get-location'
 
 @observer
 export default class MainScreen extends React.Component<NavigationProps> {
+
+    state = {
+        location: null,
+        geocode: null,
+        errorMessage: ""
+    };
 
     componentDidMount() {
         basketStore.getCartUserInfo()
         userInfo.getUserData();
         paymentStore.orderUserTime();
         shopsStore.getAllOrders();
-    }
+        this.getLocationAsync()
+    };
+
+    getLocationAsync = async () => {
+        const {status, permissions} = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied',
+            });
+        }
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 15000,
+        })
+            .then(location => {
+                console.log('location', location);
+            })
+            .catch(error => {
+                const {code, message} = error;
+                console.warn(code, message);
+            })
+        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
+        const {latitude, longitude} = location.coords
+        this.getGeocodeAsync({latitude, longitude})
+        this.setState({location: {latitude, longitude}});
+
+    };
+
+    getGeocodeAsync = async (location: any) => {
+        let geocode = await Location.reverseGeocodeAsync(location);
+        console.log('geocode', geocode)
+        this.setState({geocode})
+    };
 
     render() {
 
@@ -31,8 +73,6 @@ export default class MainScreen extends React.Component<NavigationProps> {
             onChangeClientAddress,
             onChangeView
         } = shopsStore;
-
-        const {onCloseSideBarAndShowAuth} = modalsStore;
 
         const viewOpacity = animatedValue.interpolate({
             inputRange: [0, 0.5, 1],
@@ -65,9 +105,7 @@ export default class MainScreen extends React.Component<NavigationProps> {
                     <CustomInput
                         editable={isShowBackgroundInput}
                         placeholderTextColor={'#000000'}
-                        textInputStyle={{
-                            width: WINDOW_WIDTH / 1.2,
-                        }}
+                        textInputStyle={{width: WINDOW_WIDTH / 1.2}}
                         style={{
                             shadowColor: '#000',
                             shadowOffset: {

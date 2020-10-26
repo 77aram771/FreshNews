@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {observer} from 'mobx-react';
 import {
+    GOOGLE_MAPS_APIKEY,
     HEADER_HEIGHT,
     size16,
     size20,
@@ -15,7 +16,6 @@ import {
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MapView, {Marker} from 'react-native-maps';
 import {
     MontserratRegular,
@@ -24,14 +24,30 @@ import {
 import Modal from 'react-native-modal';
 import ReviewModal from './ReviewModal';
 import {NavigationProps} from '../../../../../share/interfaces';
-import MainHeader from '../../../../../share/components/MainHeader';
 import locationStore from "../../../../../stores/LocationStore";
 import modalsStore from "../../../../../stores/ModalsStore";
+import MapViewDirections from 'react-native-maps-directions';
+import Header from "../../../../../share/components/Header";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
+import * as Location from 'expo-location';
+import {PulseIndicator} from 'react-native-indicators';
 
 @observer
 export default class MapPage extends Component<NavigationProps> {
 
     backHandler: any;
+
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            coordinates: null,
+            errorText: ''
+        };
+
+        this.mapView = null;
+    }
 
     componentDidMount() {
         this.getCurrentPosition();
@@ -39,6 +55,36 @@ export default class MapPage extends Component<NavigationProps> {
             'hardwareBackPress',
             this.handleBackPress,
         );
+        (
+            async () => {
+                let {status} = await Location.requestPermissionsAsync();
+                if (status !== 'granted') {
+                    this.setState({
+                        errorText: 'Permission to access location was denied'
+                    })
+                }
+                let location = await Location.getCurrentPositionAsync({});
+                const userCoordinate = {
+                        lat: location.coords.latitude,
+                        lon: location.coords.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }
+                ;
+
+                const courierCordinate = {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude - 0.100,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }
+                ;
+
+                this.setState({
+                    coordinates: [userCoordinate, courierCordinate]
+                }, () => console.log('coordinates', this.state.coordinates));
+
+            })();
     }
 
     async getCurrentPosition() {
@@ -50,17 +96,27 @@ export default class MapPage extends Component<NavigationProps> {
     }
 
     handleBackPress = () => {
-        this.props.navigation.navigate('MainScreen');
+        this.props.navigation.goBack()
         return true;
     };
 
+    onReady = (result: any) => {
+        this.mapView.fitToCoordinates(result.coordinates, {
+            edgePadding: {
+                right: (WINDOW_WIDTH / 10),
+                bottom: (WINDOW_HEIGHT / 10),
+                left: (WINDOW_WIDTH / 10),
+                top: (WINDOW_HEIGHT / 10),
+            },
+        });
+    }
+
+    onError = (errorMessage: any) => {
+        console.log(errorMessage); // eslint-disable-line no-console
+    }
+
     render() {
-        const {locationUser} = locationStore;
-        const {
-            onShowReviewModal,
-            isShowReviewModal,
-            onCloseSideBarAndShowAuth,
-        } = modalsStore;
+        const {onShowReviewModal, isShowReviewModal} = modalsStore;
         return (
             <View style={styles.container}>
                 <View style={{height: HEADER_HEIGHT}}/>
@@ -71,57 +127,107 @@ export default class MapPage extends Component<NavigationProps> {
                     animationInTiming={800}
                     animationOutTiming={400}
                     onBackButtonPress={() => {
-                        onShowReviewModal();
+                        onShowReviewModal()
                     }}
                     hideModalContentWhileAnimating={true}
                     backdropOpacity={0}
                     onBackdropPress={onShowReviewModal}
                     style={{margin: 0}}
-                    isVisible={isShowReviewModal}>
+                    isVisible={isShowReviewModal}
+                >
                     <ReviewModal/>
                 </Modal>
-                <MainHeader
-                    navigation={this.props.navigation}
+                <Header
+                    headerLeft={
+                        <AntDesign
+                            style={{paddingLeft: 8}}
+                            onPress={() => this.props.navigation.goBack()}
+                            name={'left'}
+                            size={size16}
+                            color={'#464646'}
+                        />
+                    }
+                    headerMid={<LogoAndTitle/>}
+                    headerRight={<View/>}
                 />
-                <MapView
-                    style={{width: WINDOW_WIDTH, height: WINDOW_HEIGHT * 0.6}}
-                    provider={null}
-                    region={{
-                        latitude: locationUser.latitude,
-                        longitude: locationUser.longitude,
-                        latitudeDelta: locationUser.latitudeDelta,
-                        longitudeDelta: locationUser.longitudeDelta,
-                    }}>
-                    <Marker
-                        coordinate={{
-                            latitude: locationUser.latitude,
-                            longitude: locationUser.longitude,
-                        }}>
-                        <View style={styles.userLocation}>
-                            <FontAwesome5 name={'user-alt'} size={size16} color={'#FFFFFF'}/>
-                        </View>
-                    </Marker>
-                </MapView>
-                <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={onShowReviewModal}
-                    style={styles.textContainer}>
-                    <Text style={styles.courierText}>
-                        Курьер{' '}
-                        <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                            Василий
-                        </Text>{' '}
-                        будет{'\n'} у вас в течении{' '}
-                        <Text style={{fontFamily: MontserratSemiBold}}>27 мин.</Text>
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => alert('связь с поддержкой')}
-                        style={styles.supportTextContainer}>
-                        <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
-                            Связаться с поддержкой
-                        </Text>
-                    </TouchableOpacity>
-                </TouchableOpacity>
+                {
+                    this.state.coordinates !== null
+                        ? (
+                            <>
+                                <MapView
+                                    initialRegion={this.state.coordinates[0]}
+                                    style={{flex: 2, width: WINDOW_WIDTH}}
+                                    ref={c => this.mapView = c}
+                                >
+                                    {/*{this.state.coordinates.map((marker, index) => {*/}
+                                    {/*    console.log('marker', marker)*/}
+                                    {/*    return (*/}
+                                    {/*        <Marker*/}
+                                    {/*            key={index}*/}
+                                    {/*            coordinate={marker}*/}
+                                    {/*            // title={marker.title}*/}
+                                    {/*            // description={marker.description}*/}
+                                    {/*        />*/}
+                                    {/*    )*/}
+                                    {/*})}*/}
+                                    <MapViewDirections
+                                        origin={this.state.coordinates[0]}
+                                        destination={this.state.coordinates[this.state.coordinates.length - 1]}
+                                        waypoints={this.state.coordinates.slice(1, -1)}
+                                        mode='DRIVING'
+                                        apikey={GOOGLE_MAPS_APIKEY}
+                                        language='ru'
+                                        strokeWidth={4}
+                                        strokeColor="red"
+                                        onStart={(params) => {
+                                            console.log(`Started routing between "${params.origin}" and "${params.destination}"${(params.waypoints.length ? " using waypoints: " + params.waypoints.join(', ') : "")}`);
+                                        }}
+                                        onReady={this.onReady}
+                                        onError={(errorMessage) => this.onError(errorMessage)}
+                                        resetOnChange={false}
+                                    />
+                                </MapView>
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    onPress={onShowReviewModal}
+                                    style={styles.textContainer}
+                                >
+                                    <Text style={styles.courierText}>
+                                        Курьер{' '}
+                                        <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
+                                            Василий
+                                        </Text>{' '}
+                                        будет{'\n'} у вас в течении{' '}
+                                        <Text style={{fontFamily: MontserratSemiBold}}>27 мин.</Text>
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={() => alert('связь с поддержкой')}
+                                        style={styles.supportTextContainer}>
+                                        <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
+                                            Связаться с поддержкой
+                                        </Text>
+                                    </TouchableOpacity>
+                                </TouchableOpacity>
+                            </>
+                        )
+                        : (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    alignContent: 'center',
+                                    alignSelf: 'center',
+                                }}
+                            >
+                                <PulseIndicator
+                                    size={100}
+                                    color='#8CC83F'
+                                />
+                            </View>
+                        )
+                }
+
             </View>
         );
     }
@@ -138,6 +244,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     textContainer: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         width: WINDOW_WIDTH,

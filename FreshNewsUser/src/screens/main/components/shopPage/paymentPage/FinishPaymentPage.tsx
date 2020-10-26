@@ -73,7 +73,6 @@ let moment = require('moment');
 //
 // const paymentRequest = new PaymentRequest(METHOD_DATA, DETAILS, OPTIONS);
 
-
 @observer
 export default class FinishPaymentPage extends Component<NavigationProps> {
 
@@ -106,7 +105,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
             date: NewDate,
             time: NewTime
         });
-
         userInfo.getUserData();
         const {userData} = userInfo;
         const {addresses} = userData;

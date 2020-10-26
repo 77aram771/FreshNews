@@ -510,7 +510,7 @@ export default class PurchaseHistory extends Component<NavigationProps> {
         else if (item.status === 5) {
             return (
                 <TouchableOpacity
-                    onPress={() => alert('status 5')}
+                    onPress={() => this.props.navigation.navigate('MapPage')}
                     style={{
                         width: "100%",
                         backgroundColor: '#8CC83F',

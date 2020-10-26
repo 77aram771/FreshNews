@@ -11,6 +11,8 @@ import {toJS} from "mobx";
 import basketStore from "../../../../../stores/BasketStore";
 import modalsStore from "../../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
+import paymentStore from "../../../../../stores/PaymentStore";
+import shopsStore from "../../../../../stores/ShopsStore";
 
 @observer
 export default class FinishOfferPage extends Component<NavigationProps> {
@@ -23,17 +25,21 @@ export default class FinishOfferPage extends Component<NavigationProps> {
     }
 
     async componentDidMount() {
-        const {getCartUserInfo, cartUserInfo} = basketStore;
-        getCartUserInfo()
+        console.log('this.props, FinishOfferPage', this.props)
+        const {getOrder, order} = paymentStore;
+        const {getAllOrders, allOrders} = shopsStore;
+        getAllOrders();
+        getOrder(toJS(allOrders)[0].id);
         this.setState({
             refreshing: true
         })
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo
+                shopData: order
             })
-        }, 1000)
+            console.log('order', toJS(order))
+        }, 2000)
     }
 
     onRefresh() {
@@ -41,12 +47,15 @@ export default class FinishOfferPage extends Component<NavigationProps> {
             refreshing: true
         })
         setTimeout(() => {
-            const {getCartUserInfo, cartUserInfo} = basketStore;
-            getCartUserInfo()
+            const {getOrder, order} = paymentStore;
+            const {getAllOrders, allOrders} = shopsStore;
+            getAllOrders();
+            getOrder(toJS(allOrders)[0].id);
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo
+                shopData: order
             })
+            console.log('order', toJS(order))
         }, 2000)
     };
 
@@ -164,7 +173,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                                             headerLeft={
                                                 <AntDesign
                                                     style={{paddingLeft: 8}}
-                                                    onPress={() => this.props.navigation.goBack()}
+                                                    onPress={() => this.props.navigation.navigate('PurchaseHistory')}
                                                     name={'left'}
                                                     size={size16}
                                                     color={'#464646'}

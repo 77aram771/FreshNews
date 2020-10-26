@@ -3,13 +3,15 @@ import {action, observable, toJS} from 'mobx';
 import axios from 'axios';
 import {SERVER_BASE} from "../share/consts";
 import AsyncStorage from "@react-native-community/async-storage";
+
 class PaymentStore {
     @observable isSelectedPayment: string = 'online';
     @observable cartUserInfo: any = [];
+    @observable order: any = [];
     @observable time: any = [];
     @observable selectAddress: any = [];
     @observable selectTime: any = [];
-    @observable Error: any = [];
+    @observable Error: any = null;
 
     @action
     onSelectPayment = (value: string) => {
@@ -34,6 +36,23 @@ class PaymentStore {
     };
 
     @action
+    getOrder = async (id: any) => {
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        const headers = {Authorization: `Bearer ${strTrue}`};
+        console.log(`${SERVER_BASE}/orders/show/${id}`)
+        axios.get(`${SERVER_BASE}/orders/show/${id}`, {headers})
+            .then((res) => {
+                this.order = res.data;
+            })
+            .catch((e) => {
+                console.log('getOrder error', e)
+                this.Error = e
+            })
+    };
+
+    @action
     orderUserCheckout = async (address: string, porch: string, floor: number, intercom: string, comment: string, date: string, time: string) => {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
@@ -45,7 +64,7 @@ class PaymentStore {
             redirect: 'follow'
         };
 
-
+        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${comment}&date=${date}&time=${time}`)
 
         fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${comment}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
@@ -73,7 +92,12 @@ class PaymentStore {
         setTimeout(() => {
             console.log('selectTime', this.selectTime);
         }, 1000)
-    }
+    };
+
+    @action
+    closeErrorModal = () => {
+        this.Error = null;
+    };
 }
 
 const paymentStore = new PaymentStore();
