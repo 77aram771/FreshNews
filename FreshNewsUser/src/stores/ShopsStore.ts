@@ -51,7 +51,6 @@ class ShopsStore {
         this.getShopData = [];
         await axios.get(`${SERVER_BASE}/home?search`)
             .then((res) => {
-                console.log('res', res)
                 this.getShopData = res.data;
 
             })
@@ -78,7 +77,6 @@ class ShopsStore {
 
     @action
     getShopItem = (id: number) => {
-        console.log('id', id)
         this.getShopItemInfo = [];
         this.getShopItemInfo = toJS(this.getShopInfo).products.find(item => item.id === id)
         this.isShowShopInformation = !this.isShowShopInformation;
@@ -98,7 +96,6 @@ class ShopsStore {
 
         axios.get(`${SERVER_BASE}/orders`, {headers})
             .then((res) => {
-                console.log('res allOrders', res.data)
                 this.allOrders = res.data;
             })
             .catch((e) => {

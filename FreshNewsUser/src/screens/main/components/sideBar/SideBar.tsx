@@ -29,7 +29,7 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token')
-        console.log('getToken -------', getToken);
+        // console.log('getToken -------', getToken);
         if (getToken === null) {
             authStore.getUser(false);
         } else {

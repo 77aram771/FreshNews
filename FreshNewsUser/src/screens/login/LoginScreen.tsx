@@ -172,8 +172,8 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                             ? (
                                 <View
                                     style={{
-                                        marginTop: 20
-
+                                        marginTop: 20,
+                                        height: 60
                                     }}
                                 >
                                     <PulseIndicator

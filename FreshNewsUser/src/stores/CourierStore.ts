@@ -16,7 +16,6 @@ class CourierStore {
 
         axios.get(`${SERVER_BASE}/courier/orders`, {headers})
             .then((res) => {
-                console.log('res', res)
                 this.courierUserData = res.data;
             })
             .catch((e) => {
@@ -56,7 +55,6 @@ class CourierStore {
 
         fetch(`${SERVER_BASE}/courier/orders/take/${id}`, requestOptions)
             .then(res => {
-                console.log('res', res)
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()

@@ -109,7 +109,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
         const {userData} = userInfo;
         const {addresses} = userData;
         addresses.map((item: any) => {
-            console.log('item', toJS(item));
             this.state.addressArray.push({
                 label: toJS(item.address),
                 value: toJS(item.address),
@@ -276,7 +275,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
     }
 
     handleSelectAddress(value: string) {
-        console.log('value', value)
         if (value) {
             this.setState({
                 selectAddress: value,
@@ -298,9 +296,9 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
         //console.log(form);
     }
 
-    handlePayment(address: string, porch: string, level: number, floor: number, intercom: string, comment: string, date: string, time: string) {
-        paymentStore.orderUserCheckout(address, porch, level, floor, intercom, comment, date, time)
-        this.props.navigation.navigate('CloudPayment')
+    handlePayment() {
+        paymentStore.finishPayment(this.props.navigation.state.params.id, paymentStore.isSelectedPayment)
+        this.props.navigation.navigate('FinishPaymentScreen')
     }
 
     render() {
@@ -617,7 +615,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                     />
                 </ScrollView>
                 <TouchableOpacity
-                    onPress={() => this.handlePayment(address, porch, level, apartment, intercom, messageToCourier, date, time)}
+                    onPress={() => this.handlePayment()}
                     disabled={disabledBool}
                     style={{
                         backgroundColor: disabledBool ? 'grey' : '#8CC83F',

@@ -55,7 +55,6 @@ export default class PaymentPage extends Component<NavigationProps> {
         const {userData} = userInfo;
         const {addresses} = userData;
         addresses.map((item: any) => {
-            console.log('item', toJS(item));
             this.state.addressArray.push({
                 label: toJS(item.address),
                 value: toJS(item.address),
@@ -237,7 +236,6 @@ export default class PaymentPage extends Component<NavigationProps> {
     };
 
     handleSelectTime(value: any) {
-        console.log('value', value)
         if (value) {
             this.setState({
                 selectTime: value,

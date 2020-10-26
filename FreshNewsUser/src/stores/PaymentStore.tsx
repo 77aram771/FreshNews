@@ -1,4 +1,3 @@
-// @ts-ignore
 import {action, observable, toJS} from 'mobx';
 import axios from 'axios';
 import {SERVER_BASE} from "../share/consts";
@@ -7,7 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 class PaymentStore {
     @observable isSelectedPayment: string = 'online';
     @observable cartUserInfo: any = [];
-    @observable order: any = [];
+    @observable order: any = null;
     @observable time: any = [];
     @observable selectAddress: any = [];
     @observable selectTime: any = [];
@@ -41,7 +40,7 @@ class PaymentStore {
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/orders/show/${id}`)
+        console.log(`${SERVER_BASE}/orders/show/${id}`);
         axios.get(`${SERVER_BASE}/orders/show/${id}`, {headers})
             .then((res) => {
                 this.order = res.data;
@@ -79,20 +78,43 @@ class PaymentStore {
     @action
     getSelectAddress = async (address: any) => {
         this.selectAddress = address;
-        console.log('address', address);
-        setTimeout(() => {
-            console.log('selectAddress', this.selectAddress);
-        }, 1000)
     }
 
     @action
     getSelectTime = async (time: any) => {
         this.selectTime = time;
-        console.log('time', time);
-        setTimeout(() => {
-            console.log('selectTime', this.selectTime);
-        }, 1000)
     };
+
+    @action
+    finishPayment = async (id: any, payment: any) => {
+        let pay;
+        if (payment === 'cardToCourier') {
+            pay = 2
+        } else if (payment === 'cash') {
+            pay= 3
+        } else if (payment === 'online') {
+            pay = 1
+        }
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
+        const headers = {Authorization: `Bearer ${strTrue}`};
+        console.log(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`);
+        var requestOptions = {
+            method: 'POST',
+            headers: headers,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`, requestOptions)
+            .then((res) => {
+                console.log('res', res)
+                this.order = res;
+            })
+            .catch((e) => {
+                console.log('finishPayment error', e)
+                this.Error = e
+            })
+    }
 
     @action
     closeErrorModal = () => {

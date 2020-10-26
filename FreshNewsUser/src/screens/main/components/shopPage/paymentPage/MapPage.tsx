@@ -30,8 +30,10 @@ import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
-import * as Location from 'expo-location';
 import {PulseIndicator} from 'react-native-indicators';
+import * as TaskManager from 'expo-task-manager';
+import * as Location from 'expo-location';
+const LOCATION_TASK_NAME = 'background-location-task';
 
 @observer
 export default class MapPage extends Component<NavigationProps> {
@@ -50,6 +52,7 @@ export default class MapPage extends Component<NavigationProps> {
     }
 
     componentDidMount() {
+
         this.getCurrentPosition();
         this.backHandler = BackHandler.addEventListener(
             'hardwareBackPress',
@@ -57,11 +60,20 @@ export default class MapPage extends Component<NavigationProps> {
         );
         (
             async () => {
+                // const { status } = await Location.requestPermissionsAsync();
+                // if (status === 'granted') {
+                //     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+                //         accuracy: Location.Accuracy.Balanced,
+                //     });
+                // }
                 let {status} = await Location.requestPermissionsAsync();
                 if (status !== 'granted') {
                     this.setState({
                         errorText: 'Permission to access location was denied'
                     })
+                    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+                        accuracy: Location.Accuracy.Balanced,
+                    });
                 }
                 let location = await Location.getCurrentPositionAsync({});
                 const userCoordinate = {
@@ -81,8 +93,8 @@ export default class MapPage extends Component<NavigationProps> {
                 ;
 
                 this.setState({
-                    coordinates: [userCoordinate, courierCordinate]
-                }, () => console.log('coordinates', this.state.coordinates));
+                    coordinates: [courierCordinate, userCoordinate]
+                }, () => console.log('coordinates', this.state.coordinates[0]));
 
             })();
     }
@@ -126,9 +138,7 @@ export default class MapPage extends Component<NavigationProps> {
                     animationOut={'slideOutUp'}
                     animationInTiming={800}
                     animationOutTiming={400}
-                    onBackButtonPress={() => {
-                        onShowReviewModal()
-                    }}
+                    onBackButtonPress={() => {onShowReviewModal()}}
                     hideModalContentWhileAnimating={true}
                     backdropOpacity={0}
                     onBackdropPress={onShowReviewModal}
@@ -180,7 +190,7 @@ export default class MapPage extends Component<NavigationProps> {
                                         strokeWidth={4}
                                         strokeColor="red"
                                         onStart={(params) => {
-                                            console.log(`Started routing between "${params.origin}" and "${params.destination}"${(params.waypoints.length ? " using waypoints: " + params.waypoints.join(', ') : "")}`);
+                                            console.log('params', params);
                                         }}
                                         onReady={this.onReady}
                                         onError={(errorMessage) => this.onError(errorMessage)}
@@ -227,11 +237,24 @@ export default class MapPage extends Component<NavigationProps> {
                             </View>
                         )
                 }
-
             </View>
         );
     }
-}
+};
+
+TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+    console.log('data', data)
+    if (error) {
+        // Error occurred - check `error.message` for more details.
+        return;
+    }
+    if (data) {
+        const { locations } = data;
+        console.log('locations', locations)
+        console.log('locations data', data)
+        // do something with the locations captured in the background
+    }
+});
 
 const styles = StyleSheet.create({
     container: {flex: 1, backgroundColor: '#FFFFFF', alignItems: 'center'},

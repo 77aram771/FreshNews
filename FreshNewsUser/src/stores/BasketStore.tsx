@@ -22,7 +22,6 @@ class BasketStore {
                 this.cartUserInfo = res.data;
 
                 this.cartUserInfo.reduce((sum: number, item: any) => {
-                        console.log('item', toJS(item));
                         return allPriceArray.push(Number(item.price.replace(/\s/g, '')) * toJS(item).quantity)
                     }, 0
                 );
@@ -30,8 +29,6 @@ class BasketStore {
                 let AllSum = allPriceArray.reduce(function (accumulator: number, currentValue: number) {
                     return accumulator + currentValue;
                 }, 0);
-
-                console.log('AllSum', AllSum)
 
                 this.allPrice = AllSum;
             })
@@ -55,7 +52,6 @@ class BasketStore {
 
         fetch(`${SERVER_BASE}/cart/add/${id}?quantity=${count}`, requestOptions)
             .then(res => {
-                console.log('res getAddCartUser', res)
                 if (res.status === 200) {
                     this.getCartUserInfo()
                 }

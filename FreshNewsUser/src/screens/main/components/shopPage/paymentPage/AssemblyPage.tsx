@@ -54,10 +54,10 @@ export default class AssemblyPage extends Component<NavigationProps> {
         });
         console.log('paymentStore.Error', paymentStore.Error)
         if(paymentStore.Error !== null){
-            alert('test1234')
+            // alert('test1234')
         }
         else {
-            alert('test53241')
+            // alert('test53241')
         }
     };
 
@@ -113,10 +113,9 @@ export default class AssemblyPage extends Component<NavigationProps> {
         const {addresses} = userData;
         toJS(addresses).find((item: any) =>  {
             if(item.address === paymentStore.selectAddress){
-                console.log('true 4')
                 paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
-                if(paymentStore.Error !== null){
-                    // this.props.navigation.navigate('CloudPayment')
+                if(paymentStore.Error === null){
+                    this.props.navigation.navigate('CloudPayment')
                     console.log('paymentStore.Error if', paymentStore.Error)
                 }
                 else {
@@ -455,8 +454,7 @@ export default class AssemblyPage extends Component<NavigationProps> {
                     disabledBool
                         ? (
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate('FinishOfferPage')}
-                                // onPress={() => this.handlePayment()}
+                                onPress={() => this.handlePayment()}
                                 style={{
                                     backgroundColor: '#8CC83F',
                                     justifyContent: 'center',

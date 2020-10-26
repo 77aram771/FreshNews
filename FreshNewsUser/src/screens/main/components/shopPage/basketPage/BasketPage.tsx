@@ -228,7 +228,6 @@ export default class BasketPage extends Component<NavigationProps> {
                                                     }
                                                 />
                                                 <TouchableOpacity
-                                                    // onPress={onShowPaymentPage}
                                                     onPress={() => this.props.navigation.navigate('PaymentPage')}
                                                     style={{
                                                         backgroundColor: '#8CC83F',

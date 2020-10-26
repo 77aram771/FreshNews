@@ -40,17 +40,17 @@ export default class MainScreen extends React.Component<NavigationProps> {
                 errorMessage: 'Permission to access location was denied',
             });
         }
-        GetLocation.getCurrentPosition({
-            enableHighAccuracy: true,
-            timeout: 15000,
-        })
-            .then(location => {
-                console.log('location', location);
-            })
-            .catch(error => {
-                const {code, message} = error;
-                console.warn(code, message);
-            })
+        // GetLocation.getCurrentPosition({
+        //     enableHighAccuracy: true,
+        //     timeout: 15000,
+        // })
+        //     .then(location => {
+        //         console.log('location', location);
+        //     })
+        //     .catch(error => {
+        //         const {code, message} = error;
+        //         console.warn(code, message);
+        //     })
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
         const {latitude, longitude} = location.coords
         this.getGeocodeAsync({latitude, longitude})
@@ -60,7 +60,7 @@ export default class MainScreen extends React.Component<NavigationProps> {
 
     getGeocodeAsync = async (location: any) => {
         let geocode = await Location.reverseGeocodeAsync(location);
-        console.log('geocode', geocode)
+        // console.log('geocode', geocode)
         this.setState({geocode})
     };
 

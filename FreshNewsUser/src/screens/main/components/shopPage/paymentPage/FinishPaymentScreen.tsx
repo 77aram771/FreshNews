@@ -4,19 +4,12 @@ import {size20} from '../../../../../share/consts';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
-import shopsStore from "../../../../../stores/ShopsStore";
-import { toJS } from 'mobx';
 
-export class CloudPayment extends Component<NavigationProps> {
+export class FinishPaymentScreen extends Component<NavigationProps> {
 
     componentDidMount() {
-        const {getAllOrders, allOrders} = shopsStore;
-        getAllOrders();
-        console.log('allOrders CloudPayment', toJS(allOrders)[0].id)
         setTimeout(() => {
-            this.props.navigation.navigate('FinishOfferPage', {
-                id: toJS(allOrders)[0].id
-            })
+            this.props.navigation.navigate('MainScreen')
         }, 3000)
     }
 
@@ -34,7 +27,7 @@ export class CloudPayment extends Component<NavigationProps> {
                             color: '#FFFFFF',
                         }}
                     >
-                        CLOUD PAYMENT
+                        CLOUD PAYMENT Finish Payment Screen
                     </Text>
                 </LinearGradient>
             </View>

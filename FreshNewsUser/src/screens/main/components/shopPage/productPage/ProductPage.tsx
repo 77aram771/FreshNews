@@ -46,7 +46,7 @@ export default class ProductPage extends Component<intProductPage> {
 
     async handleAddItem(id: number, count: number) {
         let getToken = await AsyncStorage.getItem('Token');
-        console.log('getToken', getToken);
+        // console.log('getToken', getToken);
         if(getToken === null){
             this.props.navigation.navigate('Login')
         }

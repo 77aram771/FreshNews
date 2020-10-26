@@ -32,6 +32,7 @@
     "expo-permissions": "~9.0.1",
     "expo-sms": "~8.2.1",
     "expo-status-bar": "^1.0.0",
+    "expo-task-manager": "^8.5.0",
     "expo-web-browser": "~8.3.1",
     "i": "^0.3.6",
     "loadash": "^1.0.0",

@@ -52,10 +52,6 @@ class UserInfo {
 
     @action
     getUserDataAddAddress = async (address: any, porch: any, floor: any, intercom: any) => {
-        console.log('address', address);
-        console.log('porch', porch);
-        console.log('floor', floor);
-        console.log('intercom', intercom);
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
