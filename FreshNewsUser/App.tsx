@@ -19,6 +19,8 @@ import FinishPaymentPage from "./src/screens/main/components/shopPage/paymentPag
 import MapPage from "./src/screens/main/components/shopPage/paymentPage/MapPage";
 import {CloudPayment} from "./src/screens/main/components/shopPage/paymentPage/CloudPayment";
 import {FinishPaymentScreen} from "./src/screens/main/components/shopPage/paymentPage/FinishPaymentScreen";
+import ShopsList from "./src/screens/main/components/shops/ShopsList";
+import StocksList from './src/screens/main/components/stocks/StocksList';
 
 console.disableYellowBox = true;
 
@@ -68,6 +70,18 @@ const MainStack = createStackNavigator(
         },
         ShopPage: {
             screen: ShopPage,
+            navigationOptions: {
+                headerTitle: 'Магазин',
+            },
+        },
+        ShopsList: {
+            screen: ShopsList,
+            navigationOptions: {
+                headerTitle: 'Магазин',
+            },
+        },
+        StocksList: {
+            screen: StocksList,
             navigationOptions: {
                 headerTitle: 'Магазин',
             },

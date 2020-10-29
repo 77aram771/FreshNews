@@ -87,7 +87,8 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 4) {
+        }
+        else if (item.status === 4) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -175,10 +176,13 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 5) {
+        }
+        else if (item.status === 5) {
             return (
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('MapPage')}
+                    onPress={() => this.props.navigation.navigate('MapPage', {
+                        order_id: item.id
+                    })}
                     style={{
                         width: "100%",
                         backgroundColor: '#8CC83F',
@@ -254,7 +258,8 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 6) {
+        }
+        else if (item.status === 6) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {

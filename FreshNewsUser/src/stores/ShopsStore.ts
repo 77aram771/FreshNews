@@ -11,7 +11,10 @@ class ShopsStore {
     @observable isShowBackgroundInput: boolean = false;
     @observable getShopLoader: boolean = false;
     @observable getShopData: any = [];
+    @observable getShopSection: any = [];
     @observable getShopInfo: any = [];
+    @observable getShopsItem: any = [];
+    @observable getShopShares: any = [];
     @observable isShowShopInformation: boolean = false;
     @observable getShopItemInfo: any = []
     @observable allOrders: any = []
@@ -25,6 +28,11 @@ class ShopsStore {
     @action
     onChangeClientAddress = (item: string) => {
         this.clientAddress = item;
+    };
+
+    @action
+    getUserAddress = async (address: any) => {
+        this.clientAddress = address
     };
 
     @action
@@ -60,15 +68,56 @@ class ShopsStore {
     }
 
     @action
+    getShopsSections = async () => {
+        this.getShopSection = [];
+        await axios.get(`${SERVER_BASE}/sections`)
+            .then((res) => {
+                this.getShopSection = res.data;
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+
+    @action
     getShop = async (id: number) => {
         this.getShopLoader = true;
         this.getShopInfo = [];
         await axios.get(`${SERVER_BASE}/shop/${id}`)
             .then((res) => {
+                console.log('getShop==---==', res)
                 this.getShopInfo = res.data;
                 if (this.getShopData.shops.data) {
                     this.getShopLoader = false;
                 }
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+
+    @action
+    getShops = async (id: number) => {
+        this.getShopLoader = true;
+        this.getShopInfo = [];
+        await axios.get(`${SERVER_BASE}/shops/${id}`)
+            .then((res) => {
+                console.log('getShops', res)
+                this.getShopsItem = res.data;
+            })
+            .catch((e) => {
+                console.log(e)
+            })
+    }
+
+    @action
+    getPromoCode = async (id: number) => {
+        this.getShopLoader = true;
+        this.getShopShares = [];
+        await axios.get(`${SERVER_BASE}/promocode/${id}`)
+            .then((res) => {
+                console.log('getPromoCode', res)
+                this.getShopShares = res.data;
             })
             .catch((e) => {
                 console.log(e)
@@ -103,7 +152,6 @@ class ShopsStore {
                 this.Error = e
             })
     }
-
 }
 
 const shopsStore = new ShopsStore();

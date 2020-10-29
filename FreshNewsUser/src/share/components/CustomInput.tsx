@@ -8,11 +8,13 @@ import {
     TextStyle,
     View,
     ViewStyle,
+    TouchableOpacity,
 } from 'react-native';
 
 import {MontserratMedium} from '../fonts';
 import {size20, WINDOW_WIDTH} from '../consts';
 import Icon from 'react-native-vector-icons/Fontisto';
+import shopsStore from "../../stores/ShopsStore";
 
 export const CustomInput = ({
                                 value,
@@ -30,7 +32,8 @@ export const CustomInput = ({
                                 numberOfLines,
                                 headerStyleWidth,
                                 headerStyleText,
-                                onChangeView
+                                onChangeView,
+                                getGeocodeAsync
                             }: {
     value: string;
     style?: StyleProp<ViewStyle>;
@@ -48,6 +51,7 @@ export const CustomInput = ({
     headerStyleWidth?: number;
     headerStyleText?: number;
     onChangeView?: () => void
+    getGeocodeAsync?: () => void
 }) => {
     const styles = StyleSheet.create({
         container: {
@@ -91,9 +95,12 @@ export const CustomInput = ({
                 </View>
             ) : null}
             {leftIcon ? (
-                <View style={styles.phoneCode}>
+                <TouchableOpacity
+                    style={styles.phoneCode}
+                    onPress={() => getGeocodeAsync()}
+                >
                     <Icon name={'map-marker'} size={size20} color={'#8CC83F'}/>
-                </View>
+                </TouchableOpacity>
             ) : null}
             <TextInput
                 multiline={multiline}

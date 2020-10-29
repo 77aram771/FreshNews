@@ -5,25 +5,25 @@ import {MontserratBold} from '../../../share/fonts';
 import {size20} from '../../../share/consts';
 
 export const HeaderText = ({
-  style,
-  title,
-}: {
-  style?: StyleProp<ViewStyle>;
-  title: string;
+                               style,
+                               title,
+                           }: {
+    style?: StyleProp<ViewStyle>;
+    title: string;
 }) => {
-  return (
-    <View style={{marginHorizontal: 20, marginTop: 29}}>
-      <Text
-        style={[
-          {
-            fontFamily: MontserratBold,
-            fontSize: size20,
-            color: '#000000',
-          },
-          style,
-        ]}>
-        {title}
-      </Text>
-    </View>
-  );
+    return (
+        <View style={{marginHorizontal: 20, marginTop: 29}}>
+            <Text
+                style={[
+                    {
+                        fontFamily: MontserratBold,
+                        fontSize: size20,
+                        color: '#000000',
+                    },
+                    style,
+                ]}>
+                {title}
+            </Text>
+        </View>
+    );
 };

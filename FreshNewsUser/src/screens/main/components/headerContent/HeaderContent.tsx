@@ -19,34 +19,22 @@ import {NavigationProps} from '../../../../share/interfaces';
 import {observer} from 'mobx-react';
 import shopsStore from '../../../../stores/ShopsStore';
 
+interface HeaderContentInterface {
+    getGeocodeAsync: any,
+    navigation: any,
+}
+
 @observer
-export default class HeaderContent extends React.Component<NavigationProps> {
-
-    linkToAppStore() {
-        Linking.openURL('https://www.apple.com/ru/ios/app-store/').catch(() =>
-            alert('Ошибка!'),
-        );
-    }
-
-    linkToGooglePlay() {
-        Linking.openURL('https://play.google.com/store/apps?hl=ru').catch(() =>
-            alert('Ошибка!'),
-        );
-    }
+export default class HeaderContent extends React.Component<HeaderContentInterface, NavigationProps> {
 
     render() {
 
         const {
             animatedValue,
             isShowBackgroundInput,
-            onChangeView,
             clientAddress,
+            onChangeClientAddress
         } = shopsStore;
-
-        const viewHeight = animatedValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [WINDOW_WIDTH / 1.5, WINDOW_WIDTH / 3, WINDOW_WIDTH / 5],
-        });
 
         const viewOpacity = animatedValue.interpolate({
             inputRange: [0, 0.5, 1],
@@ -58,9 +46,7 @@ export default class HeaderContent extends React.Component<NavigationProps> {
                 {!isShowBackgroundInput ? (
                     <Animated.View
                         style={{
-                            //height: viewHeight,
                             opacity: viewOpacity,
-                            //zIndex: 200
                         }}
                     >
                         <ImageBackground
@@ -75,34 +61,29 @@ export default class HeaderContent extends React.Component<NavigationProps> {
                                     justifyContent: 'flex-end',
                                     alignItems: 'center',
                                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                                }}>
+                                }}
+                            >
                                 <Text style={styles.headerTitle}>
                                     Быстрая доставка свежих{'\n'} овощей и фруктов на дом 24/7{' '}
                                     {'\n'}
                                     Москва
                                 </Text>
-                                <TouchableOpacity
-                                    activeOpacity={1}
-                                    onPress={() => onChangeView()}
-                                >
-                                    <CustomInput
-                                        editable={false}
-                                        placeholder={'Куда доставляем?'}
-                                        placeholderTextColor={'#7C7878'}
-                                        leftIcon={true}
-                                        style={{marginBottom: size18, marginTop: 46,}}
-                                        textInputStyle={{
-                                            textAlign: 'center',
-                                            paddingLeft: 0,
-                                        }}
-                                        value={clientAddress}
-                                        onChangeText={item => {
-                                            onChangeView()
-                                        }}
-                                        headerStyleWidth={WINDOW_WIDTH - 40}
-                                        headerStyleText={WINDOW_WIDTH / 1.3}
-                                    />
-                                </TouchableOpacity>
+                                <CustomInput
+                                    editable={true}
+                                    placeholder={'Куда доставляем?'}
+                                    placeholderTextColor={'#7C7878'}
+                                    leftIcon={true}
+                                    style={{marginBottom: size18, marginTop: 46,}}
+                                    textInputStyle={{
+                                        textAlign: 'center',
+                                        paddingLeft: 0,
+                                    }}
+                                    getGeocodeAsync={() => this.props.getGeocodeAsync()}
+                                    value={clientAddress}
+                                    onChangeText={text => {onChangeClientAddress(text)}}
+                                    headerStyleWidth={WINDOW_WIDTH - 40}
+                                    headerStyleText={WINDOW_WIDTH / 1.3}
+                                />
                             </View>
                         </ImageBackground>
                     </Animated.View>

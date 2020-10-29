@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {
-    BackHandler,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -17,14 +16,10 @@ import {
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
 import MapView, {Marker} from 'react-native-maps';
-import {
-    MontserratRegular,
-    MontserratSemiBold,
-} from '../../../../../share/fonts';
+import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import Modal from 'react-native-modal';
 import ReviewModal from './ReviewModal';
 import {NavigationProps} from '../../../../../share/interfaces';
-import locationStore from "../../../../../stores/LocationStore";
 import modalsStore from "../../../../../stores/ModalsStore";
 import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
@@ -33,39 +28,42 @@ import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
 import {PulseIndicator} from 'react-native-indicators';
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
+import Pusher from 'pusher-js/react-native';
+import {MapStyle} from "../../../../../share/MapStyle";
+
 const LOCATION_TASK_NAME = 'background-location-task';
+const pusher_app_key = '0f88b1991b1342108a18';
+const pusher_app_cluster = 'eu';
 
 @observer
 export default class MapPage extends Component<NavigationProps> {
-
-    backHandler: any;
 
     constructor(props: any) {
         super(props);
 
         this.state = {
             coordinates: null,
-            errorText: ''
+            errorText: '',
+            deliveryTime: ''
         };
-
         this.mapView = null;
     }
 
     componentDidMount() {
+        Pusher.logToConsole = true;
 
-        this.getCurrentPosition();
-        this.backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            this.handleBackPress,
-        );
+        this.pusher = new Pusher(pusher_app_key, {
+            cluster: pusher_app_cluster,
+            encrypted: true,
+        });
+
+        this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
+        this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
+            this.getGeolocation(data)
+        });
+
         (
             async () => {
-                // const { status } = await Location.requestPermissionsAsync();
-                // if (status === 'granted') {
-                //     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-                //         accuracy: Location.Accuracy.Balanced,
-                //     });
-                // }
                 let {status} = await Location.requestPermissionsAsync();
                 if (status !== 'granted') {
                     this.setState({
@@ -77,39 +75,49 @@ export default class MapPage extends Component<NavigationProps> {
                 }
                 let location = await Location.getCurrentPositionAsync({});
                 const userCoordinate = {
-                        lat: location.coords.latitude,
-                        lon: location.coords.longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }
-                ;
+                    longitude: location.coords.longitude,
+                    latitude: location.coords.latitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }
 
                 const courierCordinate = {
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude - 0.100,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    }
-                ;
-
-                this.setState({
-                    coordinates: [courierCordinate, userCoordinate]
-                }, () => console.log('coordinates', this.state.coordinates[0]));
-
-            })();
+                    longitude: location.coords.longitude,
+                    latitude: location.coords.latitude - 0.108,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }
+                setTimeout(() => {
+                    this.setState({
+                        coordinates: [userCoordinate, courierCordinate]
+                    }, () => console.log('coordinates', this.state.coordinates));
+                }, 1000)
+            }
+        )();
     }
 
-    async getCurrentPosition() {
-        await locationStore.getPermissionAndLocation();
-    }
+    async getGeolocation(data: any) {
+        this.setState({
+            deliveryTime: data.time
+        }, () => console.log('deliveryTime', this.state.deliveryTime))
+        let location = await Location.getCurrentPositionAsync({});
+        const userCoordinate = {
+            longitude: location.coords.longitude,
+            latitude: location.coords.latitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }
 
-    componentWillUnmount() {
-        this.backHandler.remove();
-    }
+        const courierCordinate = {
+            latitude: data.courier.lat,
+            longitude: data.courier.lon,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }
 
-    handleBackPress = () => {
-        this.props.navigation.goBack()
-        return true;
+        this.setState({
+            coordinates: [userCoordinate, courierCordinate]
+        }, () => console.log('coordinates', this.state.coordinates[0]));
     };
 
     onReady = (result: any) => {
@@ -165,33 +173,37 @@ export default class MapPage extends Component<NavigationProps> {
                         ? (
                             <>
                                 <MapView
-                                    initialRegion={this.state.coordinates[0]}
+                                    region={this.state.coordinates[0]}
                                     style={{flex: 2, width: WINDOW_WIDTH}}
                                     ref={c => this.mapView = c}
+                                    // showsUserLocation={true}
+                                    followUserLocation={true}
+                                    zoomEnabled={true}
+                                    pitchEnabled={true}
+                                    showsCompass={true}
+                                    showsBuildings={true}
+                                    showsTraffic={true}
+                                    showsIndoors={true}
+                                    customMapStyle={MapStyle}
                                 >
-                                    {/*{this.state.coordinates.map((marker, index) => {*/}
-                                    {/*    console.log('marker', marker)*/}
-                                    {/*    return (*/}
-                                    {/*        <Marker*/}
-                                    {/*            key={index}*/}
-                                    {/*            coordinate={marker}*/}
-                                    {/*            // title={marker.title}*/}
-                                    {/*            // description={marker.description}*/}
-                                    {/*        />*/}
-                                    {/*    )*/}
-                                    {/*})}*/}
+                                    <Marker
+                                        coordinate={this.state.coordinates[0]}
+                                        image={require('../../../../../../assets/iconImages/location-user-icon.psd')}
+                                    />
+
+                                    <Marker
+                                        coordinate={this.state.coordinates[1]}
+                                        image={require('../../../../../../assets/iconImages/delivery-icon.png')}
+                                    />
                                     <MapViewDirections
                                         origin={this.state.coordinates[0]}
                                         destination={this.state.coordinates[this.state.coordinates.length - 1]}
-                                        waypoints={this.state.coordinates.slice(1, -1)}
                                         mode='DRIVING'
                                         apikey={GOOGLE_MAPS_APIKEY}
                                         language='ru'
                                         strokeWidth={4}
                                         strokeColor="red"
-                                        onStart={(params) => {
-                                            console.log('params', params);
-                                        }}
+                                        onStart={(params) => {console.log('params', params)}}
                                         onReady={this.onReady}
                                         onError={(errorMessage) => this.onError(errorMessage)}
                                         resetOnChange={false}
@@ -208,7 +220,7 @@ export default class MapPage extends Component<NavigationProps> {
                                             Василий
                                         </Text>{' '}
                                         будет{'\n'} у вас в течении{' '}
-                                        <Text style={{fontFamily: MontserratSemiBold}}>27 мин.</Text>
+                                        <Text style={{fontFamily: MontserratSemiBold}}>{this.state.deliveryTime} мин.</Text>
                                     </Text>
                                     <TouchableOpacity
                                         onPress={() => alert('связь с поддержкой')}
@@ -242,16 +254,16 @@ export default class MapPage extends Component<NavigationProps> {
     }
 };
 
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-    console.log('data', data)
+TaskManager.defineTask(LOCATION_TASK_NAME, ({data, error}) => {
+    // console.log('data', data)
     if (error) {
         // Error occurred - check `error.message` for more details.
         return;
     }
     if (data) {
-        const { locations } = data;
-        console.log('locations', locations)
-        console.log('locations data', data)
+        const {locations} = data;
+        // console.log('locations', locations)
+        // console.log('locations data', data)
         // do something with the locations captured in the background
     }
 });

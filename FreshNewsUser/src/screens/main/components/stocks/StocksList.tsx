@@ -1,10 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl} from 'react-native';
+import {FlatList, StyleSheet, View, RefreshControl, Text} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
-import {MontserratRegular} from '../../../../share/fonts';
+import {MontserratBold, MontserratRegular} from '../../../../share/fonts';
 import {data} from '../../../../share/info';
-import {ShopsListItem} from './ShopsListItem';
 import {size16, size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {NavigationProps} from '../../../../share/interfaces';
 import {HeaderText} from '../HeaderText';
@@ -13,7 +12,8 @@ import {PulseIndicator} from 'react-native-indicators';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Header from "../../../../share/components/Header";
 import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
-import HeaderContentMarket from "../headerContent/HeaderContentMarket";
+import {ShopsListItem} from '../shops/ShopsListItem';
+import HeaderContentMarketShares from "./HeaderContentMarketShares";
 
 interface ShopsListInterface {
     getGeocodeAsync: any,
@@ -21,7 +21,7 @@ interface ShopsListInterface {
 }
 
 @observer
-export default class ShopsList extends React.Component<ShopsListInterface, NavigationProps> {
+export default class StocksList extends React.Component<ShopsListInterface, NavigationProps> {
 
     state = {
         shopData: [],
@@ -33,10 +33,10 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
             refreshing: true
         })
         setTimeout(() => {
-            if (toJS(shopsStore.getShopsItem).shops.length > 0) {
+            if (toJS(shopsStore.getShopShares).shops.length > 0) {
                 this.setState({
                     refreshing: false,
-                    shopData: toJS(shopsStore.getShopsItem)
+                    shopData: toJS(shopsStore.getShopShares)
                 })
             }
         }, 1000)
@@ -49,7 +49,7 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: toJS(shopsStore.getShopsItem)
+                shopData: toJS(shopsStore.getShopShares)
             })
         }, 1000)
     };
@@ -60,6 +60,7 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
     };
 
     render() {
+
         return (
             <View style={styles.shopsListContainer}>
                 {
@@ -103,17 +104,20 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
                                 <FlatList
                                     ListHeaderComponent={
                                         <>
-                                            <HeaderContentMarket
-                                                name={this.props.navigation.state.params.shopName}
+                                            <HeaderContentMarketShares
                                                 navigation={this.props.navigation}
+                                                code={this.props.navigation.state.params.shopCode}
+                                                discount={this.props.navigation.state.params.shopDiscount}
                                             />
                                             <HeaderText
                                                 style={{
+                                                    fontFamily: MontserratRegular,
                                                     justifyContent: "center",
                                                     alignItems: 'center',
                                                     alignSelf: "center",
+                                                    fontSize: 15
                                                 }}
-                                                title={'Магазины ринка'}
+                                                title={'Магазины участвующие в акции'}
                                             />
                                         </>
                                     }

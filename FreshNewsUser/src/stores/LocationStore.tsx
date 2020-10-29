@@ -2,7 +2,6 @@
 import {action, observable} from 'mobx';
 // import Geolocation from 'react-native-geolocation-service';
 import {Region} from '../share/interfaces';
-import {PermissionsAndroid} from 'react-native';
 
 class LocationStore {
     @observable locationUser: Region = {
@@ -12,19 +11,6 @@ class LocationStore {
         longitudeDelta: 0.0004,
     };
 
-    @action
-    getPermissionAndLocation = async () => {
-        const permission = await PermissionsAndroid.check(
-            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        );
-        if (!permission) {
-            await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            ).then(() => this.getUserLocation());
-        } else {
-            this.getUserLocation();
-        }
-    };
     @action
     getUserLocation = async () => {
         // await Geolocation.getCurrentPosition(

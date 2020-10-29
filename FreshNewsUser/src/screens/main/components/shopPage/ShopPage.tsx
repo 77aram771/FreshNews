@@ -15,7 +15,7 @@ import HeaderInfo from './HeaderInfo';
 import {ShopListItem} from './ShopListItem';
 import {FooterPanel} from './FooterPanel';
 import {
-    HEADER_HEIGHT,
+    HEADER_HEIGHT, size16,
     size20,
     WINDOW_WIDTH,
 } from '../../../../share/consts';
@@ -26,6 +26,9 @@ import {toJS} from "mobx";
 import shopsStore from '../../../../stores/ShopsStore';
 import modalsStore from "../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
+import Header from "../../../../share/components/Header";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
 
 @observer
 export default class ShopPage extends React.Component<NavigationProps> {
@@ -115,8 +118,22 @@ export default class ShopPage extends React.Component<NavigationProps> {
                                         navigation={this.props.navigation}
                                     />
                                 </Modal>
-                                <MainHeader
-                                    navigation={this.props.navigation}
+                                <Header
+                                    style={{
+                                        width: WINDOW_WIDTH,
+                                    }}
+                                    headerLeft={
+                                        <AntDesign
+                                            onPress={() => this.props.navigation.goBack()}
+                                            style={{paddingLeft: 8}}
+                                            name={'left'}
+                                            size={size16}
+                                            color={'#000'}
+                                        />
+                                    }
+                                    headerMid={
+                                        <LogoAndTitle/>
+                                    }
                                 />
                                 <SuperGridSectionList
                                     // keyExtractor={(item, index) => index.toString()}
