@@ -22,11 +22,28 @@ export default class PurchaseHistory extends Component<NavigationProps> {
         shopsStore.getAllOrders();
     }
 
+    onRefresh() {
+        this.setState({
+            refreshing: true
+        })
+        setTimeout(() => {
+            this.setState({
+                refreshing: false
+            })
+            shopsStore.getAllOrders();
+
+        }, 1000)
+    }
+
     renderItem(item: any) {
         if (item.status === 1) {
             return (
                 <TouchableOpacity
-                    onPress={() => alert('status 1')}
+                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
+                        id: item.id,
+                        transaction: true,
+                        status: item.status
+                    })}
                     style={{
                         width: "100%",
                         backgroundColor: '#F5F4F4',
@@ -344,19 +361,6 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                 </TouchableOpacity>
             )
         }
-    }
-
-    onRefresh() {
-        this.setState({
-            refreshing: true
-        })
-        setTimeout(() => {
-            this.setState({
-                refreshing: false
-            })
-            shopsStore.getAllOrders();
-
-        }, 1000)
     }
 
     render() {

@@ -11,7 +11,6 @@ import {
     HEADER_HEIGHT,
     size16,
     size20,
-    size44,
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
@@ -42,7 +41,8 @@ export default class MapPage extends Component<NavigationProps> {
         super(props);
 
         this.state = {
-            coordinates: null,
+            courierCordinate: null,
+            userLocation: null,
             errorText: '',
             deliveryTime: ''
         };
@@ -51,19 +51,15 @@ export default class MapPage extends Component<NavigationProps> {
 
     componentDidMount() {
         Pusher.logToConsole = true;
-
         this.pusher = new Pusher(pusher_app_key, {
             cluster: pusher_app_cluster,
             encrypted: true,
         });
-
         this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
         this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
             this.getGeolocation(data)
         });
-
-        (
-            async () => {
+        (async () => {
                 let {status} = await Location.requestPermissionsAsync();
                 if (status !== 'granted') {
                     this.setState({
@@ -81,43 +77,33 @@ export default class MapPage extends Component<NavigationProps> {
                     longitudeDelta: 0.0421,
                 }
 
-                const courierCordinate = {
-                    longitude: location.coords.longitude,
-                    latitude: location.coords.latitude - 0.108,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }
                 setTimeout(() => {
                     this.setState({
-                        coordinates: [userCoordinate, courierCordinate]
-                    }, () => console.log('coordinates', this.state.coordinates));
+                        userLocation: userCoordinate
+                    }, () => console.log('userLocation', this.state.userLocation));
                 }, 1000)
-            }
-        )();
+            })();
     }
 
-    async getGeolocation(data: any) {
+    async getGeolocation(data: any = null) {
         this.setState({
             deliveryTime: data.time
         }, () => console.log('deliveryTime', this.state.deliveryTime))
-        let location = await Location.getCurrentPositionAsync({});
-        const userCoordinate = {
-            longitude: location.coords.longitude,
-            latitude: location.coords.latitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        }
 
         const courierCordinate = {
-            latitude: data.courier.lat,
-            longitude: data.courier.lon,
+            latitude: Number(data.courier.lat),
+            longitude: Number(data.courier.lon),
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         }
-
-        this.setState({
-            coordinates: [userCoordinate, courierCordinate]
-        }, () => console.log('coordinates', this.state.coordinates[0]));
+        setTimeout(() => {
+            this.setState({
+                courierCordinate: courierCordinate
+            }, () => {
+                console.log('userLocation', this.state.userLocation)
+                console.log('courierCordinate', this.state.courierCordinate)
+            });
+        }, 1000)
     };
 
     onReady = (result: any) => {
@@ -132,7 +118,7 @@ export default class MapPage extends Component<NavigationProps> {
     }
 
     onError = (errorMessage: any) => {
-        console.log(errorMessage); // eslint-disable-line no-console
+        console.log(errorMessage);
     }
 
     render() {
@@ -146,7 +132,9 @@ export default class MapPage extends Component<NavigationProps> {
                     animationOut={'slideOutUp'}
                     animationInTiming={800}
                     animationOutTiming={400}
-                    onBackButtonPress={() => {onShowReviewModal()}}
+                    onBackButtonPress={() => {
+                        onShowReviewModal()
+                    }}
                     hideModalContentWhileAnimating={true}
                     backdropOpacity={0}
                     onBackdropPress={onShowReviewModal}
@@ -169,11 +157,11 @@ export default class MapPage extends Component<NavigationProps> {
                     headerRight={<View/>}
                 />
                 {
-                    this.state.coordinates !== null
+                    this.state.courierCordinate !== null
                         ? (
                             <>
                                 <MapView
-                                    region={this.state.coordinates[0]}
+                                    region={this.state.courierCordinate}
                                     style={{flex: 2, width: WINDOW_WIDTH}}
                                     ref={c => this.mapView = c}
                                     // showsUserLocation={true}
@@ -187,23 +175,24 @@ export default class MapPage extends Component<NavigationProps> {
                                     customMapStyle={MapStyle}
                                 >
                                     <Marker
-                                        coordinate={this.state.coordinates[0]}
+                                        coordinate={this.state.userLocation}
                                         image={require('../../../../../../assets/iconImages/location-user-icon.psd')}
                                     />
-
                                     <Marker
-                                        coordinate={this.state.coordinates[1]}
+                                        coordinate={this.state.courierCordinate}
                                         image={require('../../../../../../assets/iconImages/delivery-icon.png')}
                                     />
                                     <MapViewDirections
-                                        origin={this.state.coordinates[0]}
-                                        destination={this.state.coordinates[this.state.coordinates.length - 1]}
+                                        origin={this.state.userLocation}
+                                        destination={this.state.courierCordinate}
                                         mode='DRIVING'
                                         apikey={GOOGLE_MAPS_APIKEY}
                                         language='ru'
                                         strokeWidth={4}
                                         strokeColor="red"
-                                        onStart={(params) => {console.log('params', params)}}
+                                        onStart={(params) => {
+                                            console.log('params', params)
+                                        }}
                                         onReady={this.onReady}
                                         onError={(errorMessage) => this.onError(errorMessage)}
                                         resetOnChange={false}
@@ -233,20 +222,47 @@ export default class MapPage extends Component<NavigationProps> {
                             </>
                         )
                         : (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    alignContent: 'center',
-                                    alignSelf: 'center',
-                                }}
-                            >
-                                <PulseIndicator
-                                    size={100}
-                                    color='#8CC83F'
+                            <>
+                                <MapView
+                                    region={this.state.userLocation}
+                                    style={{flex: 2, width: WINDOW_WIDTH}}
+                                    ref={c => this.mapView = c}
+                                    showsUserLocation={true}
+                                    followUserLocation={true}
+                                    zoomEnabled={true}
+                                    pitchEnabled={true}
+                                    showsCompass={true}
+                                    showsBuildings={true}
+                                    showsTraffic={true}
+                                    showsIndoors={true}
+                                    customMapStyle={MapStyle}
                                 />
-                            </View>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        alignContent: 'center',
+                                        alignSelf: 'center',
+                                    }}
+                                >
+                                    <PulseIndicator
+                                        size={100}
+                                        color='#8CC83F'
+                                    />
+                                </View>
+                                <View
+                                    style={styles.textContainer}
+                                >
+                                    <TouchableOpacity
+                                        onPress={() => alert('связь с поддержкой')}
+                                        style={styles.supportTextContainer}>
+                                        <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
+                                            Связаться с поддержкой
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
                         )
                 }
             </View>
@@ -270,14 +286,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({data, error}) => {
 
 const styles = StyleSheet.create({
     container: {flex: 1, backgroundColor: '#FFFFFF', alignItems: 'center'},
-    userLocation: {
-        width: size44,
-        height: size44,
-        backgroundColor: '#8CC83F',
-        borderRadius: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     textContainer: {
         flex: 1,
         alignItems: 'center',

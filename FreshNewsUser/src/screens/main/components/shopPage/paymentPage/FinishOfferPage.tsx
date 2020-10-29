@@ -24,8 +24,6 @@ export default class FinishOfferPage extends Component<NavigationProps> {
     }
 
     async componentDidMount() {
-        console.log('this.props.navigation.state.params.transaction ', toJS(this.props.navigation.state.params.transaction))
-        console.log('this.props.navigation.state.params.status ', toJS(this.props.navigation.state.params.status))
         const {getOrder} = paymentStore;
         getOrder(this.props.navigation.state.params.id);
         this.setState({
@@ -92,8 +90,8 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                 </View>
                 {
                     this.props.navigation.state.params.status === 6
-                    ? <View/>
-                    :(
+                        ? <View/>
+                        : (
                             <TouchableOpacity
                                 onPress={() => this.handleDeleteItem(item.id)}
                                 style={{
@@ -122,8 +120,6 @@ export default class FinishOfferPage extends Component<NavigationProps> {
 
     render() {
 
-        const {onShowCheckOutDialog, isShowCheckOutDialog} = modalsStore;
-
         const {shopData, delivery, refreshing} = this.state;
 
         return (
@@ -150,7 +146,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                             shopData === null
                                 ? (
                                     <View>
-                                        <Text>TTTTT</Text>
+                                        <Text>TEST</Text>
                                     </View>
                                 )
                                 : (
@@ -292,50 +288,66 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                                                             </View>
                                                             {
                                                                 this.props.navigation.state.params.transaction !== null
-                                                                ? (
-                                                                    <TouchableOpacity
-                                                                        style={{
-                                                                            backgroundColor: 'grey',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            paddingVertical: 27,
-                                                                        }}
-                                                                        disabled={true}
-                                                                    >
-                                                                        <Text
+                                                                    ? (
+                                                                        <TouchableOpacity
                                                                             style={{
-                                                                                color: '#FFFFFF',
-                                                                                fontFamily: MontserratRegular,
-                                                                                fontSize: size20,
+                                                                                backgroundColor: 'grey',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                                paddingVertical: 27,
+                                                                            }}
+                                                                            disabled={true}
+                                                                        >
+                                                                            {
+                                                                                this.props.navigation.state.params.status === 1
+                                                                                    ? (
+                                                                                        <Text
+                                                                                            style={{
+                                                                                                color: '#FFFFFF',
+                                                                                                fontFamily: MontserratRegular,
+                                                                                                fontSize: size20,
+                                                                                            }}
+                                                                                        >
+                                                                                            Заказ собирается
+                                                                                        </Text>
+                                                                                    )
+                                                                                    : (
+                                                                                        <Text
+                                                                                            style={{
+                                                                                                color: '#FFFFFF',
+                                                                                                fontFamily: MontserratRegular,
+                                                                                                fontSize: size20,
+                                                                                            }}
+                                                                                        >
+                                                                                            Оплатить заказ
+                                                                                        </Text>
+                                                                                    )
+                                                                            }
+                                                                        </TouchableOpacity>
+                                                                    )
+                                                                    : (
+                                                                        <TouchableOpacity
+                                                                            onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
+                                                                                id: this.props.navigation.state.params.id
+                                                                            })}
+                                                                            style={{
+                                                                                backgroundColor: '#8CC83F',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                                paddingVertical: 27,
                                                                             }}
                                                                         >
-                                                                            Оплатить заказ
-                                                                        </Text>
-                                                                    </TouchableOpacity>
-                                                                )
-                                                                : (
-                                                                    <TouchableOpacity
-                                                                        onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
-                                                                            id: this.props.navigation.state.params.id
-                                                                        })}
-                                                                        style={{
-                                                                            backgroundColor: '#8CC83F',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            paddingVertical: 27,
-                                                                        }}
-                                                                    >
-                                                                        <Text
-                                                                            style={{
-                                                                                color: '#FFFFFF',
-                                                                                fontFamily: MontserratRegular,
-                                                                                fontSize: size20,
-                                                                            }}
-                                                                        >
-                                                                            Оплатить заказ
-                                                                        </Text>
-                                                                    </TouchableOpacity>
-                                                                )
+                                                                            <Text
+                                                                                style={{
+                                                                                    color: '#FFFFFF',
+                                                                                    fontFamily: MontserratRegular,
+                                                                                    fontSize: size20,
+                                                                                }}
+                                                                            >
+                                                                                Оплатить заказ
+                                                                            </Text>
+                                                                        </TouchableOpacity>
+                                                                    )
                                                             }
                                                         </>
                                                     )
