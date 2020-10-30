@@ -27,11 +27,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
 }> {
     render() {
 
-        const {onShowCourierProfileModal} = modalsStore;
-
         const {item} = this.props.navigation.state.params;
-
-        console.log('item', item.client)
 
         const {phone} = item.client
 

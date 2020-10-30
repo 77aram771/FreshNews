@@ -21,6 +21,7 @@ import {ActionButton} from '../../../share/components/ActionButton';
 import {PhoneComponent} from './PhoneComponent';
 import {size14} from "../../../share/consts";
 import {MontserratMedium} from "../../../share/fonts";
+import {showLocation} from 'react-native-map-link'
 
 interface IProps {
     shopName: string;
@@ -33,6 +34,10 @@ interface IProps {
     apartment: string;
     intercom: string;
     comment: string;
+}
+
+const handleDeleteItem = (id: any) => {
+    alert('id', id)
 }
 
 const renderItem = (item: any) => {
@@ -81,28 +86,59 @@ const renderItem = (item: any) => {
                     {Math.ceil(item.price)} <Text style={{color: '#8CC83F'}}>₽</Text>
                 </Text>
             </View>
-            {/*<TouchableOpacity*/}
-            {/*    onPress={() => this.handleDeleteItem(item.id)}*/}
-            {/*    style={{*/}
-            {/*        marginTop: 20,*/}
-            {/*        marginBottom: 20*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <Text*/}
-            {/*        style={{*/}
-            {/*            fontFamily: MontserratRegular,*/}
-            {/*            fontSize: size14,*/}
-            {/*            color: '#8E8E8E',*/}
-            {/*            textDecorationLine: 'underline',*/}
-            {/*            paddingTop: 8,*/}
-            {/*        }}*/}
-            {/*    >*/}
-            {/*        Удалить*/}
-            {/*    </Text>*/}
-            {/*</TouchableOpacity>*/}
+            <View
+                style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                <TouchableOpacity
+                    onPress={() => handleDeleteItem(item.id)}
+                    style={{
+                        marginTop: 20,
+                        marginBottom: 20,
+                        borderRadius: 5,
+                        backgroundColor: '#D96363',
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: 4
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: MontserratBold,
+                            fontSize: size14,
+                            color: '#fff',
+                        }}
+                    >
+                        Ожидает
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => handleDeleteItem(item.id)}
+                    style={{
+                        marginTop: 20,
+                        marginBottom: 20
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: MontserratRegular,
+                            fontSize: size14,
+                            color: '#8E8E8E',
+                            textDecorationLine: 'underline',
+                            paddingTop: 8,
+                        }}
+                    >
+                        Удалить
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
-}
+};
 
 export const ListItem = ({
                              item,
@@ -112,6 +148,47 @@ export const ListItem = ({
     onPress: () => void;
     takeOrderType?: boolean;
 }) => {
+
+    const openMapUser = (address: any) => {
+        showLocation({
+            latitude: 38.8976763,
+            longitude: -77.0387185,
+            // sourceLatitude: -8.0870631,  // optionally specify starting location for directions
+            // sourceLongitude: -34.8941619,  // not optional if sourceLatitude is specified
+            title: address.address,  // optional
+            googleForceLatLon: false,  // optionally force GoogleMaps to use the latlon for the query instead of the title
+            googlePlaceId: 'ChIJGVtI4by3t4kRr51d_Qm_x58',  // optionally specify the google-place-id
+            alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)
+            dialogTitle: 'This is the dialog Title', // optional (default: 'Open in Maps')
+            dialogMessage: 'This is the amazing dialog Message', // optional (default: 'What app would you like to use?')
+            cancelText: 'This is the cancel button text', // optional (default: 'Cancel')
+            appsWhiteList: ['google-maps'], // optionally you can set which apps to show (default: will show all supported apps installed on device)
+            naverCallerName: 'com.example.myapp' // to link into Naver Map You should provide your appname which is the bundle ID in iOS and applicationId in android.
+            // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
+            // app: 'uber'  // optionally specify specific app to use
+        })
+    }
+
+    const openMapShop = (address: any) => {
+        showLocation({
+            latitude: 38.8976763,
+            longitude: -77.0387185,
+            // sourceLatitude: -8.0870631,  // optionally specify starting location for directions
+            // sourceLongitude: -34.8941619,  // not optional if sourceLatitude is specified
+            title: address,  // optional
+            googleForceLatLon: false,  // optionally force GoogleMaps to use the latlon for the query instead of the title
+            googlePlaceId: 'ChIJGVtI4by3t4kRr51d_Qm_x58',  // optionally specify the google-place-id
+            alwaysIncludeGoogle: true, // optional, true will always add Google Maps to iOS and open in Safari, even if app is not installed (default: false)
+            dialogTitle: 'This is the dialog Title', // optional (default: 'Open in Maps')
+            dialogMessage: 'This is the amazing dialog Message', // optional (default: 'What app would you like to use?')
+            cancelText: 'This is the cancel button text', // optional (default: 'Cancel')
+            appsWhiteList: ['google-maps'], // optionally you can set which apps to show (default: will show all supported apps installed on device)
+            naverCallerName: 'com.example.myapp' // to link into Naver Map You should provide your appname which is the bundle ID in iOS and applicationId in android.
+            // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
+            // app: 'uber'  // optionally specify specific app to use
+        })
+    }
+
     return (
         <View
             style={{
@@ -130,7 +207,7 @@ export const ListItem = ({
                 {`Г.${item.shops[0].city}, ${item.shops[0].address}`}
             </Text>
             <Text
-                onPress={() => alert('карта')}
+                onPress={() => openMapShop(`${item.shops[0].city}, ${item.shops[0].address}`)}
                 style={{
                     fontFamily: MontserratRegular,
                     paddingTop: size12,
@@ -198,7 +275,7 @@ export const ListItem = ({
             </View>
             <ClientAddress item={item.client}/>
             <Text
-                onPress={() => alert('карта')}
+                onPress={() => openMapUser(item.client)}
                 style={{
                     fontFamily: MontserratRegular,
                     paddingTop: size12,

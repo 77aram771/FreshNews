@@ -5,6 +5,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image
 } from 'react-native';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
@@ -12,7 +13,6 @@ import {
     size16,
     size28,
     size34,
-    size44,
     WINDOW_WIDTH,
 } from '../../share/consts';
 import Feather from 'react-native-vector-icons/Feather';
@@ -26,7 +26,6 @@ import {NavigationEvents} from "react-navigation";
 import userInfo from '../../stores/UserInfo';
 import courierStore from '../../stores/CourierStore';
 import {PulseIndicator} from 'react-native-indicators';
-import AsyncStorage from "@react-native-community/async-storage";
 
 @observer
 export default class CourierScreen extends React.Component<NavigationProps, any> {
@@ -44,18 +43,14 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
     async componentDidMount() {
         await userInfo.getUserData();
         await courierStore.getCourierData();
-        let getToken = await AsyncStorage.getItem('Token');
         this.setState({
             refreshing: true
         })
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
-            console.log('getToken', getToken);
-            console.log('courierUserData', courierUserData);
             const firstItem = toJS(courierUserData)[0];
-            console.log('firstItem', firstItem)
-            const allData = toJS(courierUserData.shift())
+            // const allData = toJS(courierUserData.shift())
             let obj = [
                 {
                     title: 'Активный заказ',
@@ -69,7 +64,10 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
             this.setState({
                 userData: obj,
                 refreshing: false
-            }, () => console.log('userData', this.state.userData))
+            }, async () => {
+                // console.log('userData', this.state.userData[0].data[0].id);
+                await courierStore.getCourierCoordinate(87, '40.747890', '44.611112');
+            })
         }, 1000)
     };
 
@@ -86,7 +84,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
             getCourierData();
 
             const firstItem = toJS(courierUserData)[0];
-            console.log('firstItem', firstItem)
             const allData = toJS(courierUserData.shift())
             let obj = [
                 {
@@ -127,7 +124,13 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                             </View>
                         )
                         : (
-                            <View style={{flex: 1, alignItems: 'center'}}>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    marginBottom: 120
+                                }}
+                            >
                                 <NavigationEvents
                                     onDidFocus={() => this.onRefresh()}
                                 />
@@ -167,24 +170,36 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                             <View
                                                 style={{
                                                     flex: 1,
-                                                    justifyContent: 'center',
+                                                    justifyContent: "center",
                                                     alignItems: 'center'
                                                 }}
                                             >
-                                                <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
+                                                <Text
+                                                    style={{
+                                                        fontFamily: MontserratSemiBold,
+                                                        fontSize: size16,
+                                                        alignSelf: 'center'
+                                                    }}
+                                                >
                                                     Нет активных заказов
                                                 </Text>
-                                                {/*<Image*/}
+                                                {/*<View*/}
                                                 {/*    style={{*/}
-                                                {/*        borderColor: 'red',*/}
+                                                {/*        alignContent: "flex-end",*/}
+                                                {/*        alignSelf: "flex-end",*/}
                                                 {/*        borderWidth: 1,*/}
-                                                {/*        width: 200,*/}
-                                                {/*        height: 200*/}
+                                                {/*        borderColor: 'red',*/}
                                                 {/*    }}*/}
-                                                {/*    source={backgroundImage}*/}
-                                                {/*/>*/}
+                                                {/*>*/}
+                                                {/*    <Image*/}
+                                                {/*        style={{*/}
+                                                {/*            width: 200,*/}
+                                                {/*            height: 200,*/}
+                                                {/*        }}*/}
+                                                {/*        source={require('../../../assets/images/background_not_item.png')}*/}
+                                                {/*    />*/}
+                                                {/*</View>*/}
                                             </View>
-
                                         )
                                         : (
                                             <View
@@ -192,6 +207,11 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                                     width: WINDOW_WIDTH,
                                                 }}
                                             >
+                                                {
+                                                    Object.entries(this.state.userData[0]).map((item: any) => {
+                                                        console.log('item', item);
+                                                    })
+                                                }
                                                 <SectionList
                                                     showsVerticalScrollIndicator={false}
                                                     sections={this.state.userData}

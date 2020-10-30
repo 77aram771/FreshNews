@@ -3,8 +3,8 @@ import {View} from 'react-native';
 // @ts-ignore
 import {SafeAreaView} from 'react-navigation';
 import {HEADER_HEIGHT, size34} from '../consts';
-import SideBar from '../../screens/main/components/sideBar/SideBar';
 import {observer} from "mobx-react";
+import SideBar from '../../screens/courier/components/SideBar';
 
 interface HeaderProps {
     style?: any;
@@ -100,9 +100,6 @@ export default class Header extends Component<HeaderProps> {
                         </View>
                     ) : null}
                 </View>
-                <SideBar
-                    navigation={navigation}
-                />
             </SafeAreaView>
         );
     }

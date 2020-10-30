@@ -10,17 +10,13 @@ import {
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
 import Header from '../../share/components/Header';
-import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
-    size12,
     size16,
-    size28,
     size34,
-    size44,
     WINDOW_WIDTH,
 } from '../../share/consts';
 import {LogoAndTitle} from '../../share/components/LogoAndTitle';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {MontserratSemiBold} from '../../share/fonts';
 import {toJS} from "mobx";
 import {ListItemOrders} from "./components/ListItemOrders";
@@ -106,16 +102,24 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                             </View>
                         )
                         : (
-                            <View style={{flex: 1, alignItems: 'center'}}>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    marginBottom: 120
+                                }}
+                            >
                                 <Header
                                     headerLeft={
                                         <TouchableOpacity
                                             style={{marginLeft: 8}}
-                                            onPress={() => this.props.navigation.navigate('CourierProfile')}>
-                                            <Feather
-                                                name={'menu'}
-                                                size={size34}
-                                                color={'rgba(112, 112, 112, 0.4)'}
+                                            onPress={() => this.props.navigation.goBack()}>
+                                            <AntDesign
+                                                onPress={() => this.props.navigation.goBack()}
+                                                style={{paddingLeft: 8}}
+                                                name={'left'}
+                                                size={size16}
+                                                color={'#000'}
                                             />
                                         </TouchableOpacity>
                                     }
@@ -123,7 +127,6 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                         <LogoAndTitle courier={true}/>
                                     }
                                 />
-
                                 {
                                     this.state.allData[0].data.length === 0
                                         ? (
@@ -144,14 +147,13 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                         : (
                                             <View
                                                 style={{
-                                                    marginTop: size44 * 2,
                                                     width: WINDOW_WIDTH,
                                                 }}
                                             >
                                                 <SectionList
                                                     showsVerticalScrollIndicator={false}
                                                     sections={this.state.allData}
-                                                    keyExtractor={(item, index) => item + index}
+                                                    keyExtractor={(item: any, index) => item + index}
                                                     renderItem={({item}) => (
                                                         <ListItemOrders
                                                             item={item}

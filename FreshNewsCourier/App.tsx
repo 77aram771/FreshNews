@@ -83,12 +83,6 @@ const AppContainer = createAppContainer(RootStack);
 
 export default function App(navigation: NavigationProps) {
 
-    useEffect(() => {
-        (async () => {
-            let getToken = await AsyncStorage.getItem('Token');
-            console.log('getToken', getToken);
-        })()
-    })
     let [fontsLoaded] = useFonts(customFonts);
 
     if (!fontsLoaded) {
