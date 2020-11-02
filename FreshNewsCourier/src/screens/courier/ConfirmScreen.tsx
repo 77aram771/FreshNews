@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-// @ts-ignore
+import {Text, TouchableOpacity, View} from 'react-native';
+import courierStore from '../../stores/CourierStore';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
 import Header from '../../share/components/Header';
@@ -9,7 +9,6 @@ import {
     size12,
     size16,
     size20,
-    size28,
     size34,
     size44,
     WINDOW_WIDTH,
@@ -19,7 +18,6 @@ import {MontserratSemiBold} from '../../share/fonts';
 import {ClientAddress} from './components/ClientAddress';
 import {PhoneComponent} from './components/PhoneComponent';
 import {ActionButton} from '../../share/components/ActionButton';
-import modalsStore from "../../stores/ModalsStore";
 
 @observer
 export default class ConfirmScreen extends React.Component<NavigationProps, {
@@ -77,7 +75,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
                             marginTop: 50,
                         }}
                         onPress={() => {
-                            alert('Доставка завершена');
+                            courierStore.getCourierDataFinish(item.id);
                             this.props.navigation.goBack();
                         }}
                         text={'Завершить доставку'}

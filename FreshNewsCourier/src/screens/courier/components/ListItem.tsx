@@ -1,12 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {
     size12,
     size16,
     size20,
     size28,
-    size34,
-    size36,
     size44,
     WINDOW_WIDTH,
 } from '../../../share/consts';
@@ -22,6 +20,7 @@ import {PhoneComponent} from './PhoneComponent';
 import {size14} from "../../../share/consts";
 import {MontserratMedium} from "../../../share/fonts";
 import {showLocation} from 'react-native-map-link'
+import courierStore from "../../../stores/CourierStore";
 
 interface IProps {
     shopName: string;
@@ -38,6 +37,7 @@ interface IProps {
 
 const handleDeleteItem = (id: any) => {
     alert('id', id)
+    //courierStore.getCourierDeleteItem(id);
 }
 
 const renderItem = (item: any) => {
@@ -94,8 +94,7 @@ const renderItem = (item: any) => {
                     alignItems: "center",
                 }}
             >
-                <TouchableOpacity
-                    onPress={() => handleDeleteItem(item.id)}
+                <View
                     style={{
                         marginTop: 20,
                         marginBottom: 20,
@@ -115,7 +114,7 @@ const renderItem = (item: any) => {
                     >
                         Ожидает
                     </Text>
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity
                     onPress={() => handleDeleteItem(item.id)}
                     style={{
@@ -143,11 +142,16 @@ const renderItem = (item: any) => {
 export const ListItem = ({
                              item,
                              onPress,
+                             navigation,
+                             handleScanner
                          }: {
     item: IProps;
     onPress: () => void;
-    takeOrderType?: boolean;
+    navigation?: any;
+    handleScanner?: any;
 }) => {
+
+    console.log('item', item.products[0].id);
 
     const openMapUser = (address: any) => {
         showLocation({
@@ -303,18 +307,33 @@ export const ListItem = ({
             >
                 {item.comment}
             </Text>
-
             {
                 item.products.map(item => {
                     return renderItem(item)
                 })
             }
-
             <ActionButton
                 style={{marginTop: 24, width: WINDOW_WIDTH * 0.9}}
                 onPress={onPress}
                 text={'Заказ доставлен'}
                 textStyle={{fontSize: size12}}
+            />
+            <ActionButton
+                style={{
+                    marginTop: 24,
+                    width: WINDOW_WIDTH * 0.9,
+                    backgroundColor: '#0fa0a0',
+                }}
+                onPress={() => navigation.navigate('BarcodeScanner', {
+                    id: item.products[0].id,
+                    handleScanner: handleScanner
+                })}
+                text={'Отсканироват заказ'}
+                textStyle={{
+                    color: '#fff',
+                    fontFamily: MontserratSemiBold,
+                    fontSize: size12,
+                }}
             />
             <ActionButton
                 style={{

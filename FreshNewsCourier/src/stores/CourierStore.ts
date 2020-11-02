@@ -46,7 +46,7 @@ class CourierStore {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
@@ -63,6 +63,35 @@ class CourierStore {
     }
 
     @action
+    getCourierOrderConfirmation = async (id: number, code: number) => {
+        console.log('id', id);
+        console.log('code', code);
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        console.log(`${SERVER_BASE}/courier/orders/items/${id}?code=${code}`)
+
+        fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=${code}`, requestOptions)
+            .then(res => {
+                console.log('res getCourierOrderConfirmation', res)
+                if (res.status === 200) {
+                    this.getCourierData()
+                    this.getCourierDataAll()
+                }
+            })
+            .catch(error => console.log('error', error));
+    }
+
+    @action
     getCourierDataFinish = async (id: number) => {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
@@ -70,7 +99,7 @@ class CourierStore {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
 
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
@@ -78,6 +107,7 @@ class CourierStore {
 
         fetch(`${SERVER_BASE}/courier/orders/deliver/${id}`, requestOptions)
             .then(res => {
+                console.log('res getCourierDataFinish', res )
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
@@ -88,9 +118,6 @@ class CourierStore {
 
     @action
     getCourierCoordinate = async (id: number, lat: string, lon: string) => {
-        console.log('id', id);
-        console.log('lat', lat);
-        console.log('lon', lon);
         let getToken = await AsyncStorage.getItem('Token');
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -103,9 +130,26 @@ class CourierStore {
         };
         console.log(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`);
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
-            .then(res => {
-                console.log('getCourierCoordinate res', res)
-            })
+            .then(response => response.text())
+            .then(res => console.log('getCourierCoordinate, res', res))
+            .catch(error => console.log('error', error));
+    }
+
+    @action
+    getCourierDeleteItem = async (id: number) => {
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/courier/orders/items/${id}`, requestOptions)
+            .then(response => response.text())
+            .then(res => console.log('getCourierDeleteItem, res', res))
             .catch(error => console.log('error', error));
     }
 }

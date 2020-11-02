@@ -1,16 +1,16 @@
-import React, {useEffect} from 'react';
-import {Platform, View} from 'react-native';
+import React from 'react';
+import {Platform, SafeAreaView, View} from 'react-native';
 import {useFonts} from 'expo-font';
 import {AppLoading} from 'expo';
 import {NavigationProps} from './src/share/interfaces';
-import {createStackNavigator, TransitionPresets} from "react-navigation-stack";
+import {createStackNavigator} from "react-navigation-stack";
 import {createAppContainer} from "react-navigation";
 import LoginScreen from "./src/screens/login/LoginScreen";
 import CourierScreen from './src/screens/courier/CourierScreen';
 import ConfirmScreen from './src/screens/courier/ConfirmScreen';
 import CourierProfile from './src/screens/courier/components/CourierProfile';
 import TakeOrderScreen from './src/screens/courier/TakeOrderScreen';
-import AsyncStorage from "@react-native-community/async-storage";
+import BarcodeScanner from './src/screens/courier/BarcodeScanner';
 
 console.disableYellowBox = true;
 
@@ -50,6 +50,9 @@ const CourierStack = createStackNavigator(
         },
         TakeOrderScreen: {
             screen: TakeOrderScreen,
+        },
+        BarcodeScanner: {
+            screen: BarcodeScanner,
         },
     },
     {
@@ -102,13 +105,13 @@ export default function App(navigation: NavigationProps) {
                             </View>
                         )
                         : (
-                            <View
+                            <SafeAreaView
                                 style={{
                                     flex: 1,
                                 }}
                             >
                                 <AppContainer/>
-                            </View>
+                            </SafeAreaView>
                         )
                 }
             </>

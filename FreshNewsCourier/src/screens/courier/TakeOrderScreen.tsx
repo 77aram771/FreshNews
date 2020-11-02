@@ -1,8 +1,8 @@
 import React from 'react';
 import {
+    Platform,
     RefreshControl,
     SectionList,
-    StyleSheet,
     Text,
     TouchableOpacity,
     View,
@@ -13,7 +13,6 @@ import Header from '../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
     size16,
-    size34,
     WINDOW_WIDTH,
 } from '../../share/consts';
 import {LogoAndTitle} from '../../share/components/LogoAndTitle';
@@ -27,11 +26,7 @@ import {PulseIndicator} from 'react-native-indicators';
 export default class TakeOrderScreen extends React.Component<NavigationProps> {
 
     state = {
-        allData: [
-            {
-                data: []
-            }
-        ],
+        allData: null,
         refreshing: false
     }
 
@@ -106,7 +101,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                 style={{
                                     flex: 1,
                                     alignItems: 'center',
-                                    marginBottom: 120
+                                    marginBottom: Platform.OS === "ios" ? 120 : 0
                                 }}
                             >
                                 <Header
@@ -128,7 +123,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                     }
                                 />
                                 {
-                                    this.state.allData[0].data.length === 0
+                                    this.state.allData === null
                                         ? (
                                             <View
                                                 style={{
@@ -195,4 +190,3 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
         );
     }
 }
-const styles = StyleSheet.create({});

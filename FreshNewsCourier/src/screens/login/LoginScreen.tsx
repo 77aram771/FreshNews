@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     },
     phoneInputTrue: {
         marginTop: WINDOW_HEIGHT / 10,
+        width: WINDOW_WIDTH - 95,
         backgroundColor: '#F5F4F4',
         borderStyle: 'solid',
         borderWidth: 1,
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
     phoneInputFalse: {
         marginTop: WINDOW_HEIGHT / 10,
         backgroundColor: '#F5F4F4',
+        width: WINDOW_WIDTH - 95,
     },
     codeInputTrue: {
         marginTop: 14,

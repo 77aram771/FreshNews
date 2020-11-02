@@ -5,7 +5,9 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Image
+    Image,
+    Platform,
+    BackHandler
 } from 'react-native';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
@@ -26,18 +28,16 @@ import {NavigationEvents} from "react-navigation";
 import userInfo from '../../stores/UserInfo';
 import courierStore from '../../stores/CourierStore';
 import {PulseIndicator} from 'react-native-indicators';
+import * as Location from 'expo-location';
 
 @observer
 export default class CourierScreen extends React.Component<NavigationProps, any> {
 
     state = {
-        userData: [
-            {
-                title: 'Активный заказ',
-                data: []
-            },
-        ],
-        refreshing: false
+        userData: null,
+        refreshing: false,
+        location: null,
+        errorMassage: '',
     };
 
     async componentDidMount() {
@@ -45,12 +45,26 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         await courierStore.getCourierData();
         this.setState({
             refreshing: true
-        })
+        });
+        let {status} = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            this.setState({
+                errorMassage: 'Permission to access location was denied'
+            })
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        this.setState({
+            location: location.coords
+        });
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
             const firstItem = toJS(courierUserData)[0];
-            // const allData = toJS(courierUserData.shift())
+
+            const allData = toJS(courierUserData);
+            // console.log('allData', allData)
+            // console.log('toJS(courierUserData.shift())', toJS(courierUserData.shift()))
+
             let obj = [
                 {
                     title: 'Активный заказ',
@@ -65,26 +79,24 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                 userData: obj,
                 refreshing: false
             }, async () => {
-                // console.log('userData', this.state.userData[0].data[0].id);
-                await courierStore.getCourierCoordinate(87, '40.747890', '44.611112');
+                // console.log('this.state.userData[0].data.length', this.state.userData[0].data.length)
+                // await courierStore.getCourierCoordinate(87, this.state.location.latitude, this.state.location.longitude);
             })
-        }, 1000)
+        }, 1000);
     };
 
     async onRefresh() {
-
+        await userInfo.getUserData();
         await courierStore.getCourierData();
-
         this.setState({
             refreshing: true
         })
-
         setTimeout(() => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
 
             const firstItem = toJS(courierUserData)[0];
-            const allData = toJS(courierUserData.shift())
+            const allData = toJS(courierUserData.shift());
             let obj = [
                 {
                     title: 'Активный заказ',
@@ -98,9 +110,26 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
             this.setState({
                 userData: obj,
                 refreshing: false
-            }, () => console.log('userData', this.state.userData))
+            })
         }, 1000)
     };
+    
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    }
+
+    handleBackButtonClick = () => {
+        this.props.navigation.goBack('CourierScreen');
+        return true;
+    };
+
+    handleScanner(id: any, code: any) {
+        courierStore.getCourierOrderConfirmation(id, code)
+    }
 
     render() {
         return (
@@ -128,11 +157,11 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                 style={{
                                     flex: 1,
                                     alignItems: 'center',
-                                    marginBottom: 120
+                                    marginBottom: Platform.OS === "ios" ? 120 : 0
                                 }}
                             >
                                 <NavigationEvents
-                                    onDidFocus={() => this.onRefresh()}
+                                    onDidFocus={() => this.Refresh()}
                                 />
                                 <Header
                                     headerLeft={
@@ -163,9 +192,8 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         </TouchableOpacity>
                                     }
                                 />
-
                                 {
-                                    this.state.userData[0].data.length === 0
+                                    this.state.userData === null
                                         ? (
                                             <View
                                                 style={{
@@ -207,11 +235,21 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                                     width: WINDOW_WIDTH,
                                                 }}
                                             >
-                                                {
-                                                    Object.entries(this.state.userData[0]).map((item: any) => {
-                                                        console.log('item', item);
-                                                    })
-                                                }
+                                                {/*{*/}
+                                                {/*    this.state.userData[0].data.map((item: any) => {*/}
+                                                {/*        console.log('item', item);*/}
+                                                {/*        return (*/}
+                                                {/*            <ListItem*/}
+                                                {/*                item={item}*/}
+                                                {/*                onPress={() =>*/}
+                                                {/*                    this.props.navigation.navigate('ConfirmScreen', {*/}
+                                                {/*                        item: item,*/}
+                                                {/*                    })*/}
+                                                {/*                }*/}
+                                                {/*            />*/}
+                                                {/*        )*/}
+                                                {/*    })*/}
+                                                {/*}*/}
                                                 <SectionList
                                                     showsVerticalScrollIndicator={false}
                                                     sections={this.state.userData}
@@ -224,6 +262,8 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                                                     item: item,
                                                                 })
                                                             }
+                                                            navigation={this.props.navigation}
+                                                            handleScanner={this.handleScanner}
                                                         />
                                                     )}
                                                     renderSectionHeader={({section: {title}}) => (
