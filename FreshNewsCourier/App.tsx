@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Platform, SafeAreaView, View} from 'react-native';
 import {useFonts} from 'expo-font';
 import {AppLoading} from 'expo';
@@ -11,6 +11,7 @@ import ConfirmScreen from './src/screens/courier/ConfirmScreen';
 import CourierProfile from './src/screens/courier/components/CourierProfile';
 import TakeOrderScreen from './src/screens/courier/TakeOrderScreen';
 import BarcodeScanner from './src/screens/courier/BarcodeScanner';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 console.disableYellowBox = true;
 
@@ -85,6 +86,12 @@ const RootStack = createStackNavigator(
 const AppContainer = createAppContainer(RootStack);
 
 export default function App(navigation: NavigationProps) {
+
+    useEffect(() => {
+        (async ()=>{
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+        })()
+    })
 
     let [fontsLoaded] = useFonts(customFonts);
 

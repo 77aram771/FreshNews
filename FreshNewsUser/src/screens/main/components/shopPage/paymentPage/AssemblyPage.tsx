@@ -47,8 +47,8 @@ export default class AssemblyPage extends Component<NavigationProps> {
             date: NewDate,
         });
         const {cartUserInfo} = basketStore;
-        const {orderUserTime} = paymentStore;
-        orderUserTime()
+        // const {orderUserTime} = paymentStore;
+        // orderUserTime()
         this.setState({
             shopData: cartUserInfo
         });

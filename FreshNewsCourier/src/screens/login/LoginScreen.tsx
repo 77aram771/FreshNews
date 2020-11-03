@@ -88,7 +88,8 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                         isLoading: false
                     })
                 });
-        } else {
+        }
+        else {
             this.setState({
                 isLoading: false,
                 numberInput: true

@@ -16,6 +16,11 @@ import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
 import {PulseIndicator} from 'react-native-indicators';
 import authStore from "../../stores/AuthStore";
+import basketStore from "../../stores/BasketStore";
+import userInfo from "../../stores/UserInfo";
+import paymentStore from "../../stores/PaymentStore";
+import shopsStore from "../../stores/ShopsStore";
+import modalsStore from "../../stores/ModalsStore";
 
 @observer
 export default class LoginScreen extends React.Component<NavigationProps> {
@@ -109,13 +114,17 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                     AsyncStorage.setItem('Token', Token);
                     if (res.status === 200) {
                         authStore.getUser(true);
-                        this.props.navigation.navigate('MainScreen')
+                        basketStore.getCartUserInfo()
+                        userInfo.getUserData();
+                        paymentStore.orderUserTime();
+                        shopsStore.getAllOrders();
+                        // modalsStore.onChangeView();
+                        this.props.navigation.navigate('MainScreen');
                         this.setState({
                             smsStatus: false,
                             isLoading: false,
                         })
                     }
-                    // res.json()
                 })
                 .catch(e => {
                     console.error(e);

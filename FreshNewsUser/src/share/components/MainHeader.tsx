@@ -23,9 +23,6 @@ export default class MainHeader extends React.Component<MineHeaderProps> {
             <View
                 style={{
                     width: WINDOW_WIDTH,
-                    // borderColor: 'red',
-                    // borderStyle: "solid",
-                    // borderWidth: 1
                 }}
             >
                 <Header

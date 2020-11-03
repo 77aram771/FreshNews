@@ -49,7 +49,10 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
             this.setState({
                 allData: obj,
                 refreshing: false
-            }, () => console.log('allData', this.state.allData))
+            }, () => {
+                console.log('allData', this.state.allData[0].data.length)
+                // console.log('toJS(courierData)', toJS(courierData).data.length)
+            })
         }, 1000)
     }
 
@@ -123,23 +126,8 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                     }
                                 />
                                 {
-                                    this.state.allData === null
+                                    this.state.allData !== null
                                         ? (
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    alignContent: 'center',
-                                                    alignSelf: 'center',
-                                                }}
-                                            >
-                                                <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
-                                                    Нет активных заказов
-                                                </Text>
-                                            </View>
-                                        )
-                                        : (
                                             <View
                                                 style={{
                                                     width: WINDOW_WIDTH,
@@ -160,7 +148,8 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                                     )}
                                                     renderSectionHeader={({section: {title}}) => (
                                                         <View
-                                                            style={{backgroundColor: '#8CC83F', paddingVertical: size16}}>
+                                                            style={{backgroundColor: '#8CC83F', paddingVertical: size16}}
+                                                        >
                                                             <Text
                                                                 style={{
                                                                     fontFamily: MontserratSemiBold,
@@ -181,12 +170,25 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                                 />
                                             </View>
                                         )
+                                        : (
+                                            <View
+                                                style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    alignContent: 'center',
+                                                    alignSelf: 'center',
+                                                }}
+                                            >
+                                                <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
+                                                    Нет активных заказов
+                                                </Text>
+                                            </View>
+                                        )
                                 }
                             </View>
                         )
                 }
             </>
-
         );
     }
 }

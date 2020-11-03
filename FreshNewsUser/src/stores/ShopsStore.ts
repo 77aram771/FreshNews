@@ -87,9 +87,9 @@ class ShopsStore {
             .then((res) => {
                 console.log('getShop==---==', res)
                 this.getShopInfo = res.data;
-                if (this.getShopData.shops.data) {
-                    this.getShopLoader = false;
-                }
+                // if (this.getShopData.shops.data) {
+                //     this.getShopLoader = false;
+                // }
             })
             .catch((e) => {
                 console.log(e)

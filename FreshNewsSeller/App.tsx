@@ -61,11 +61,11 @@ const SellerStack = createStackNavigator(
 
 const RootStack = createStackNavigator(
     {
-        SellerStack: {
-            screen: SellerStack,
-        },
         Login: {
             screen: LoginStack,
+        },
+        SellerStack: {
+            screen: SellerStack,
         },
     },
     {

@@ -60,14 +60,15 @@ export default class PaymentPage extends Component<NavigationProps> {
                 value: toJS(item.address),
             })
         });
-        const {orderUserTime, time} = paymentStore;
-        orderUserTime();
-        toJS(time).map((item: any) => {
-            this.state.timeArray.push(({
-                label: toJS(item),
-                value: toJS(item),
-            }))
-        });
+        const {time} = paymentStore;
+        for (let key in toJS(time)) {
+            if (toJS(time).hasOwnProperty(key)) {
+                this.state.timeArray.push(({
+                    label: toJS(time)[key],
+                    value: toJS(time)[key],
+                }))
+            }
+        }
     }
 
     handleValidationAddress(value: string) {
@@ -226,8 +227,7 @@ export default class PaymentPage extends Component<NavigationProps> {
                     }
                 }
             });
-        }
-        else {
+        } else {
             this.setState({
                 selectAddress: '',
             })

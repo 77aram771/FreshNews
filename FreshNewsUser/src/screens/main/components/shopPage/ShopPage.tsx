@@ -29,6 +29,7 @@ import {PulseIndicator} from 'react-native-indicators';
 import Header from "../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
+import basketStore from "../../../../stores/BasketStore";
 
 @observer
 export default class ShopPage extends React.Component<NavigationProps> {
@@ -38,12 +39,14 @@ export default class ShopPage extends React.Component<NavigationProps> {
         refreshing: true
     }
 
-    async componentDidMount() {
-        this.setState({
-            refreshing: true
-        })
+    componentDidMount() {
+        // this.setState({
+        //     refreshing: true
+        // })
         setTimeout(() => {
             const {getShopInfo} = shopsStore;
+            const {getCartUserInfo} = basketStore;
+            getCartUserInfo();
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
@@ -59,24 +62,30 @@ export default class ShopPage extends React.Component<NavigationProps> {
     }
 
     onRefresh() {
-        const {getShopInfo} = shopsStore;
-        const {products} = toJS(getShopInfo);
-        let obj = [
-            {
-                title: 'Заголовок',
-                data: products
-            }
-        ]
-        this.setState({
-            shopData: obj
-        })
+        // this.setState({
+        //     refreshing: true
+        // })
+        setTimeout(() => {
+            const {getShopInfo} = shopsStore;
+            const {getCartUserInfo} = basketStore;
+            getCartUserInfo();
+            const {products} = toJS(getShopInfo);
+            let obj = [
+                {
+                    title: 'Заголовок',
+                    data: products
+                }
+            ]
+            this.setState({
+                shopData: obj,
+                refreshing: false
+            })
+        }, 1000)
     }
 
     render() {
 
-        const {onCloseSideBarAndShowAuth} = modalsStore;
-
-        const {getShopInfo, isShowShopInformation, onShowShopInformation, getShopItem, getShopItemInfo} = shopsStore;
+        const {getShopInfo, isShowShopInformation, onShowShopInformation, getShopItem} = shopsStore;
 
         const {background_image} = toJS(getShopInfo);
 

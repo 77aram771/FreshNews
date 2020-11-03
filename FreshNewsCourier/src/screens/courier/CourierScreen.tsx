@@ -7,7 +7,8 @@ import {
     View,
     Image,
     Platform,
-    BackHandler
+    BackHandler,
+    ScrollView
 } from 'react-native';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
@@ -29,23 +30,20 @@ import userInfo from '../../stores/UserInfo';
 import courierStore from '../../stores/CourierStore';
 import {PulseIndicator} from 'react-native-indicators';
 import * as Location from 'expo-location';
+import {NextListItem} from "./components/NextListItem";
 
 @observer
 export default class CourierScreen extends React.Component<NavigationProps, any> {
 
     state = {
-        userData: null,
+        ActiveOrder: null,
+        AllOrder: null,
         refreshing: false,
         location: null,
         errorMassage: '',
     };
 
     async componentDidMount() {
-        await userInfo.getUserData();
-        await courierStore.getCourierData();
-        this.setState({
-            refreshing: true
-        });
         let {status} = await Location.requestPermissionsAsync();
         if (status !== 'granted') {
             this.setState({
@@ -53,35 +51,49 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
             })
         }
         let location = await Location.getCurrentPositionAsync({});
+        await userInfo.getUserData();
+        await courierStore.getCourierData();
         this.setState({
+            refreshing: true,
             location: location.coords
         });
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
             const firstItem = toJS(courierUserData)[0];
-
-            const allData = toJS(courierUserData);
-            // console.log('allData', allData)
-            // console.log('toJS(courierUserData.shift())', toJS(courierUserData.shift()))
-
-            let obj = [
-                {
-                    title: 'Активный заказ',
-                    data: [firstItem]
-                },
-                {
-                    title: 'Следующий заказ',
-                    data: toJS(courierUserData)
-                }
-            ]
-            this.setState({
-                userData: obj,
-                refreshing: false
-            }, async () => {
-                // console.log('this.state.userData[0].data.length', this.state.userData[0].data.length)
-                // await courierStore.getCourierCoordinate(87, this.state.location.latitude, this.state.location.longitude);
-            })
+            const AllData = toJS(courierUserData).splice(0, 1);
+            if (toJS(courierUserData).length === 1) {
+                let obj = [firstItem];
+                this.setState({
+                    ActiveOrder: obj,
+                    refreshing: false,
+                }, async () => {
+                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
+                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                })
+            } else if (toJS(courierUserData).length >= 1) {
+                let obj1 = [
+                    {
+                        title: 'Следующий заказ',
+                        data: AllData
+                    }
+                ]
+                let obj2 = [firstItem];
+                this.setState({
+                    ActiveOrder: obj2,
+                    AllOrder: obj1,
+                    refreshing: false
+                }, async () => {
+                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
+                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                })
+            } else {
+                this.setState({
+                    ActiveOrder: null,
+                    AllOrder: null,
+                    refreshing: false
+                })
+            }
         }, 1000);
     };
 
@@ -89,38 +101,55 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         await userInfo.getUserData();
         await courierStore.getCourierData();
         this.setState({
-            refreshing: true
-        })
-        setTimeout(() => {
+            refreshing: true,
+        });
+        setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
-
             const firstItem = toJS(courierUserData)[0];
-            const allData = toJS(courierUserData.shift());
-            let obj = [
-                {
-                    title: 'Активный заказ',
-                    data: [firstItem]
-                },
-                {
-                    title: 'Следующий заказ',
-                    data: toJS(courierUserData)
-                }
-            ]
-            this.setState({
-                userData: obj,
-                refreshing: false
-            })
-        }, 1000)
+            const AllData = toJS(courierUserData).splice(0, 1);
+            if (toJS(courierUserData).length === 1) {
+                let obj = [firstItem];
+                this.setState({
+                    ActiveOrder: obj,
+                    refreshing: false
+                }, async () => {
+                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
+                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                })
+            } else if (toJS(courierUserData).length >= 1) {
+                let obj1 = [
+                    {
+                        title: 'Следующий заказ',
+                        data: AllData
+                    }
+                ]
+                let obj2 = [firstItem];
+                this.setState({
+                    ActiveOrder: obj2,
+                    AllOrder: obj1,
+                    refreshing: false
+                }, async () => {
+                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
+                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                })
+            } else {
+                this.setState({
+                    ActiveOrder: null,
+                    AllOrder: null,
+                    refreshing: false
+                })
+            }
+        }, 1000);
     };
-    
+
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
+    };
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    }
+    };
 
     handleBackButtonClick = () => {
         this.props.navigation.goBack('CourierScreen');
@@ -129,7 +158,7 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
 
     handleScanner(id: any, code: any) {
         courierStore.getCourierOrderConfirmation(id, code)
-    }
+    };
 
     render() {
         return (
@@ -157,12 +186,10 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                 style={{
                                     flex: 1,
                                     alignItems: 'center',
-                                    marginBottom: Platform.OS === "ios" ? 120 : 0
+                                    marginTop: Platform.OS === "ios" ? 0 : 40
                                 }}
                             >
-                                <NavigationEvents
-                                    onDidFocus={() => this.Refresh()}
-                                />
+                                <NavigationEvents onDidFocus={() => this.onRefresh()}/>
                                 <Header
                                     headerLeft={
                                         <TouchableOpacity
@@ -192,112 +219,125 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         </TouchableOpacity>
                                     }
                                 />
-                                {
-                                    this.state.userData === null
-                                        ? (
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                    justifyContent: "center",
-                                                    alignItems: 'center'
-                                                }}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        fontFamily: MontserratSemiBold,
-                                                        fontSize: size16,
-                                                        alignSelf: 'center'
-                                                    }}
-                                                >
-                                                    Нет активных заказов
-                                                </Text>
-                                                {/*<View*/}
-                                                {/*    style={{*/}
-                                                {/*        alignContent: "flex-end",*/}
-                                                {/*        alignSelf: "flex-end",*/}
-                                                {/*        borderWidth: 1,*/}
-                                                {/*        borderColor: 'red',*/}
-                                                {/*    }}*/}
-                                                {/*>*/}
-                                                {/*    <Image*/}
-                                                {/*        style={{*/}
-                                                {/*            width: 200,*/}
-                                                {/*            height: 200,*/}
-                                                {/*        }}*/}
-                                                {/*        source={require('../../../assets/images/background_not_item.png')}*/}
-                                                {/*    />*/}
-                                                {/*</View>*/}
-                                            </View>
-                                        )
-                                        : (
-                                            <View
-                                                style={{
-                                                    width: WINDOW_WIDTH,
-                                                }}
-                                            >
-                                                {/*{*/}
-                                                {/*    this.state.userData[0].data.map((item: any) => {*/}
-                                                {/*        console.log('item', item);*/}
-                                                {/*        return (*/}
-                                                {/*            <ListItem*/}
-                                                {/*                item={item}*/}
-                                                {/*                onPress={() =>*/}
-                                                {/*                    this.props.navigation.navigate('ConfirmScreen', {*/}
-                                                {/*                        item: item,*/}
-                                                {/*                    })*/}
-                                                {/*                }*/}
-                                                {/*            />*/}
-                                                {/*        )*/}
-                                                {/*    })*/}
-                                                {/*}*/}
-                                                <SectionList
-                                                    showsVerticalScrollIndicator={false}
-                                                    sections={this.state.userData}
-                                                    keyExtractor={(item: any, index: any) => item + index}
-                                                    renderItem={({item}) => (
-                                                        <ListItem
-                                                            item={item}
-                                                            onPress={() =>
-                                                                this.props.navigation.navigate('ConfirmScreen', {
-                                                                    item: item,
-                                                                })
-                                                            }
-                                                            navigation={this.props.navigation}
-                                                            handleScanner={this.handleScanner}
-                                                        />
-                                                    )}
-                                                    renderSectionHeader={({section: {title}}) => (
-                                                        <View
-                                                            style={{
-                                                                backgroundColor: '#F5F4F4',
-                                                                paddingVertical: size16
-                                                            }}
-                                                        >
-                                                            <Text
+                                <ScrollView
+                                    style={{
+                                        flex: 1,
+                                        width: WINDOW_WIDTH,
+                                    }}
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.refreshing}
+                                            onRefresh={this.onRefresh.bind(this)}
+                                        />
+                                    }
+                                >
+                                    {
+                                        this.state.ActiveOrder !== null
+                                            ? (
+                                                <View>
+                                                    {
+                                                        this.state.ActiveOrder.map((item: any) => {
+                                                            return (
+                                                                <View key={item.id}>
+                                                                    <View
+                                                                        style={{
+                                                                            backgroundColor: '#F5F4F4',
+                                                                            paddingVertical: size16
+                                                                        }}
+                                                                    >
+                                                                        <Text
+                                                                            style={{
+                                                                                fontFamily: MontserratSemiBold,
+                                                                                fontSize: size16,
+                                                                                paddingHorizontal: size16,
+                                                                            }}
+                                                                        >
+                                                                            {'Активный заказ'}
+                                                                        </Text>
+                                                                    </View>
+                                                                    <ListItem
+                                                                        item={item}
+                                                                        onPress={() => this.props.navigation.navigate('ConfirmScreen', {
+                                                                            item: item,
+                                                                        })}
+                                                                        navigation={this.props.navigation}
+                                                                        handleScanner={this.handleScanner}
+                                                                    />
+                                                                </View>
+                                                            )
+                                                        })
+                                                    }
+                                                    <SectionList
+                                                        showsVerticalScrollIndicator={false}
+                                                        sections={this.state.AllOrder}
+                                                        keyExtractor={(item: any, index: any) => item + index}
+                                                        renderItem={({item}) => (
+                                                            <NextListItem
+                                                                item={item}
+                                                            />
+                                                        )}
+                                                        renderSectionHeader={({section: {title}}) => (
+                                                            <View
                                                                 style={{
-                                                                    fontFamily: MontserratSemiBold,
-                                                                    fontSize: size16,
-                                                                    paddingHorizontal: size16,
+                                                                    backgroundColor: '#F5F4F4',
+                                                                    paddingVertical: size16
                                                                 }}
                                                             >
-                                                                {title}
-                                                            </Text>
-                                                        </View>
-                                                    )}
-                                                    refreshControl={
-                                                        <RefreshControl
-                                                            refreshing={this.state.refreshing}
-                                                            onRefresh={this.onRefresh.bind(this)}
-                                                        />
-                                                    }
-                                                />
-                                            </View>
-                                        )
-                                }
+                                                                <Text
+                                                                    style={{
+                                                                        fontFamily: MontserratSemiBold,
+                                                                        fontSize: size16,
+                                                                        paddingHorizontal: size16,
+                                                                    }}
+                                                                >
+                                                                    {title}
+                                                                </Text>
+                                                            </View>
+                                                        )}
+                                                    />
+                                                </View>
+                                            )
+                                            : (
+                                                <View
+                                                    style={{
+                                                        flex: 1,
+                                                        justifyContent: "center",
+                                                        alignItems: 'center'
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={{
+                                                            fontFamily: MontserratSemiBold,
+                                                            fontSize: size16,
+                                                            alignSelf: 'center'
+                                                        }}
+                                                    >
+                                                        Нет активных заказов
+                                                    </Text>
+                                                    {/*<View*/}
+                                                    {/*    style={{*/}
+                                                    {/*        alignContent: "flex-end",*/}
+                                                    {/*        alignSelf: "flex-end",*/}
+                                                    {/*        borderWidth: 1,*/}
+                                                    {/*        borderColor: 'red',*/}
+                                                    {/*    }}*/}
+                                                    {/*>*/}
+                                                    {/*    <Image*/}
+                                                    {/*        style={{*/}
+                                                    {/*            width: 200,*/}
+                                                    {/*            height: 200,*/}
+                                                    {/*        }}*/}
+                                                    {/*        source={require('../../../assets/images/background_not_item.png')}*/}
+                                                    {/*    />*/}
+                                                    {/*</View>*/}
+                                                </View>
+                                            )
+                                    }
+                                </ScrollView>
                             </View>
                         )
                 }
             </>
-        );
-    };
+        )
+    }
 }

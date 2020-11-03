@@ -11,6 +11,7 @@ import ShopAssortment from "./ShopAssortment";
 import AllCollectedOrders from "./AllCollectedOrders";
 import {MontserratRegular} from "../../share/fonts";
 import {PulseIndicator} from 'react-native-indicators';
+import sellerStore from '../../stores/SellerStore';
 
 @observer
 export default class HomeSellerPage extends Component<NavigationProps> {
@@ -62,32 +63,40 @@ export default class HomeSellerPage extends Component<NavigationProps> {
         show2: true,
         show3: true,
         show4: true,
-        refreshing: false
-    }
+        refreshing: false,
+        orders: null,
+        products: null
+    };
+
+    componentDidMount() {
+        sellerStore.getUserData();
+
+        console.log('sellerData', sellerStore.sellerData);
+    };
 
     handleShow1() {
         this.setState({
             show1: !this.state.show1
         })
-    }
+    };
 
     handleShow2() {
         this.setState({
             show2: !this.state.show2
         })
-    }
+    };
 
     handleShow3() {
         this.setState({
             show3: !this.state.show3
         })
-    }
+    };
 
     handleShow4() {
         this.setState({
             show4: !this.state.show4
         })
-    }
+    };
 
     onRefresh() {
         this.setState({
@@ -416,5 +425,5 @@ export default class HomeSellerPage extends Component<NavigationProps> {
                 }
             </>
         )
-    }
+    };
 }

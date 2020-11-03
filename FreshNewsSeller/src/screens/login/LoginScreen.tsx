@@ -5,7 +5,6 @@ import {
     View,
     Image,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
 import {MontserratRegular} from '../../share/fonts';
@@ -15,6 +14,7 @@ import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
 import {PulseIndicator} from 'react-native-indicators';
+import AsyncStorage from '@react-native-community/async-storage';
 
 @observer
 export default class LoginScreen extends React.Component<NavigationProps> {
@@ -36,26 +36,32 @@ export default class LoginScreen extends React.Component<NavigationProps> {
             showMessage: false,
             disabled: false,
         };
-    }
+    };
 
-    // async componentDidMount() {
-    //     let getToken = await AsyncStorage.getItem('Token')
-    //     if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
-    //         console.log('this.state.client', this.state.client)
-    //         this.state.client ? this.props.navigation.navigate('MainScreen') : this.props.navigation.navigate('CourierScreen');
-    //     }
-    // }
+    async componentDidMount() {
+        let getToken = await AsyncStorage.getItem('Token');
+        console.log('getToken', getToken);
+        if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
+            this.props.navigation.navigate('SellerStack');
+        }
+    }
 
     componentWillUnmount() {
         this.setState({
+            value: '',
+            formattedValue: '',
             confirmationPin: '',
             showConfirmScreen: false,
             isLoading: false,
             numberInput: false,
             codeInput: false,
-            smsStatus: false
+            smsStatus: false,
+            client: true,
+            valid: false,
+            showMessage: false,
+            disabled: false,
         })
-    }
+    };
 
     submitPhoneNumber() {
         const checkValid = this.phoneInput.current?.isValidNumber(this.state.value);
@@ -94,7 +100,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
         this.setState({
             confirmationPin: String(text)
         })
-    }
+    };
 
     async submitPin() {
         if (String(this.state.confirmationPin).length === 4) {
@@ -107,15 +113,12 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                     const Token = JSON.stringify(res.data.token)
                     AsyncStorage.setItem('Token', Token)
                     if (res.status === 200) {
-                        this.state.client
-                            ? this.props.navigation.navigate('MainScreen')
-                            : this.props.navigation.navigate('CourierScreen');
+                        this.props.navigation.navigate('SellerStack')
                         this.setState({
                             smsStatus: false,
                             isLoading: false,
                         })
                     }
-                    // res.json()
                 })
                 .catch(e => {
                     console.error(e);
@@ -172,8 +175,8 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                             ? (
                                 <View
                                     style={{
-                                        marginTop: 20
-
+                                        marginTop: 30,
+                                        height: 100
                                     }}
                                 >
                                     <PulseIndicator
@@ -232,7 +235,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                 </Text>
             </View>
         );
-    }
+    };
 }
 
 const styles = StyleSheet.create({
@@ -257,6 +260,7 @@ const styles = StyleSheet.create({
     },
     phoneInputTrue: {
         marginTop: WINDOW_HEIGHT / 10,
+        width: WINDOW_WIDTH - 95,
         backgroundColor: '#F5F4F4',
         borderStyle: 'solid',
         borderWidth: 1,
@@ -265,6 +269,7 @@ const styles = StyleSheet.create({
     phoneInputFalse: {
         marginTop: WINDOW_HEIGHT / 10,
         backgroundColor: '#F5F4F4',
+        width: WINDOW_WIDTH - 95,
     },
     codeInputTrue: {
         marginTop: 14,

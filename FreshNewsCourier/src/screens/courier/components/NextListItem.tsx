@@ -36,122 +36,17 @@ interface IProps {
 }
 
 const handleDeleteItem = (id: any) => {
-    courierStore.getCourierDeleteItem(id);
+    alert('id', id)
+    //courierStore.getCourierDeleteItem(id);
 }
 
-const renderItem = (item: any) => {
-    return (
-        <View
-            key={item.id}
-            style={{
-                flexDirection: 'row',
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                width: '100%',
-                marginBottom: 25,
-                borderBottomColor: '#d4cece',
-                borderBottomWidth: 1,
-                borderStyle: 'solid'
-            }}
-        >
-            <View
-                style={{
-                    width: '50%',
-                }}
-            >
-                <Text style={{fontFamily: MontserratMedium, fontSize: size14}}>
-                    {item.name}
-                </Text>
-            </View>
-            <View
-                style={{
-                    width: '25%',
-                    alignItems: "flex-end",
-                    justifyContent: 'center'
-                }}
-            >
-                <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
-                    {item.weight} <Text style={{color: '#8CC83F'}}>г</Text>
-                </Text>
-            </View>
-            <View
-                style={{
-                    width: '25%',
-                    alignItems: "flex-end",
-                    justifyContent: 'center'
-                }}
-            >
-                <Text style={{fontFamily: MontserratSemiBold, fontSize: size14}}>
-                    {Math.ceil(item.price)} <Text style={{color: '#8CC83F'}}>₽</Text>
-                </Text>
-            </View>
-            <View
-                style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                <View
-                    style={{
-                        marginTop: 20,
-                        marginBottom: 20,
-                        borderRadius: 5,
-                        backgroundColor: '#D96363',
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 4
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontFamily: MontserratBold,
-                            fontSize: size14,
-                            color: '#fff',
-                        }}
-                    >
-                        Ожидает
-                    </Text>
-                </View>
-                <TouchableOpacity
-                    onPress={() => handleDeleteItem(item.id)}
-                    style={{
-                        marginTop: 20,
-                        marginBottom: 20
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontFamily: MontserratRegular,
-                            fontSize: size14,
-                            color: '#8E8E8E',
-                            textDecorationLine: 'underline',
-                            paddingTop: 8,
-                        }}
-                    >
-                        Удалить
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    )
-};
-
-export const ListItem = ({
+export const NextListItem = ({
                              item,
-                             onPress,
-                             navigation,
-                             handleScanner
                          }: {
     item: IProps;
-    onPress: () => void;
-    navigation?: any;
-    handleScanner?: any;
 }) => {
 
-    console.log('item.products[0].id', item.products[0].id);
-    console.log('item', item.id);
+    // console.log('item', item);
 
     const openMapUser = (address: any) => {
         showLocation({
@@ -307,38 +202,10 @@ export const ListItem = ({
             >
                 {item.comment}
             </Text>
-            {
-                item.products.map(item => {
-                    return renderItem(item)
-                })
-            }
-            <ActionButton
-                style={{marginTop: 24, width: WINDOW_WIDTH * 0.9}}
-                onPress={onPress}
-                text={'Заказ доставлен'}
-                textStyle={{fontSize: size12}}
-            />
-            <ActionButton
-                style={{
-                    marginTop: 24,
-                    width: WINDOW_WIDTH * 0.9,
-                    backgroundColor: '#0fa0a0',
-                }}
-                onPress={() => navigation.navigate('BarcodeScanner', {
-                    id: item.id,
-                    handleScanner: handleScanner
-                })}
-                text={'Отсканироват заказ'}
-                textStyle={{
-                    color: '#fff',
-                    fontFamily: MontserratSemiBold,
-                    fontSize: size12,
-                }}
-            />
             <ActionButton
                 style={{
                     paddingVertical: 16,
-                    backgroundColor: '#F5F4F4',
+                    backgroundColor: '#ADADAD',
                     borderRadius: 10,
                     width: WINDOW_WIDTH * 0.9,
                     alignItems: 'center',
@@ -347,7 +214,7 @@ export const ListItem = ({
                 onPress={() => alert('Связаться с менеджером')}
                 text={'Связаться с менеджером'}
                 textStyle={{
-                    color: '#000000',
+                    color: '#fff',
                     fontFamily: MontserratSemiBold,
                     fontSize: size12,
                 }}

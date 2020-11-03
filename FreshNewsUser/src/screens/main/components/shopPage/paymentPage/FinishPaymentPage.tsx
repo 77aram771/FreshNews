@@ -121,14 +121,8 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 })
             }
         });
-        const {orderUserTime, time} = paymentStore;
-        orderUserTime();
-        toJS(time).map((item: any) => {
-            this.state.timeArray.push(({
-                label: toJS(item),
-                value: toJS(item),
-            }))
-        });
+        // const {orderUserTime} = paymentStore;
+        // orderUserTime();
     }
 
     handleValidationAddress(value: string) {
