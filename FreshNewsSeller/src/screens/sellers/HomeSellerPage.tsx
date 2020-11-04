@@ -3,18 +3,19 @@ import {View, Text, TouchableOpacity, ScrollView, RefreshControl} from "react-na
 import {size34, WINDOW_WIDTH} from "../../share/consts";
 import {LogoAndTitle} from "../../share/components/LogoAndTitle";
 import Feather from "react-native-vector-icons/Feather";
-import {NavigationProps} from "../../share/interfaces";
 import {observer} from "mobx-react";
 import DeliveryOrders from "./DeliveryOrders";
 import CollectedOrders from "./CollectedOrders";
 import ShopAssortment from "./ShopAssortment";
 import AllCollectedOrders from "./AllCollectedOrders";
 import {MontserratRegular} from "../../share/fonts";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from '../../stores/SellerStore';
 
 @observer
-export default class HomeSellerPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class HomeSellerPage extends Component<any, any> {
 
     static navigationOptions = ({navigation}: { navigation: any }) => {
         return {
@@ -46,23 +47,20 @@ export default class HomeSellerPage extends Component<NavigationProps> {
                     />
                 </TouchableOpacity>
             ),
-
             headerRight: () => (
                 <TouchableOpacity
                     onPress={() => alert('Тест!')}
                     style={{marginRight: 8}}
-                >
-
-                </TouchableOpacity>
+                />
             )
         };
     };
 
     state = {
-        show1: true,
-        show2: true,
-        show3: true,
-        show4: true,
+        show1: false,
+        show2: false,
+        show3: false,
+        show4: false,
         refreshing: false,
         orders: null,
         products: null
@@ -136,7 +134,8 @@ export default class HomeSellerPage extends Component<NavigationProps> {
                         : (
                             <ScrollView
                                 style={{
-                                    flex: 1
+                                    flex: 1,
+                                    backgroundColor: '#fff'
                                 }}
                                 refreshControl={
                                     <RefreshControl

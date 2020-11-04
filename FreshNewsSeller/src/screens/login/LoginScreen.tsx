@@ -42,7 +42,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
         let getToken = await AsyncStorage.getItem('Token');
         console.log('getToken', getToken);
         if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
-            this.props.navigation.navigate('SellerStack');
+            this.props.navigation.navigate('Home');
         }
     }
 
@@ -113,7 +113,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                     const Token = JSON.stringify(res.data.token)
                     AsyncStorage.setItem('Token', Token)
                     if (res.status === 200) {
-                        this.props.navigation.navigate('SellerStack')
+                        this.props.navigation.navigate('Home')
                         this.setState({
                             smsStatus: false,
                             isLoading: false,
@@ -243,7 +243,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 30,
+        // marginHorizontal: 30,
+        backgroundColor: '#fff'
     },
     licenseText: {
         fontFamily: MontserratRegular,
