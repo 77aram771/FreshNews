@@ -10,81 +10,18 @@ import {MontserratSemiBold} from "../../share/fonts";
 export default class ShopAssortment extends Component<NavigationProps, any> {
 
     state = {
-        allData: [
-            {
-                id: 1,
-                title: 'Овощи',
-                data: [
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 12
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 211
-                    },
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 5
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 6
-                    },
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 88
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 200
-                    },
-                ]
-            },
-            {
-                id: 2,
-                title: 'Фрукты',
-                data: [
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 5
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 77
-                    },
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 3
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 888
-                    },
-                    {
-                        img: require('../../../assets/images/cucumber.png'),
-                        title: 'Помидоры «Бакинские»',
-                        quantity: 200
-                    },
-                    {
-                        img: require('../../../assets/images/onion.png'),
-                        title: 'Дыня сладкая узбекская',
-                        quantity: 444
-                    },
-                ]
-            }
+        allData: null,
+    }
 
-        ],
+    componentDidMount() {
+        this.setState({
+            allData: [
+                {
+                    title: 'Овощи',
+                    data: this.props.products
+                },
+            ]
+        })
     }
 
     render() {
@@ -98,20 +35,26 @@ export default class ShopAssortment extends Component<NavigationProps, any> {
                     paddingTop: 12,
                 }}
             >
-                <SuperGridSectionList
-                    itemDimension={WINDOW_WIDTH / 2.5}
-                    sections={this.state.allData}
-                    style={{
-                        marginBottom: 15
-                    }}
-                    renderItem={({item: {img, title, quantity}}: any) => (
-                        <ShopAssortmentItem img={img} number={quantity} title={title}/>
-                    )}
-                    renderSectionHeader={({section}: any) => (
-                        <Text style={styles.sectionHeader}>{section.title}</Text>
-                    )}
-                />
-
+                {
+                    this.state.allData !== null
+                        ? (
+                            <SuperGridSectionList
+                                itemDimension={WINDOW_WIDTH / 2.5}
+                                sections={this.state.allData}
+                                style={{marginBottom: 15}}
+                                renderItem={(item: any) => {
+                                    console.log('item', item)
+                                    return (
+                                        <ShopAssortmentItem img={item.item.image} number={item.quantity} title={item.item.name}/>
+                                    )
+                                }}
+                                renderSectionHeader={({section}: any) => (
+                                    <Text style={styles.sectionHeader}>{section.title}</Text>
+                                )}
+                            />
+                        )
+                        : <View/>
+                }
                 <TouchableOpacity
                     onPress={() => alert('Тест!')}
                     style={{

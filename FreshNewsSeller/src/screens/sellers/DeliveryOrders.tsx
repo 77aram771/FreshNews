@@ -15,8 +15,19 @@ export default class DeliveryOrders extends Component<NavigationProps, any> {
                     paddingTop: 12
                 }}
             >
-                <DeliveryOrdersItem navigation={this.props.navigation} number={4444} color={'#d96363'} time={3}/>
-                <DeliveryOrdersItem navigation={this.props.navigation} number={3427} color={'#8cc83f'} time={10}/>
+                {
+                    this.props.startOrder.map((item: any, index: any) => {
+                        console.log('item', item);
+                        return (
+                            <View key={index}>
+                                <DeliveryOrdersItem
+                                    navigation={this.props.navigation}
+                                    number={item.id}
+                                />
+                            </View>
+                        )
+                    })
+                }
             </View>
         )
     }

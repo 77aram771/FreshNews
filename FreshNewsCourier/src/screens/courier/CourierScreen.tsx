@@ -68,7 +68,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     ActiveOrder: obj,
                     refreshing: false,
                 }, async () => {
-                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
                     await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                 })
             } else if (toJS(courierUserData).length >= 1) {
@@ -84,7 +83,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     AllOrder: obj1,
                     refreshing: false
                 }, async () => {
-                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
                     await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                 })
             } else {
@@ -114,7 +112,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     ActiveOrder: obj,
                     refreshing: false
                 }, async () => {
-                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
                     await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                 })
             } else if (toJS(courierUserData).length >= 1) {
@@ -130,7 +127,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     AllOrder: obj1,
                     refreshing: false
                 }, async () => {
-                    console.log('this.state.ActiveOrder.id', this.state.ActiveOrder[0].id);
                     await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                 })
             } else {

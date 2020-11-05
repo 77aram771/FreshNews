@@ -16,8 +16,15 @@ export default class CollectedOrders extends Component<NavigationProps, any>{
                     paddingTop: 12
                 }}
             >
-                <CollectedOrdersItem number={3425} text={'Курьер спешит к вам'}/>
-                <CollectedOrdersItem number={3427} text={'Забрал заказ'}/>
+                {
+                    this.props.buildOrder.map((item: any, index: any) => {
+                        return (
+                            <View key={index}>
+                                <CollectedOrdersItem name={item.name} status={item.status}/>
+                            </View>
+                        )
+                    })
+                }
             </View>
         )
     }

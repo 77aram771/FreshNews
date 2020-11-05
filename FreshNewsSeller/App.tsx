@@ -13,7 +13,8 @@ import {DrawerActions} from '@react-navigation/native';
 import {LogoAndTitle} from './src/share/components/LogoAndTitle';
 import {TouchableOpacity, View} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
-import {size34} from "./src/share/consts";
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {size34, size16} from "./src/share/consts";
 
 console.disableYellowBox = true;
 
@@ -84,14 +85,43 @@ const SellerStackScreen = ({navigation}: any) => {
                 name="DeliveryOrdersScreen"
                 component={DeliveryOrdersScreen}
                 options={{
-                    title: ''
+                    title: '',
+                    headerStyle: {
+                        height: 120
+                    },
+                    headerTitle: () => (
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                alignSelf: "center",
+                            }}
+                        >
+                            <LogoAndTitle courier={true}/>
+                        </View>
+                    ),
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            style={{
+                                marginLeft: 15,
+                            }}
+                            onPress={() => navigation.navigate('HomeSellerPage')}
+                        >
+                            <AntDesign
+                                style={{paddingLeft: 8}}
+                                name={'left'}
+                                size={size16}
+                                color={'#464646'}
+                            />
+                        </TouchableOpacity>
+                    ),
                 }}
             />
             <SellerStack.Screen
                 name="ScannerScreen"
                 component={ScannerScreen}
                 options={{
-                    title: ''
+                    headerShown: false
                 }}
             />
         </SellerStack.Navigator>

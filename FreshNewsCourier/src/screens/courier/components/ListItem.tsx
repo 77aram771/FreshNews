@@ -51,7 +51,7 @@ const renderItem = (item: any) => {
                 marginBottom: 25,
                 borderBottomColor: '#d4cece',
                 borderBottomWidth: 1,
-                borderStyle: 'solid'
+                borderStyle: 'solid',
             }}
         >
             <View
@@ -93,27 +93,27 @@ const renderItem = (item: any) => {
                     alignItems: "center",
                 }}
             >
-                <View
-                    style={{
-                        marginTop: 20,
-                        marginBottom: 20,
-                        borderRadius: 5,
-                        backgroundColor: '#D96363',
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 4
-                    }}
-                >
-                    <Text
-                        style={{
-                            fontFamily: MontserratBold,
-                            fontSize: size14,
-                            color: '#fff',
-                        }}
-                    >
-                        Ожидает
-                    </Text>
-                </View>
+                {/*<View*/}
+                {/*    style={{*/}
+                {/*        marginTop: 20,*/}
+                {/*        marginBottom: 20,*/}
+                {/*        borderRadius: 5,*/}
+                {/*        backgroundColor: '#D96363',*/}
+                {/*        justifyContent: "center",*/}
+                {/*        alignItems: "center",*/}
+                {/*        padding: 4*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <Text*/}
+                {/*        style={{*/}
+                {/*            fontFamily: MontserratBold,*/}
+                {/*            fontSize: size14,*/}
+                {/*            color: '#fff',*/}
+                {/*        }}*/}
+                {/*    >*/}
+                {/*        Ожидает*/}
+                {/*    </Text>*/}
+                {/*</View>*/}
                 <TouchableOpacity
                     onPress={() => handleDeleteItem(item.id)}
                     style={{
@@ -150,9 +150,7 @@ export const ListItem = ({
     handleScanner?: any;
 }) => {
 
-    console.log('item.products[0].id', item.products[0].id);
-    console.log('item', item.id);
-
+    console.log('item id', item.id)
     const openMapUser = (address: any) => {
         showLocation({
             latitude: 38.8976763,
@@ -220,7 +218,6 @@ export const ListItem = ({
             >
                 Показать на карте
             </Text>
-            {/*<PhoneComponent phone={item.phone}/>*/}
             <View
                 style={{
                     height: 1,
@@ -312,29 +309,67 @@ export const ListItem = ({
                     return renderItem(item)
                 })
             }
-            <ActionButton
-                style={{marginTop: 24, width: WINDOW_WIDTH * 0.9}}
-                onPress={onPress}
-                text={'Заказ доставлен'}
-                textStyle={{fontSize: size12}}
-            />
-            <ActionButton
+            <View
                 style={{
-                    marginTop: 24,
-                    width: WINDOW_WIDTH * 0.9,
-                    backgroundColor: '#0fa0a0',
+                    width: '100%',
+                    justifyContent: "center",
+                    alignItems: "center"
                 }}
-                onPress={() => navigation.navigate('BarcodeScanner', {
-                    id: item.id,
-                    handleScanner: handleScanner
-                })}
-                text={'Отсканироват заказ'}
-                textStyle={{
-                    color: '#fff',
-                    fontFamily: MontserratSemiBold,
-                    fontSize: size12,
-                }}
-            />
+            >
+
+                {
+                    item.products[0].status === 5
+                        ? (
+                            <>
+                                <Text
+                                    style={{
+                                        fontFamily: MontserratBold,
+                                        color: 'red',
+                                        fontSize: 20
+                                    }}
+                                >
+                                    Не отсканирован
+                                </Text>
+                                <ActionButton
+                                    style={{
+                                        marginTop: 24,
+                                        width: WINDOW_WIDTH * 0.9,
+                                        backgroundColor: '#0fa0a0',
+                                    }}
+                                    onPress={() => navigation.navigate('BarcodeScanner', {
+                                        id: item.products[0].id,
+                                        handleScanner: handleScanner
+                                    })}
+                                    text={'Отсканироват заказ'}
+                                    textStyle={{
+                                        color: '#fff',
+                                        fontFamily: MontserratSemiBold,
+                                        fontSize: size12,
+                                    }}
+                                />
+                            </>
+                        )
+                        : (
+                            <>
+                                <Text
+                                    style={{
+                                        fontFamily: MontserratBold,
+                                        color: '#8CC83F',
+                                        fontSize: 20
+                                    }}
+                                >
+                                    Отсканирован
+                                </Text>
+                                <ActionButton
+                                    style={{marginTop: 24, width: WINDOW_WIDTH * 0.9}}
+                                    onPress={onPress}
+                                    text={'Заказ доставлен'}
+                                    textStyle={{fontSize: size12}}
+                                />
+                            </>
+                        )
+                }
+            </View>
             <ActionButton
                 style={{
                     paddingVertical: 16,

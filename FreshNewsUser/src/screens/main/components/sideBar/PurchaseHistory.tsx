@@ -36,6 +36,7 @@ export default class PurchaseHistory extends Component<NavigationProps> {
     }
 
     renderItem(item: any) {
+        console.log('item', toJS(item));
         if (item.status === 1) {
             return (
                 <TouchableOpacity
@@ -101,6 +102,95 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                         >
                             <Text>Собирается</Text>
                         </View>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+        else if (item.status === 3) {
+            return (
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
+                        id: item.id,
+                        transaction: item.transaction,
+                    })}
+                    style={{
+                        width: "100%",
+                        backgroundColor: '#F5F4F4',
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column",
+                        borderRadius: 10,
+                        paddingRight: 20,
+                        paddingLeft: 20,
+                        marginBottom: 15
+                    }}
+                    key={item.id}
+                >
+                    <View
+                        style={{
+                            width: "100%",
+                            height: 50,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: "center"
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: MontserratRegular,
+                                    color: '#000'
+                                }}
+                            >
+                                Заказ {' '}
+                                <Text
+                                    style={{
+                                        fontWeight: "bold",
+                                        fontSize: 16,
+                                        fontFamily: MontserratBold,
+                                        color: '#000'
+                                    }}
+                                >
+                                    {item.id}
+                                </Text>
+                            </Text>
+                        </View>
+                        {
+                            item.transaction === null
+                                ? (
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: 'center',
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Text>
+                                            Ожидает оплаты
+                                        </Text>
+                                    </View>
+                                )
+                                : (
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: 'center',
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Text>
+                                            Оплачино
+                                        </Text>
+                                    </View>
+                                )
+                        }
+
                     </View>
                 </TouchableOpacity>
             )

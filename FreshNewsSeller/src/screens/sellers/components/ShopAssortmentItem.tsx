@@ -3,7 +3,7 @@ import {View, Text, Image, TouchableOpacity} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratMedium, MontserratSemiBold} from "../../../share/fonts";
 
-export const ShopAssortmentItem = ({title, number, img}: { title: string, number: number, img: string }) => {
+export const ShopAssortmentItem = ({title, number, image}: { title: string, number: number, image: string }) => {
 
     return (
         <TouchableOpacity
@@ -24,7 +24,7 @@ export const ShopAssortmentItem = ({title, number, img}: { title: string, number
             }}
         >
             <Image
-                source={img}
+                source={image}
                 style={{
                     height: 118
                 }}

@@ -12,6 +12,7 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import ShopMarket from './components/shops/ShopMarket';
+import AsyncStorage from "@react-native-community/async-storage";
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language : "ru"});
 
@@ -24,12 +25,15 @@ export default class MainScreen extends React.Component<NavigationProps> {
         errorMessage: ""
     };
 
-    componentDidMount() {
-        basketStore.getCartUserInfo()
-        userInfo.getUserData();
-        paymentStore.orderUserTime();
-        shopsStore.getAllOrders();
-        this.getLocationAsync();
+   async componentDidMount() {
+        let getToken = await AsyncStorage.getItem('Token')
+        if(getToken !== null) {
+            basketStore.getCartUserInfo()
+            userInfo.getUserData();
+            paymentStore.orderUserTime();
+            shopsStore.getAllOrders();
+            this.getLocationAsync();
+        }
     };
 
     getLocationAsync = async () => {

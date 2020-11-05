@@ -16,13 +16,15 @@ export default class AllCollectedOrders extends Component<NavigationProps, any>{
                     paddingTop: 12
                 }}
             >
-                <AllCollectedOrdersItem number={3425}/>
-                <AllCollectedOrdersItem number={3426}/>
-                <AllCollectedOrdersItem number={3427}/>
-                <AllCollectedOrdersItem number={3428}/>
-                <AllCollectedOrdersItem number={3429}/>
-                <AllCollectedOrdersItem number={3430}/>
-                <AllCollectedOrdersItem number={3430}/>
+                {
+                    this.props.finishOrders.map((item: any, index: any) => {
+                        return (
+                            <View key={index}>
+                                <AllCollectedOrdersItem name={item.name}/>
+                            </View>
+                        )
+                    })
+                }
             </View>
         )
     }

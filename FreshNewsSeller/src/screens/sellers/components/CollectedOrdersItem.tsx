@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 
-export const CollectedOrdersItem = ({number = 44, text = 'test'}) => {
+export const CollectedOrdersItem = ({name, status}: any) => {
     return (
         <View
             style={{
@@ -24,7 +24,6 @@ export const CollectedOrdersItem = ({number = 44, text = 'test'}) => {
                 },
                 shadowOpacity: 0.22,
                 shadowRadius: 2.22,
-
                 elevation: 3,
             }}
         >
@@ -41,16 +40,7 @@ export const CollectedOrdersItem = ({number = 44, text = 'test'}) => {
                         color: '#000'
                     }}
                 >
-                    Заказ {' '}
-                    <Text
-                        style={{
-                            fontFamily: MontserratSemiBold,
-                            fontSize: 15,
-                            fontWeight: '600'
-                        }}
-                    >
-                        {number}
-                    </Text>
+                    {name}
                 </Text>
             </View>
             <View
@@ -71,7 +61,11 @@ export const CollectedOrdersItem = ({number = 44, text = 'test'}) => {
                         color: '#fff',
                     }}
                 >
-                    {text}
+                    {
+                        status === 4
+                            ? 'Курьер спешит к вам'
+                            : 'Забрал заказ'
+                    }
                 </Text>
             </View>
         </View>

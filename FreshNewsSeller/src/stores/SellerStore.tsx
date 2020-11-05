@@ -28,12 +28,15 @@ class SellerStore {
 
     @action
     getDataInfo = async (id: any) => {
+        console.log('getDataInfo id', id);
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
+        console.log(`${SERVER_BASE}/seller/products/${id}`);
         axios.get(`${SERVER_BASE}/seller/products/${id}`, {headers})
             .then((res) => {
+                console.log('getDataInfo res', res);
                 this.dataInfo = res.data;
             })
             .catch(error => {
@@ -82,7 +85,7 @@ class SellerStore {
         const headers = {Authorization: `Bearer ${strTrue}`};
         axios.post(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}&image=${image}`, {headers})
             .then((res) => {
-                this.sellerData = res.data;
+                console.log('re getAddItem', res)
             })
             .catch(error => {
                 console.log('getAddItem error', error);
@@ -98,14 +101,96 @@ class SellerStore {
         const headers = {Authorization: `Bearer ${strTrue}`};
         axios.post(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}&image=${image}`, {headers})
             .then((res) => {
-                this.sellerData = res.data;
+                console.log('re getEditItem', res)
             })
             .catch(error => {
                 console.log('getEditItem error', error);
                 this.errorData = error;
             });
     };
+
+    @action
+    getUserDataUpdate = async (name: string, email: string, surname: string, patronymic: string) => {
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&patronymic=${patronymic}`, requestOptions)
+            .then(res => {
+                if (toJS(res).status === 200) {
+                    this.getUserData()
+                }
+            })
+            .catch(error => {
+                console.log('getUserDataUpdate error', error);
+                this.errorData = error;
+            });
+    };
+
+    @action
+    getUserDataAddAddress = async (address: any, porch: any, floor: any, intercom: any) => {
+        console.log('address', address);
+        console.log('porch', porch);
+        console.log('floor', floor);
+        console.log('intercom', intercom);
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        console.log(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`)
+        fetch(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`, requestOptions)
+            .then(res => {
+                if (toJS(res).status === 200) {
+                    this.getUserData()
+                }
+            })
+            .catch(error => {
+                console.log('getUserDataAddAddress error', error);
+                this.errorData = error;
+            });
+    };
+
+    @action
+    getUserDataDeleteAddress = async (id: number) => {
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch(`${SERVER_BASE}/profile/remove-address/${id}`, requestOptions)
+            .then(res => {
+                if (toJS(res).status === 200) {
+                    this.getUserData()
+                }
+            })
+            .catch(error => {
+                console.log('getUserDataAddAddress error', error);
+                this.errorData = error;
+            });
+    };
 }
 
-const authStore = new SellerStore();
-export default authStore;
+const sellerStore = new SellerStore();
+export default sellerStore;

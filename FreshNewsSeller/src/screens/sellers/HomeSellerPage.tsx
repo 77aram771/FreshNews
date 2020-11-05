@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import {View, Text, TouchableOpacity, ScrollView, RefreshControl} from "react-native";
-import {size34, WINDOW_WIDTH} from "../../share/consts";
-import {LogoAndTitle} from "../../share/components/LogoAndTitle";
-import Feather from "react-native-vector-icons/Feather";
+import {WINDOW_WIDTH} from "../../share/consts";
 import {observer} from "mobx-react";
 import DeliveryOrders from "./DeliveryOrders";
 import CollectedOrders from "./CollectedOrders";
@@ -12,49 +10,12 @@ import {MontserratRegular} from "../../share/fonts";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from '../../stores/SellerStore';
+import authStore from '../../stores/UserInfo';
+import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
-
-    static navigationOptions = ({navigation}: { navigation: any }) => {
-        return {
-            headerStyle: {
-                height: 60
-            },
-            headerTitle: () => (
-                <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                    }}
-                >
-                    <LogoAndTitle courier={true}/>
-                </View>
-            ),
-            headerLeft: () => (
-                <TouchableOpacity
-                    style={{
-                        marginLeft: 15,
-                    }}
-                    onPress={() => alert('Тест!')}
-                >
-                    <Feather
-                        name={'menu'}
-                        size={size34}
-                        color={'rgba(112, 112, 112, 0.4)'}
-                    />
-                </TouchableOpacity>
-            ),
-            headerRight: () => (
-                <TouchableOpacity
-                    onPress={() => alert('Тест!')}
-                    style={{marginRight: 8}}
-                />
-            )
-        };
-    };
 
     state = {
         show1: false,
@@ -63,13 +24,36 @@ class HomeSellerPage extends Component<any, any> {
         show4: false,
         refreshing: false,
         orders: null,
-        products: null
+        products: null,
+        startOrder: [],
+        buildOrder: [],
+        finishOrder: []
     };
 
     componentDidMount() {
         sellerStore.getUserData();
+        authStore.getUserInfo();
 
-        console.log('sellerData', sellerStore.sellerData);
+        setTimeout(() => {
+            this.setState({
+                orders: toJS(sellerStore.sellerData.orders),
+            }, () => {
+                // console.log(this.state.orders);
+                this.state.orders.map((item: any) => {
+                    if (item.status === 1) {
+                        this.state.startOrder.push(item);
+                        // console.log('startOrder', this.state.startOrder)
+                    } else if (item.status === 4 || item.status === 5) {
+                        this.state.buildOrder.push(item);
+                        console.log('buildOrder', this.state.buildOrder)
+                    }
+                    else if (item.status === 6) {
+                        this.state.finishOrder.push(item);
+                        // console.log('finishOrder', this.state.finishOrder)
+                    }
+                })
+            })
+        }, 1000)
     };
 
     handleShow1() {
@@ -207,7 +191,7 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show1
-                                            ? <DeliveryOrders navigation={this.props.navigation}/>
+                                            ? <DeliveryOrders startOrder={this.state.startOrder} navigation={this.props.navigation}/>
                                             : null
                                     }
 
@@ -274,7 +258,7 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show2
-                                            ? <CollectedOrders navigation={this.props.navigation}/>
+                                            ? <CollectedOrders buildOrder={this.state.buildOrder} navigation={this.props.navigation}/>
                                             : null
                                     }
 
@@ -341,7 +325,8 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show3
-                                            ? <ShopAssortment navigation={this.props.navigation}/>
+                                            ? <ShopAssortment products={this.state.products}
+                                                              navigation={this.props.navigation}/>
                                             : null
                                     }
 
@@ -414,7 +399,7 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show4
-                                            ? <AllCollectedOrders navigation={this.props.navigation}/>
+                                            ? <AllCollectedOrders finishOrders={this.state.finishOrder} navigation={this.props.navigation}/>
                                             : null
                                     }
 

@@ -104,16 +104,16 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                 style={{
                                     flex: 1,
                                     alignItems: 'center',
-                                    marginBottom: Platform.OS === "ios" ? 120 : 0
+                                    marginTop: Platform.OS === "ios" ? 0 : 40
                                 }}
                             >
                                 <Header
                                     headerLeft={
                                         <TouchableOpacity
                                             style={{marginLeft: 8}}
-                                            onPress={() => this.props.navigation.goBack()}>
+                                            onPress={() => this.props.navigation.goBack()}
+                                        >
                                             <AntDesign
-                                                onPress={() => this.props.navigation.goBack()}
                                                 style={{paddingLeft: 8}}
                                                 name={'left'}
                                                 size={size16}

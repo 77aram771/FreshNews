@@ -6,6 +6,7 @@ import axios from "axios";
 class CourierStore {
     @observable courierUserData: any = [];
     @observable courierData: any = [];
+    @observable errorData: any = [];
 
     @action
     getCourierData = async () => {
@@ -17,8 +18,9 @@ class CourierStore {
             .then((res) => {
                 this.courierUserData = res.data;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((err) => {
+                console.log('getCourierData error', err);
+                this.errorData = err;
             })
     };
 
@@ -33,8 +35,9 @@ class CourierStore {
             .then((res) => {
                 this.courierData = res.data;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((err) => {
+                console.log('getCourierDataAll error', err);
+                this.errorData = err;
             })
     };
 
@@ -59,7 +62,10 @@ class CourierStore {
                     this.getCourierDataAll()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((err) => {
+                console.log('getCourierDataAdd error', err);
+                this.errorData = err;
+            })
     };
 
     @action
@@ -79,18 +85,17 @@ class CourierStore {
             redirect: 'follow'
         };
 
-        console.log(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`)
-
-        axios.post(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`)
+        fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`, requestOptions)
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
                 }
             })
-            .catch(error =>  {
-                console.log('getCourierOrderConfirmation error----------------', error)
-            });
+            .catch((err) => {
+                console.log('getCourierOrderConfirmation error', err);
+                this.errorData = err;
+            })
     }
 
     @action
@@ -114,7 +119,10 @@ class CourierStore {
                     this.getCourierDataAll()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((err) => {
+                console.log('getCourierDataFinish error', err);
+                this.errorData = err;
+            })
     }
 
     @action
@@ -132,7 +140,10 @@ class CourierStore {
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
             .then(response => response.text())
             // .then(res => console.log('getCourierCoordinate, res', res))
-            .catch(error => console.log('error', error));
+            .catch((err) => {
+                console.log('getCourierCoordinate error', err);
+                this.errorData = err;
+            })
     }
 
     @action
@@ -141,17 +152,37 @@ class CourierStore {
         let getToken = await AsyncStorage.getItem('Token');
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
-        const headers = {Authorization: `Bearer ${strTrue}`};
-        axios.delete(`${SERVER_BASE}/courier/orders/items/${id}`, {headers})
+        // const headers = {Authorization: `Bearer ${strTrue}`};
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        // axios.delete(`${SERVER_BASE}/courier/orders/items/${id}`, {headers})
+        //     .then(res => {
+        //         if (res.status === 200) {
+        //             this.getCourierData()
+        //             this.getCourierDataAll()
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log('getCourierDeleteItem error', err);
+        //         this.errorData = err;
+        //     })
+        fetch(`${SERVER_BASE}/courier/orders/items/${id}`, requestOptions)
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
                 }
             })
-            .catch(error =>  {
-                console.log('getCourierDeleteItem error----------------', error)
-            });
+            .catch((err) => {
+                console.log('getCourierDeleteItem error', err);
+                this.errorData = err;
+            })
     }
 }
 

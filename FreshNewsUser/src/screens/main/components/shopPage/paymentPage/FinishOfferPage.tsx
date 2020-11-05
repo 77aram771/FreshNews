@@ -3,18 +3,17 @@ import {observer} from "mobx-react";
 import {NavigationProps} from "../../../../../share/interfaces";
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import {size14, size16, size20, size34, WINDOW_WIDTH} from "../../../../../share/consts";
+import {size14, size16, size20, WINDOW_WIDTH} from "../../../../../share/consts";
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import {toJS} from "mobx";
-import basketStore from "../../../../../stores/BasketStore";
-import modalsStore from "../../../../../stores/ModalsStore";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import paymentStore from "../../../../../stores/PaymentStore";
 
 @observer
-export default class FinishOfferPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class FinishOfferPage extends Component<NavigationProps> {
 
     state = {
         delivery: 90,
@@ -33,7 +32,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 shopData: paymentStore.order
-            }, () => console.log('this.state.shopData', toJS(this.state.shopData[0])))
+            }, ( ) => console.log('shopData.price', toJS(this.state.shopData)))
         }, 3000)
     }
 
@@ -43,6 +42,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
     };
 
     renderList(item: any): any {
+        console.log('item', toJS(item));
         return (
             <View
                 key={item.id}
@@ -166,7 +166,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                                                 <Text style={styles.headerMiddleTitle}>
                                                     Заказы в{' '}
                                                     <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                                                        {shopData[0].product.shop.name}
+                                                        {shopData.items[0].product.shop.name}
                                                     </Text>
                                                 </Text>
                                             }
@@ -176,7 +176,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                                         >
                                             <View style={styles.table}>
                                                 {
-                                                    shopData.map(item => {
+                                                    shopData.items.map(item => {
                                                         return this.renderList(item)
                                                     })
                                                 }
@@ -281,7 +281,7 @@ export default class FinishOfferPage extends Component<NavigationProps> {
                                                                     <Text
                                                                         style={{fontFamily: MontserratSemiBold, fontSize: size20}}
                                                                     >
-                                                                        {Math.ceil(parseInt(shopData[0].price) + delivery)}
+                                                                        {Math.ceil(parseInt(shopData.items[0].price) + delivery)}
                                                                         <Text style={{color: '#8CC83F', fontSize: size16}}> ₽</Text>
                                                                     </Text>
                                                                 </View>

@@ -4,7 +4,7 @@ import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 import iconCheck from "../../../../assets/iconImages/icon-check.png";
 
-export const AllCollectedOrdersItem = ({number = 44}) => {
+export const AllCollectedOrdersItem = ({name}) => {
     return (
         <View
             style={{
@@ -42,17 +42,7 @@ export const AllCollectedOrdersItem = ({number = 44}) => {
                         color: '#b9b9b9'
                     }}
                 >
-                    Заказ {' '}
-                    <Text
-                        style={{
-                            fontFamily: MontserratSemiBold,
-                            fontSize: 15,
-                            fontWeight: '600',
-                            color: '#b3b3b3'
-                        }}
-                    >
-                        {number}
-                    </Text>
+                    {name}
                 </Text>
             </View>
             <View

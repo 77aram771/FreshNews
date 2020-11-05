@@ -43,6 +43,7 @@ class PaymentStore {
         console.log(`${SERVER_BASE}/orders/show/${id}`);
         axios.get(`${SERVER_BASE}/orders/show/${id}`, {headers})
             .then((res) => {
+                console.log('getOrder res', res)
                 this.order = res.data;
             })
             .catch((e) => {

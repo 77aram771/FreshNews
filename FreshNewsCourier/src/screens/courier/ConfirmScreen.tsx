@@ -1,10 +1,9 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import courierStore from '../../stores/CourierStore';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
 import Header from '../../share/components/Header';
-import Feather from 'react-native-vector-icons/Feather';
 import {
     size12,
     size16,
@@ -18,6 +17,8 @@ import {MontserratSemiBold} from '../../share/fonts';
 import {ClientAddress} from './components/ClientAddress';
 import {PhoneComponent} from './components/PhoneComponent';
 import {ActionButton} from '../../share/components/ActionButton';
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 @observer
 export default class ConfirmScreen extends React.Component<NavigationProps, {
@@ -30,17 +31,23 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
         const {phone} = item.client
 
         return (
-            <View style={{flex: 1, alignItems: 'center'}}>
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    marginTop: Platform.OS === "ios" ? 0 : 40
+                }}
+            >
                 <Header
                     headerLeft={
                         <TouchableOpacity
                             style={{marginLeft: 8}}
-                            onPress={() => this.props.navigation.navigate('CourierProfile')}
-                        >
-                            <Feather
-                                name={'menu'}
-                                size={size34}
-                                color={'rgba(112, 112, 112, 0.4)'}
+                            onPress={() => this.props.navigation.goBack()}>
+                            <AntDesign
+                                style={{paddingLeft: 8}}
+                                name={'left'}
+                                size={size16}
+                                color={'#000'}
                             />
                         </TouchableOpacity>
                     }
@@ -50,7 +57,6 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
                 />
                 <View
                     style={{
-                        marginTop: size44 * 2,
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',

@@ -6,54 +6,9 @@ import Feather from "react-native-vector-icons/Feather";
 import {NavigationProps} from "../../../share/interfaces";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 import {PulseIndicator} from 'react-native-indicators';
+import sellerStore from "../../../stores/SellerStore";
 
 export default class DeliveryOrdersScreen extends Component<NavigationProps, any> {
-
-    static navigationOptions = ({navigation}: { navigation: any }) => {
-        return {
-            headerStyle: {
-                height: 60
-            },
-
-            headerTitle: () => (
-                <View
-                    style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                    }}
-                >
-                    <LogoAndTitle courier={true}/>
-                </View>
-            ),
-
-            // headerLeft: () => (
-            //     <TouchableOpacity
-            //         style={{
-            //             marginLeft: 8,
-            //         }}
-            //         onPress={() => alert('Тест!')}
-            //     >
-            //         <Feather
-            //             name={'menu'}
-            //             size={size34}
-            //             color={'rgba(112, 112, 112, 0.4)'}
-            //         />
-            //     </TouchableOpacity>
-            // ),
-
-            headerRight: () => (
-                <TouchableOpacity
-                    onPress={() => alert('Тест!')}
-                    style={{
-                        marginRight: 8,
-                    }}
-                >
-
-                </TouchableOpacity>
-            )
-        };
-    };
 
     state = {
         refreshing: false,
@@ -63,58 +18,14 @@ export default class DeliveryOrdersScreen extends Component<NavigationProps, any
                 title: 'Помидоры «Чери»',
                 kg: 1,
                 price: 1000,
-                bool: true,
-            },
-            {
-                id: 2,
-                title: 'Помидоры «Чери» с очень длинным названием',
-                kg: 0.6,
-                price: 800,
                 bool: false,
             },
-            {
-                id: 3,
-                title: 'Помидоры «Чери»',
-                kg: 7,
-                price: 500,
-                bool: true,
-            },
-            {
-                id: 4,
-                title: 'Баклажаны «Адмирал»',
-                kg: 0.8,
-                price: 3000,
-                bool: true,
-            },
-            {
-                id: 5,
-                title: 'Помидоры «Чери»',
-                kg: 1,
-                price: 1000,
-                bool: true,
-            },
-            {
-                id: 6,
-                title: 'Помидоры «Чери» с очень длинным названием',
-                kg: 0.6,
-                price: 800,
-                bool: true,
-            },
-            {
-                id: 7,
-                title: 'Помидоры «Чери»',
-                kg: 7,
-                price: 500,
-                bool: true,
-            },
-            {
-                id: 8,
-                title: 'Баклажаны «Адмирал»',
-                kg: 0.8,
-                price: 3000,
-                bool: true,
-            },
         ]
+    }
+
+    componentDidMount() {
+        console.log('dataInfo', sellerStore.dataInfo);
+        sellerStore.getDataInfo(this.props.route.params.number);
     }
 
     handleSend(id: number) {
@@ -294,12 +205,14 @@ export default class DeliveryOrdersScreen extends Component<NavigationProps, any
                                         backgroundColor: '#f5f4f4',
                                     }}
                                 >
-                                    <View style={{
-                                        flexDirection: "row",
-                                        justifyContent: "flex-start",
-                                        alignItems: "center",
-                                        marginLeft: 15,
-                                    }}>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: "flex-start",
+                                            alignItems: "center",
+                                            marginLeft: 15,
+                                        }}
+                                    >
                                         <View
                                             style={{
                                                 width: 15,
@@ -324,7 +237,7 @@ export default class DeliveryOrdersScreen extends Component<NavigationProps, any
                                                     fontFamily: MontserratBold,
                                                 }}
                                             >
-                                                3455
+                                                {this.props.route.params.number}
                                             </Text>
                                         </Text>
                                     </View>
@@ -367,32 +280,10 @@ export default class DeliveryOrdersScreen extends Component<NavigationProps, any
                                         this.renderItem(item)
                                     ))}
                                 </ScrollView>
-                                <TouchableOpacity
-                                    onPress={() => alert('Тест!')}
-                                    style={{
-                                        width: WINDOW_WIDTH,
-                                        height: 75,
-                                        backgroundColor: '#8cc83f',
-                                        justifyContent: "center",
-                                        alignItems: "center"
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: 20,
-                                            fontWeight: '400',
-                                            fontFamily: MontserratRegular,
-                                            color: '#fff'
-                                        }}
-                                    >
-                                        Заказ собран
-                                    </Text>
-                                </TouchableOpacity>
                             </View>
                         )
                 }
             </>
         )
     }
-
 }
