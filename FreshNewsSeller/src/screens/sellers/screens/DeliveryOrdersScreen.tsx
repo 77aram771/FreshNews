@@ -1,14 +1,12 @@
 import React, {Component} from "react";
 import {View, Text, TouchableOpacity, ScrollView, RefreshControl} from "react-native";
-import {LogoAndTitle} from "../../../share/components/LogoAndTitle";
-import {size12, size34, WINDOW_WIDTH} from "../../../share/consts";
-import Feather from "react-native-vector-icons/Feather";
-import {NavigationProps} from "../../../share/interfaces";
+import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from "../../../stores/SellerStore";
 
-export default class DeliveryOrdersScreen extends Component<NavigationProps, any> {
+export default class DeliveryOrdersScreen extends Component<any, any> {
 
     state = {
         refreshing: false,

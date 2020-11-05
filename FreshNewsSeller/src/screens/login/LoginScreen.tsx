@@ -6,18 +6,19 @@ import {
     Image,
 } from 'react-native';
 import {observer} from 'mobx-react';
-import {NavigationProps} from '../../share/interfaces';
 import {MontserratRegular} from '../../share/fonts';
 import {CustomInput} from '../../share/components/CustomInput';
 import {ActionButton} from '../../share/components/ActionButton';
 import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import AsyncStorage from '@react-native-community/async-storage';
 
 @observer
-export default class LoginScreen extends React.Component<NavigationProps> {
+export default // @ts-ignore
+class LoginScreen extends React.Component<any> {
 
     constructor(props: any) {
         super(props);

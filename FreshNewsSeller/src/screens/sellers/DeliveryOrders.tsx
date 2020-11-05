@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {View} from "react-native";
-import {NavigationProps} from "../../share/interfaces";
 import {DeliveryOrdersItem} from "./components/DeliveryOrdersItem";
 
-export default class DeliveryOrders extends Component<NavigationProps, any> {
+export default class DeliveryOrders extends Component<any, any> {
     render() {
         return (
             <View

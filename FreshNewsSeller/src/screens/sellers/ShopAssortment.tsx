@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from "react-native";
-import {NavigationProps} from "../../share/interfaces";
 // @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
 import {size20, WINDOW_WIDTH} from "../../share/consts";
 import {ShopAssortmentItem} from "./components/ShopAssortmentItem";
 import {MontserratSemiBold} from "../../share/fonts";
 
-export default class ShopAssortment extends Component<NavigationProps, any> {
+export default class ShopAssortment extends Component<any, any> {
 
     state = {
         allData: null,
@@ -32,29 +31,29 @@ export default class ShopAssortment extends Component<NavigationProps, any> {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    paddingTop: 12,
+                    paddingTop: 15,
                 }}
             >
-                {
-                    this.state.allData !== null
-                        ? (
-                            <SuperGridSectionList
-                                itemDimension={WINDOW_WIDTH / 2.5}
-                                sections={this.state.allData}
-                                style={{marginBottom: 15}}
-                                renderItem={(item: any) => {
-                                    console.log('item', item)
-                                    return (
-                                        <ShopAssortmentItem img={item.item.image} number={item.quantity} title={item.item.name}/>
-                                    )
-                                }}
-                                renderSectionHeader={({section}: any) => (
-                                    <Text style={styles.sectionHeader}>{section.title}</Text>
-                                )}
-                            />
-                        )
-                        : <View/>
-                }
+                {/*{*/}
+                {/*    this.state.allData !== null*/}
+                {/*        ? (*/}
+                {/*            <SuperGridSectionList*/}
+                {/*                itemDimension={WINDOW_WIDTH / 2.5}*/}
+                {/*                sections={this.state.allData}*/}
+                {/*                style={{marginBottom: 15}}*/}
+                {/*                renderItem={(item: any) => {*/}
+                {/*                    console.log('item', item);*/}
+                {/*                    return (*/}
+                {/*                        <ShopAssortmentItem image={item.item.image} number={item.quantity} title={item.item.name}/>*/}
+                {/*                    )*/}
+                {/*                }}*/}
+                {/*                renderSectionHeader={({section}: any) => (*/}
+                {/*                    <Text style={styles.sectionHeader}>{section.title}</Text>*/}
+                {/*                )}*/}
+                {/*            />*/}
+                {/*        )*/}
+                {/*        : <View/>*/}
+                {/*}*/}
                 <TouchableOpacity
                     onPress={() => alert('Тест!')}
                     style={{
@@ -64,7 +63,7 @@ export default class ShopAssortment extends Component<NavigationProps, any> {
                         justifyContent: "center",
                         alignItems: "center",
                         borderRadius: 10,
-                        marginBottom: 45
+                        marginBottom: 15
                     }}
                 >
                     <Text

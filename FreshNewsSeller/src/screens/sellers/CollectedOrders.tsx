@@ -1,9 +1,8 @@
 import React, {Component} from "react";
 import {Animated, Text, View} from "react-native";
-import {NavigationProps} from "../../share/interfaces";
 import { CollectedOrdersItem } from "./components/CollectedOrdersItem";
 
-export default class CollectedOrders extends Component<NavigationProps, any>{
+export default class CollectedOrders extends Component<any, any>{
 
     render() {
         return (

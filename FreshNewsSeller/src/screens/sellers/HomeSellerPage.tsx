@@ -39,15 +39,18 @@ class HomeSellerPage extends Component<any, any> {
                 orders: toJS(sellerStore.sellerData.orders),
             }, () => {
                 // console.log(this.state.orders);
+                // @ts-ignore
                 this.state.orders.map((item: any) => {
                     if (item.status === 1) {
+                        // @ts-ignore
                         this.state.startOrder.push(item);
                         // console.log('startOrder', this.state.startOrder)
                     } else if (item.status === 4 || item.status === 5) {
+                        // @ts-ignore
                         this.state.buildOrder.push(item);
                         console.log('buildOrder', this.state.buildOrder)
-                    }
-                    else if (item.status === 6) {
+                    } else if (item.status === 6) {
+                        // @ts-ignore
                         this.state.finishOrder.push(item);
                         // console.log('finishOrder', this.state.finishOrder)
                     }
@@ -191,7 +194,10 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show1
-                                            ? <DeliveryOrders startOrder={this.state.startOrder} navigation={this.props.navigation}/>
+                                            ? <DeliveryOrders
+                                                startOrder={this.state.startOrder}
+                                                navigation={this.props.navigation}
+                                            />
                                             : null
                                     }
 
@@ -258,7 +264,10 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show2
-                                            ? <CollectedOrders buildOrder={this.state.buildOrder} navigation={this.props.navigation}/>
+                                            ? <CollectedOrders
+                                                buildOrder={this.state.buildOrder}
+                                                navigation={this.props.navigation}
+                                            />
                                             : null
                                     }
 
@@ -325,8 +334,10 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show3
-                                            ? <ShopAssortment products={this.state.products}
-                                                              navigation={this.props.navigation}/>
+                                            ? <ShopAssortment
+                                                products={this.state.products}
+                                                navigation={this.props.navigation}
+                                            />
                                             : null
                                     }
 
@@ -337,7 +348,8 @@ class HomeSellerPage extends Component<any, any> {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         marginBottom: 45
-                                    } : {
+                                    }
+                                    : {
                                         flexDirection: "column",
                                         justifyContent: "center",
                                         alignItems: "center",
@@ -399,7 +411,10 @@ class HomeSellerPage extends Component<any, any> {
                                     </TouchableOpacity>
                                     {
                                         show4
-                                            ? <AllCollectedOrders finishOrders={this.state.finishOrder} navigation={this.props.navigation}/>
+                                            ? <AllCollectedOrders
+                                                finishOrders={this.state.finishOrder}
+                                                navigation={this.props.navigation}
+                                            />
                                             : null
                                     }
 
