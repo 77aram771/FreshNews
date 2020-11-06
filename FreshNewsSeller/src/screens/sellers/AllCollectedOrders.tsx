@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import {View} from "react-native";
 import {AllCollectedOrdersItem} from "./components/AllCollectedOrdersItem";
+import {CollectedOrdersItem} from "./components/CollectedOrdersItem";
 
-export default class AllCollectedOrders extends Component<any, any>{
+export default class AllCollectedOrders extends Component<any, any> {
 
     render() {
         return (
@@ -19,7 +20,12 @@ export default class AllCollectedOrders extends Component<any, any>{
                     this.props.finishOrders.map((item: any, index: any) => {
                         return (
                             <View key={index}>
-                                <AllCollectedOrdersItem name={item.name}/>
+                                <AllCollectedOrdersItem
+                                    navigation={this.props.navigation}
+                                    id={item.id}
+                                    name={item.name}
+                                    status={item.status}
+                                />
                             </View>
                         )
                     })

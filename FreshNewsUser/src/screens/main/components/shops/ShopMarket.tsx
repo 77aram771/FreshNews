@@ -99,7 +99,7 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
                                             keyExtractor={item => item.toString()}
                                             showsHorizontalScrollIndicator={false}
                                             horizontal={true}
-                                            data={this.state.promo.length === 0 ? [1] : this.state.promo}
+                                            data={this.state.promo.length === 0 ? [] : this.state.promo}
                                             renderItem={({item}) => {
                                                 return (
                                                     <StocksListItem

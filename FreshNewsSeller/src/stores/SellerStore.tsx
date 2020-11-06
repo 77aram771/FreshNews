@@ -28,7 +28,6 @@ class SellerStore {
 
     @action
     getDataInfo = async (id: any) => {
-        console.log('getDataInfo id', id);
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -36,7 +35,6 @@ class SellerStore {
         console.log(`${SERVER_BASE}/seller/products/${id}`);
         axios.get(`${SERVER_BASE}/seller/products/${id}`, {headers})
             .then((res) => {
-                console.log('getDataInfo res', res);
                 this.dataInfo = res.data;
             })
             .catch(error => {
@@ -47,13 +45,15 @@ class SellerStore {
 
     @action
     getInfoOrder = async (id: any) => {
+        this.infoOrder = [];
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
+        console.log(`${SERVER_BASE}/seller/orders/${id}`);
         axios.get(`${SERVER_BASE}/seller/orders/${id}`, {headers})
             .then((res) => {
-                this.infoOrder  = res.data;
+                this.infoOrder = res.data.items;
             })
             .catch(error => {
                 console.log('getInfoOrder error', error);
@@ -66,20 +66,27 @@ class SellerStore {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
-        const headers = {Authorization: `Bearer ${strTrue}`};
-        axios.get(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, {headers})
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, requestOptions)
+            .then(response => response.json())
             .then((res) => {
-                this.scanData = res.data;
+                this.scanData = res;
             })
             .catch(error => {
-                console.log('getInfoOrder error', error);
+                console.log('getScan error', error);
                 this.errorData = error;
             });
     };
 
     @action
     getAddItem = async (name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
-        let getToken = await AsyncStorage.getItem('Token')
+        let getToken = await AsyncStorage.getItem('Token');
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};

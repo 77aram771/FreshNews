@@ -18,7 +18,7 @@ export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
 
     state = {
-        show1: false,
+        show1: true,
         show2: false,
         show3: false,
         show4: false,
@@ -33,22 +33,24 @@ class HomeSellerPage extends Component<any, any> {
     componentDidMount() {
         sellerStore.getUserData();
         authStore.getUserInfo();
-
+        this.setState({
+            refreshing: true
+        })
         setTimeout(() => {
             this.setState({
                 orders: toJS(sellerStore.sellerData.orders),
+                products: toJS(sellerStore.sellerData.products),
             }, () => {
-                // console.log(this.state.orders);
                 // @ts-ignore
                 this.state.orders.map((item: any) => {
                     if (item.status === 1) {
                         // @ts-ignore
                         this.state.startOrder.push(item);
                         // console.log('startOrder', this.state.startOrder)
-                    } else if (item.status === 4 || item.status === 5) {
+                    } else if (item.status === 3 || item.status === 4 || item.status === 5) {
                         // @ts-ignore
                         this.state.buildOrder.push(item);
-                        console.log('buildOrder', this.state.buildOrder)
+                        // console.log('buildOrder', this.state.buildOrder)
                     } else if (item.status === 6) {
                         // @ts-ignore
                         this.state.finishOrder.push(item);
@@ -56,7 +58,10 @@ class HomeSellerPage extends Component<any, any> {
                     }
                 })
             })
-        }, 1000)
+            this.setState({
+                refreshing: false
+            })
+        }, 2000);
     };
 
     handleShow1() {
@@ -84,14 +89,42 @@ class HomeSellerPage extends Component<any, any> {
     };
 
     onRefresh() {
+        sellerStore.getUserData();
+        authStore.getUserInfo();
         this.setState({
-            refreshing: true
+            refreshing: true,
+            orders: null,
+            products: null,
+            startOrder: [],
+            buildOrder: [],
+            finishOrder: []
         })
         setTimeout(() => {
             this.setState({
+                orders: toJS(sellerStore.sellerData.orders),
+                products: toJS(sellerStore.sellerData.products),
+            }, () => {
+                // @ts-ignore
+                this.state.orders.map((item: any) => {
+                    if (item.status === 1) {
+                        // @ts-ignore
+                        this.state.startOrder.push(item);
+                        // console.log('startOrder', this.state.startOrder)
+                    } else if (item.status === 3 || item.status === 4 || item.status === 5) {
+                        // @ts-ignore
+                        this.state.buildOrder.push(item);
+                        // console.log('buildOrder', this.state.buildOrder)
+                    } else if (item.status === 6) {
+                        // @ts-ignore
+                        this.state.finishOrder.push(item);
+                        // console.log('finishOrder', this.state.finishOrder)
+                    }
+                })
+            })
+            this.setState({
                 refreshing: false
             })
-        }, 2000)
+        }, 2000);
     };
 
     render() {
@@ -122,7 +155,7 @@ class HomeSellerPage extends Component<any, any> {
                             <ScrollView
                                 style={{
                                     flex: 1,
-                                    backgroundColor: '#fff'
+                                    backgroundColor: '#fff',
                                 }}
                                 refreshControl={
                                     <RefreshControl
@@ -148,12 +181,14 @@ class HomeSellerPage extends Component<any, any> {
                                             backgroundColor: '#f5f4f4'
                                         }}
                                     >
-                                        <View style={{
-                                            width: WINDOW_WIDTH - 40,
-                                            flexDirection: "row",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                        }}>
+                                        <View
+                                            style={{
+                                                width: WINDOW_WIDTH - 40,
+                                                flexDirection: "row",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                            }}
+                                        >
                                             {
                                                 show1
                                                     ? (
@@ -200,7 +235,6 @@ class HomeSellerPage extends Component<any, any> {
                                             />
                                             : null
                                     }
-
                                 </View>
                                 <View
                                     style={{
@@ -219,12 +253,14 @@ class HomeSellerPage extends Component<any, any> {
                                             backgroundColor: '#f5f4f4'
                                         }}
                                     >
-                                        <View style={{
-                                            width: WINDOW_WIDTH - 40,
-                                            flexDirection: "row",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                        }}>
+                                        <View
+                                            style={{
+                                                width: WINDOW_WIDTH - 40,
+                                                flexDirection: "row",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                            }}
+                                        >
                                             {
                                                 show2
                                                     ? (
@@ -289,12 +325,14 @@ class HomeSellerPage extends Component<any, any> {
                                             backgroundColor: '#f5f4f4'
                                         }}
                                     >
-                                        <View style={{
-                                            width: WINDOW_WIDTH - 40,
-                                            flexDirection: "row",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                        }}>
+                                        <View
+                                            style={{
+                                                width: WINDOW_WIDTH - 40,
+                                                flexDirection: "row",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                            }}
+                                        >
                                             {
                                                 show3
                                                     ? (
@@ -344,17 +382,17 @@ class HomeSellerPage extends Component<any, any> {
                                 </View>
                                 <View
                                     style={show4 ? {
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        marginBottom: 45
-                                    }
-                                    : {
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        marginBottom: 5
-                                    }}
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            marginBottom: 45
+                                        }
+                                        : {
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            marginBottom: 5
+                                        }}
                                 >
                                     <TouchableOpacity
                                         onPress={() => this.handleShow4()}
@@ -366,12 +404,14 @@ class HomeSellerPage extends Component<any, any> {
                                             backgroundColor: '#f5f4f4'
                                         }}
                                     >
-                                        <View style={{
-                                            width: WINDOW_WIDTH - 40,
-                                            flexDirection: "row",
-                                            justifyContent: "flex-start",
-                                            alignItems: "center",
-                                        }}>
+                                        <View
+                                            style={{
+                                                width: WINDOW_WIDTH - 40,
+                                                flexDirection: "row",
+                                                justifyContent: "flex-start",
+                                                alignItems: "center",
+                                            }}
+                                        >
                                             {
                                                 show4
                                                     ? (
@@ -417,7 +457,6 @@ class HomeSellerPage extends Component<any, any> {
                                             />
                                             : null
                                     }
-
                                 </View>
                             </ScrollView>
                         )

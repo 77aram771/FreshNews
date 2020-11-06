@@ -19,7 +19,12 @@ export default class CollectedOrders extends Component<any, any>{
                     this.props.buildOrder.map((item: any, index: any) => {
                         return (
                             <View key={index}>
-                                <CollectedOrdersItem name={item.name} status={item.status}/>
+                                <CollectedOrdersItem
+                                    navigation={this.props.navigation}
+                                    id={item.id}
+                                    name={item.name}
+                                    status={item.status}
+                                />
                             </View>
                         )
                     })

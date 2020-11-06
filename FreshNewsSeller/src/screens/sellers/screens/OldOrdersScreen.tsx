@@ -1,19 +1,17 @@
 import React, {Component} from "react";
-import {View, Text, TouchableOpacity, ScrollView} from "react-native";
+import {View, Text, ScrollView} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from "../../../stores/SellerStore";
 import {toJS} from "mobx";
-import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class DeliveryOrdersScreen extends Component<any, any> {
+export default class OldOrdersScreen extends Component<any, any> {
 
     state = {
         refreshing: false,
         mockData: [],
-        code: ''
     };
 
     async componentDidMount() {
@@ -29,26 +27,14 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
         }, 2000);
     };
 
-    handleScanner = async (id: any, code: any) => {
-        this.setState({
-            code
-        });
-        await sellerStore.getScan(id, code);
-        setTimeout(() => {
-            this.setState({
-                mockData: [toJS(sellerStore.scanData)],
-            })
-        }, 3000)
-    };
-
     renderItem(item: any) {
         return (
             <View
                 style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'rgba(186,186,186, 0.2)',
-                    paddingTop: 30,
-                    paddingBottom: 30,
+                    paddingTop: 25,
+                    paddingBottom: 25,
                     justifyContent: "center",
                     alignItems: "center",
                     alignContent: "center",
@@ -61,7 +47,6 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                     style={{
                         width: WINDOW_WIDTH - 40,
                         flexDirection: "row",
-                        marginBottom: 10
                     }}
                 >
                     <View
@@ -74,29 +59,11 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                                 fontSize: 15,
                                 fontWeight: '600',
                                 fontFamily: MontserratBold,
-                                color: item.bool ? '#bababa' : '#141414',
-                                marginBottom: 13
+                                color: '#141414',
                             }}
                         >
                             {item.name}
                         </Text>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('BarcodeScanner', {
-                                id: item.id,
-                                handleScanner: this.handleScanner
-                            })}
-                        >
-                            <Text
-                                style={{
-                                    color: "#8cc83f",
-                                    fontSize: 15,
-                                    fontFamily: MontserratSemiBold,
-
-                                }}
-                            >
-                                Сверить позицию
-                            </Text>
-                        </TouchableOpacity>
                     </View>
                     <View
                         style={{
@@ -149,73 +116,6 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                         </Text>
                     </View>
                 </View>
-                {
-                    item.status === 3
-                        ? (
-                            <View
-                                style={{
-                                    width: WINDOW_WIDTH - 40,
-                                    paddingTop: 10,
-                                    flexDirection: "row",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                    }}
-                                >
-                                    <View style={{marginRight: 30}}>
-                                        <Text
-                                            style={{
-                                                fontFamily: MontserratRegular,
-                                                fontSize: 15,
-                                            }}
-                                        >
-                                            Id
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontFamily: MontserratSemiBold,
-                                                fontSize: 15,
-                                            }}
-                                        >
-                                            {item.id}
-                                        </Text>
-                                    </View>
-                                    <View>
-                                        <Text
-                                            style={{
-                                                fontFamily: MontserratRegular,
-                                                fontSize: 15,
-                                            }}
-                                        >
-                                            Code
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                fontFamily: MontserratSemiBold,
-                                                fontSize: 15,
-                                            }}
-                                        >
-                                            0{this.state.code}
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View
-                                    style={{
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        alignSelf: "center",
-                                    }}
-                                >
-                                    <Icon name="check" size={30} color="#8CC83F"/>
-                                </View>
-                            </View>
-                        )
-                        : null
-                }
             </View>
         )
     };
@@ -455,5 +355,5 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                 }
             </>
         )
-    };
+    }
 }

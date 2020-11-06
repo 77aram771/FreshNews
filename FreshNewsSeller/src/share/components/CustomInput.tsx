@@ -76,8 +76,6 @@ export const CustomInput = ({
         },
     });
 
-    //console.log('onChangeView', onChangeView)
-
     return (
         <View
             style={[

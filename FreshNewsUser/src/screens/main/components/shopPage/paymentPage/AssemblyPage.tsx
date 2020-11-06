@@ -23,13 +23,13 @@ import basketStore from '../../../../../stores/BasketStore';
 import paymentStore from "../../../../../stores/PaymentStore";
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
-import ProductPage from "../productPage/ProductPage";
 import Modal from "react-native-modal";
 import ErrorMode from "../../ErrorMode";
 let moment = require('moment');
 
 @observer
-export default class AssemblyPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class AssemblyPage extends Component<NavigationProps> {
 
     state = {
         delivery: 90,

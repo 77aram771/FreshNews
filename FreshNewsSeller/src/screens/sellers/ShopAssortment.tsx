@@ -34,26 +34,25 @@ export default class ShopAssortment extends Component<any, any> {
                     paddingTop: 15,
                 }}
             >
-                {/*{*/}
-                {/*    this.state.allData !== null*/}
-                {/*        ? (*/}
-                {/*            <SuperGridSectionList*/}
-                {/*                itemDimension={WINDOW_WIDTH / 2.5}*/}
-                {/*                sections={this.state.allData}*/}
-                {/*                style={{marginBottom: 15}}*/}
-                {/*                renderItem={(item: any) => {*/}
-                {/*                    console.log('item', item);*/}
-                {/*                    return (*/}
-                {/*                        <ShopAssortmentItem image={item.item.image} number={item.quantity} title={item.item.name}/>*/}
-                {/*                    )*/}
-                {/*                }}*/}
-                {/*                renderSectionHeader={({section}: any) => (*/}
-                {/*                    <Text style={styles.sectionHeader}>{section.title}</Text>*/}
-                {/*                )}*/}
-                {/*            />*/}
-                {/*        )*/}
-                {/*        : <View/>*/}
-                {/*}*/}
+                {
+                    this.state.allData !== null
+                        ? (
+                            <SuperGridSectionList
+                                itemDimension={WINDOW_WIDTH / 2.5}
+                                sections={this.state.allData}
+                                style={{marginBottom: 15}}
+                                renderItem={(item: any) => {
+                                    return (
+                                        <ShopAssortmentItem image={item.item.image} number={item.quantity} title={item.item.name}/>
+                                    )
+                                }}
+                                renderSectionHeader={({section}: any) => (
+                                    <Text style={styles.sectionHeader}>{section.title}</Text>
+                                )}
+                            />
+                        )
+                        : <View/>
+                }
                 <TouchableOpacity
                     onPress={() => alert('Тест!')}
                     style={{

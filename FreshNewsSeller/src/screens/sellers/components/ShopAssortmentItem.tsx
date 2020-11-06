@@ -4,11 +4,10 @@ import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratMedium, MontserratSemiBold} from "../../../share/fonts";
 
 export const ShopAssortmentItem = ({title, number, image}: { title: string, number: number, image: string }) => {
-
     return (
         <TouchableOpacity
             onPress={() => alert('Тест!')}
-            style={ {
+            style={{
                 width: WINDOW_WIDTH / 2.2,
                 height: 220,
                 flexDirection: "column",
@@ -24,11 +23,12 @@ export const ShopAssortmentItem = ({title, number, image}: { title: string, numb
             }}
         >
             <Image
-                source={image}
+                source={{uri: image}}
                 style={{
-                    height: 118
+                    width: 135,
+                    height: 100,
                 }}
-                resizeMode={"center"}
+                resizeMode={"cover"}
             />
             <View
                 style={{

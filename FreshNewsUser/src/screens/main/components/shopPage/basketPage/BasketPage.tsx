@@ -54,7 +54,7 @@ export default class BasketPage extends Component<NavigationProps> {
 
         const {onShowCheckOutDialog, isShowCheckOutDialog} = modalsStore;
 
-        const {allPrice, productCount, cartUserInfo, getCartUserInfo} = basketStore;
+        const {allPrice, productCount, cartUserInfo} = basketStore;
 
         return (
 

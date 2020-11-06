@@ -87,46 +87,7 @@ export const SellerProfile = (props: any) => {
                     {`+${userData.phone}`}
                 </Text>
             </View>
-            <View style={{flexDirection: 'row'}}>
-                <View
-                    style={{
-                        paddingVertical: size16,
-                        backgroundColor: '#585858',
-                        borderTopLeftRadius: 10,
-                        borderBottomLeftRadius: 10,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: '#FFFFFF',
-                            fontFamily: MontserratRegular,
-                            fontSize: size12,
-                            paddingHorizontal: size44,
-                        }}
-                    >
-                        Оффлайн
-                    </Text>
-                </View>
-                <View
-                    style={{
-                        paddingVertical: size16,
-                        backgroundColor: '#8CC83F',
-                        borderTopRightRadius: 10,
-                        borderBottomRightRadius: 10,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: '#FFFFFF',
-                            fontFamily: MontserratRegular,
-                            fontSize: size12,
-                            paddingHorizontal: size44,
-                        }}
-                    >
-                        Работаю
-                    </Text>
-                </View>
-            </View>
+
             <View
                 style={{
                     flexDirection: 'row',

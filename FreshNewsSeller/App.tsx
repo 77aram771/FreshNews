@@ -4,7 +4,7 @@ import {AppLoading} from 'expo';
 import LoginScreen from "./src/screens/login/LoginScreen";
 import HomeSellerPage from "./src/screens/sellers/HomeSellerPage";
 import DeliveryOrdersScreen from './src/screens/sellers/screens/DeliveryOrdersScreen';
-import ScannerScreen from './src/screens/sellers/screens/ScannerScreen';
+import BarcodeScanner from './src/screens/sellers/screens/BarcodeScanner';
 import {SellerProfile} from "./src/screens/sellers/components/SellerProfile";
 import {createStackNavigator} from "@react-navigation/stack";
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -15,6 +15,7 @@ import {TouchableOpacity, View} from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {size34, size16} from "./src/share/consts";
+import OldOrdersScreen from "./src/screens/sellers/screens/OldOrdersScreen";
 
 console.disableYellowBox = true;
 
@@ -118,8 +119,44 @@ const SellerStackScreen = ({navigation}: any) => {
                 }}
             />
             <SellerStack.Screen
-                name="ScannerScreen"
-                component={ScannerScreen}
+                name="OldOrdersScreen"
+                component={OldOrdersScreen}
+                options={{
+                    title: '',
+                    headerStyle: {
+                        height: 120
+                    },
+                    headerTitle: () => (
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                alignSelf: "center",
+                            }}
+                        >
+                            <LogoAndTitle courier={true}/>
+                        </View>
+                    ),
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            style={{
+                                marginLeft: 15,
+                            }}
+                            onPress={() => navigation.navigate('HomeSellerPage')}
+                        >
+                            <AntDesign
+                                style={{paddingLeft: 8}}
+                                name={'left'}
+                                size={size16}
+                                color={'#464646'}
+                            />
+                        </TouchableOpacity>
+                    ),
+                }}
+            />
+            <SellerStack.Screen
+                name="BarcodeScanner"
+                component={BarcodeScanner}
                 options={{
                     headerShown: false
                 }}

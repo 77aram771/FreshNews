@@ -5,11 +5,12 @@ import {WINDOW_WIDTH} from "../../../share/consts";
 import iconWarning from '../../../../assets/iconImages/icon-warning.png'
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 
-export const DeliveryOrdersItem = ({number, navigation}: {number: number, navigation: any }) => {
+export const DeliveryOrdersItem = ({id, navigation, status}: { id: number, navigation: any, status: any }) => {
     return (
         <TouchableOpacity
             onPress={() => navigation.navigate('DeliveryOrdersScreen', {
-                number,
+                id,
+                status
             })}
             style={{
                 width: WINDOW_WIDTH - 40,
@@ -58,7 +59,7 @@ export const DeliveryOrdersItem = ({number, navigation}: {number: number, naviga
                             fontWeight: '600'
                         }}
                     >
-                        {number}
+                        {id}
                     </Text>
                 </Text>
             </View>

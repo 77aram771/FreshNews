@@ -1,12 +1,16 @@
 import React from "react";
 import {View, Text, TouchableOpacity, Image} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
-import {MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
+import {MontserratRegular} from "../../../share/fonts";
 import iconCheck from "../../../../assets/iconImages/icon-check.png";
 
-export const AllCollectedOrdersItem = ({name}) => {
+export const AllCollectedOrdersItem = ({navigation, id, name, status}: {navigation: any, id: number, name: string, status: any }) => {
     return (
-        <View
+        <TouchableOpacity
+            onPress={() => navigation.navigate('OldOrdersScreen', {
+                id,
+                status
+            })}
             style={{
                 width: WINDOW_WIDTH - 40,
                 height: 45,
@@ -63,6 +67,6 @@ export const AllCollectedOrdersItem = ({name}) => {
                     style={{width: 11, height: 8}}
                 />
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }

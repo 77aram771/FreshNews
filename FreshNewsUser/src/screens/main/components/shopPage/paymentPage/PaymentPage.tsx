@@ -26,7 +26,8 @@ import RNPickerSelect from 'react-native-picker-select';
 import paymentStore from "../../../../../stores/PaymentStore";
 
 @observer
-export default class PaymentPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class PaymentPage extends Component<NavigationProps> {
 
     constructor(props: any) {
         super(props);
@@ -51,6 +52,7 @@ export default class PaymentPage extends Component<NavigationProps> {
     }
 
     componentDidMount() {
+        paymentStore.orderUserTime();
         userInfo.getUserData();
         const {userData} = userInfo;
         const {addresses} = userData;
