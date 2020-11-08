@@ -12,22 +12,33 @@ import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from '../../stores/SellerStore';
 import authStore from '../../stores/UserInfo';
 import {toJS} from "mobx";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {EditModal} from "./modals/EditModal";
+import {InfoModal} from "./modals/InfoModal";
+import {AddModal} from "./modals/AddModal";
 
 @observer
 export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
 
     state = {
-        show1: true,
+        show1: false,
         show2: false,
-        show3: false,
+        show3: true,
         show4: false,
         refreshing: false,
         orders: null,
         products: null,
         startOrder: [],
         buildOrder: [],
-        finishOrder: []
+        finishOrder: [],
+        editModal: false,
+        editData: [],
+        infoModal: false,
+        infoData: [],
+        addModal: false,
+        addData: [],
     };
 
     componentDidMount() {
@@ -127,6 +138,62 @@ class HomeSellerPage extends Component<any, any> {
         }, 2000);
     };
 
+    handleOpenEditModal = async (id: any) => {
+        console.log('id', id);
+        sellerStore.getDataInfo(id);
+        setTimeout(() => {
+            this.setState({
+                editModal: true,
+                editData: toJS(sellerStore.dataInfo.product),
+                infoData: toJS(sellerStore.dataInfo.product)
+            })
+        }, 1000);
+    };
+
+    handleCloseEditModal = async () => {
+        await this.setState({
+            editModal: false,
+        })
+    };
+
+    handleOpenAddModal = async () => {
+        await this.setState({
+            addModal: true,
+        })
+    };
+
+    handleCloseAddModal = async () => {
+        await this.setState({
+            addModal: false,
+        })
+    };
+
+    handleOpenInfoModal = async (id: any) => {
+        console.log('id', id);
+        sellerStore.getDataInfo(id);
+        setTimeout(() => {
+            this.setState({
+                infoModal: true,
+                infoData: toJS(sellerStore.dataInfo.product),
+                editData: toJS(sellerStore.dataInfo.product)
+            })
+        }, 1000)
+
+    };
+
+    handleCloseInfoModal = async () => {
+        await this.setState({
+            infoModal: false,
+        })
+    };
+
+    handleChangeInfoModalToEditModal = async () => {
+        this.setState({
+            infoModal: !this.state.infoModal,
+            editModal: !this.state.editModal,
+        })
+    }
+
     render() {
 
         const {show1, show2, show3, show4, refreshing} = this.state;
@@ -152,313 +219,411 @@ class HomeSellerPage extends Component<any, any> {
                             </View>
                         )
                         : (
-                            <ScrollView
-                                style={{
-                                    flex: 1,
-                                    backgroundColor: '#fff',
-                                }}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={refreshing}
-                                        onRefresh={this.onRefresh.bind(this)}
-                                    />
-                                }
-                            >
-                                <View
-                                    style={{
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        onPress={() => this.handleShow1()}
-                                        style={{
-                                            width: WINDOW_WIDTH,
-                                            height: 48,
-                                            justifyContent: 'center',
-                                            alignItems: "center",
-                                            backgroundColor: '#f5f4f4'
-                                        }}
-                                    >
-                                        <View
+                            <>
+                                <Modal
+                                    visible={this.state.editModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
                                             style={{
-                                                width: WINDOW_WIDTH - 40,
-                                                flexDirection: "row",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
+                                                backgroundColor: 'red',
                                             }}
                                         >
-                                            {
-                                                show1
-                                                    ? (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#8cc83f',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                                    : (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#d96363',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                            }
-
-                                            <Text
-                                                style={{
-                                                    fontSize: 15,
-                                                    fontWeight: '400',
-                                                    fontFamily: MontserratRegular,
-                                                    color: '#000'
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
                                                 }}
-                                            >
-                                                Заказы на сброку
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    {
-                                        show1
-                                            ? <DeliveryOrders
-                                                startOrder={this.state.startOrder}
-                                                navigation={this.props.navigation}
+                                                onPress={() => {
+                                                    this.setState({editModal: false})
+                                                }}
                                             />
-                                            : null
+                                        </ModalFooter>
                                     }
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                    onTouchOutside={() => {
+                                        this.setState({editModal: false});
                                     }}
                                 >
-                                    <TouchableOpacity
-                                        onPress={() => this.handleShow2()}
-                                        style={{
-                                            width: WINDOW_WIDTH,
-                                            height: 48,
-                                            justifyContent: 'center',
-                                            alignItems: "center",
-                                            backgroundColor: '#f5f4f4'
-                                        }}
-                                    >
-                                        <View
+                                    <ModalContent>
+                                        <EditModal
+                                            data={this.state.editData}
+                                            handleCloseEditModal={this.handleCloseEditModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
+                                <Modal
+                                    visible={this.state.infoModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
                                             style={{
-                                                width: WINDOW_WIDTH - 40,
-                                                flexDirection: "row",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
+                                                backgroundColor: 'red'
                                             }}
                                         >
-                                            {
-                                                show2
-                                                    ? (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#8cc83f',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                                    : (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#d96363',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                            }
-                                            <Text
-                                                style={{
-                                                    fontSize: 15,
-                                                    fontWeight: '400',
-                                                    fontFamily: MontserratRegular,
-                                                    color: '#000'
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
                                                 }}
-                                            >
-                                                Собранные заказы
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    {
-                                        show2
-                                            ? <CollectedOrders
-                                                buildOrder={this.state.buildOrder}
-                                                navigation={this.props.navigation}
+                                                onPress={() => {
+                                                    this.setState({infoModal: false})
+                                                }}
                                             />
-                                            : null
+                                        </ModalFooter>
                                     }
-
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                    onTouchOutside={() => {
+                                        this.setState({infoModal: false});
                                     }}
                                 >
-                                    <TouchableOpacity
-                                        onPress={() => this.handleShow3()}
-                                        style={{
-                                            width: WINDOW_WIDTH,
-                                            height: 48,
-                                            justifyContent: 'center',
-                                            alignItems: "center",
-                                            backgroundColor: '#f5f4f4'
-                                        }}
-                                    >
-                                        <View
+                                    <ModalContent>
+                                        <InfoModal
+                                            data={this.state.infoData}
+                                            handleCloseInfoModal={this.handleCloseInfoModal}
+                                            handleChangeInfoModalToEditModal={this.handleChangeInfoModalToEditModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
+                                <Modal
+                                    visible={this.state.addModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
                                             style={{
-                                                width: WINDOW_WIDTH - 40,
-                                                flexDirection: "row",
-                                                justifyContent: "flex-start",
-                                                alignItems: "center",
+                                                backgroundColor: 'red'
                                             }}
                                         >
-                                            {
-                                                show3
-                                                    ? (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#8cc83f',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                                    : (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#d96363',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                            }
-                                            <Text
-                                                style={{
-                                                    fontSize: 15,
-                                                    fontWeight: '400',
-                                                    fontFamily: MontserratRegular,
-                                                    color: '#000'
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
                                                 }}
-                                            >
-                                                Ассортимент магазина
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    {
-                                        show3
-                                            ? <ShopAssortment
-                                                products={this.state.products}
-                                                navigation={this.props.navigation}
+                                                onPress={() => {
+                                                    this.setState({addModal: false})
+                                                }}
                                             />
-                                            : null
+                                        </ModalFooter>
                                     }
-
-                                </View>
-                                <View
-                                    style={show4 ? {
+                                    onTouchOutside={() => {
+                                        this.setState({addModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <AddModal
+                                            handleCloseAddModal={this.handleCloseAddModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
+                                <ScrollView
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: '#fff',
+                                    }}
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={refreshing}
+                                            onRefresh={this.onRefresh.bind(this)}
+                                        />
+                                    }
+                                >
+                                    <View
+                                        style={{
                                             flexDirection: "column",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            marginBottom: 45
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            onPress={() => this.handleShow1()}
+                                            style={{
+                                                width: WINDOW_WIDTH,
+                                                height: 48,
+                                                justifyContent: 'center',
+                                                alignItems: "center",
+                                                backgroundColor: '#f5f4f4'
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    flexDirection: "row",
+                                                    justifyContent: "flex-start",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {
+                                                    show1
+                                                        ? (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#8cc83f',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                        : (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#d96363',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                }
+
+                                                <Text
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: '400',
+                                                        fontFamily: MontserratRegular,
+                                                        color: '#000'
+                                                    }}
+                                                >
+                                                    Заказы на сброку
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        {
+                                            show1
+                                                ? <DeliveryOrders
+                                                    startOrder={this.state.startOrder}
+                                                    navigation={this.props.navigation}
+                                                />
+                                                : null
                                         }
-                                        : {
+                                    </View>
+                                    <View
+                                        style={{
                                             flexDirection: "column",
                                             justifyContent: "center",
                                             alignItems: "center",
-                                            marginBottom: 5
-                                        }}
-                                >
-                                    <TouchableOpacity
-                                        onPress={() => this.handleShow4()}
-                                        style={{
-                                            width: WINDOW_WIDTH,
-                                            height: 48,
-                                            justifyContent: 'center',
-                                            alignItems: "center",
-                                            backgroundColor: '#f5f4f4'
                                         }}
                                     >
-                                        <View
+                                        <TouchableOpacity
+                                            onPress={() => this.handleShow2()}
                                             style={{
-                                                width: WINDOW_WIDTH - 40,
-                                                flexDirection: "row",
-                                                justifyContent: "flex-start",
+                                                width: WINDOW_WIDTH,
+                                                height: 48,
+                                                justifyContent: 'center',
                                                 alignItems: "center",
+                                                backgroundColor: '#f5f4f4'
                                             }}
                                         >
-                                            {
-                                                show4
-                                                    ? (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#8cc83f',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                                    : (
-                                                        <View
-                                                            style={{
-                                                                width: 15,
-                                                                height: 15,
-                                                                backgroundColor: '#d96363',
-                                                                marginRight: 15,
-                                                                borderRadius: 4
-                                                            }}
-                                                        />
-                                                    )
-                                            }
-                                            <Text
+                                            <View
                                                 style={{
-                                                    fontSize: 15,
-                                                    fontWeight: '400',
-                                                    fontFamily: MontserratRegular,
-                                                    color: '#000'
+                                                    width: WINDOW_WIDTH - 40,
+                                                    flexDirection: "row",
+                                                    justifyContent: "flex-start",
+                                                    alignItems: "center",
                                                 }}
                                             >
-                                                Все собранные заказы
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    {
-                                        show4
-                                            ? <AllCollectedOrders
-                                                finishOrders={this.state.finishOrder}
-                                                navigation={this.props.navigation}
-                                            />
-                                            : null
-                                    }
-                                </View>
-                            </ScrollView>
+                                                {
+                                                    show2
+                                                        ? (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#8cc83f',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                        : (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#d96363',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                }
+                                                <Text
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: '400',
+                                                        fontFamily: MontserratRegular,
+                                                        color: '#000'
+                                                    }}
+                                                >
+                                                    Собранные заказы
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        {
+                                            show2
+                                                ? <CollectedOrders
+                                                    buildOrder={this.state.buildOrder}
+                                                    navigation={this.props.navigation}
+                                                />
+                                                : null
+                                        }
+
+                                    </View>
+                                    <View
+                                        style={{
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            onPress={() => this.handleShow3()}
+                                            style={{
+                                                width: WINDOW_WIDTH,
+                                                height: 48,
+                                                justifyContent: 'center',
+                                                alignItems: "center",
+                                                backgroundColor: '#f5f4f4'
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    flexDirection: "row",
+                                                    justifyContent: "flex-start",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {
+                                                    show3
+                                                        ? (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#8cc83f',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                        : (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#d96363',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                }
+                                                <Text
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: '400',
+                                                        fontFamily: MontserratRegular,
+                                                        color: '#000'
+                                                    }}
+                                                >
+                                                    Ассортимент магазина
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        {
+                                            show3
+                                                ? <ShopAssortment
+                                                    products={this.state.products}
+                                                    navigation={this.props.navigation}
+                                                    handleOpenEditModal={this.handleOpenEditModal}
+                                                    handleOpenInfoModal={this.handleOpenInfoModal}
+                                                    handleOpenAddModal={this.handleOpenAddModal}
+                                                />
+                                                : null
+                                        }
+
+                                    </View>
+                                    <View
+                                        style={show4 ? {
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                marginBottom: 45
+                                            }
+                                            : {
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                marginBottom: 5
+                                            }}
+                                    >
+                                        <TouchableOpacity
+                                            onPress={() => this.handleShow4()}
+                                            style={{
+                                                width: WINDOW_WIDTH,
+                                                height: 48,
+                                                justifyContent: 'center',
+                                                alignItems: "center",
+                                                backgroundColor: '#f5f4f4'
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    flexDirection: "row",
+                                                    justifyContent: "flex-start",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {
+                                                    show4
+                                                        ? (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#8cc83f',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                        : (
+                                                            <View
+                                                                style={{
+                                                                    width: 15,
+                                                                    height: 15,
+                                                                    backgroundColor: '#d96363',
+                                                                    marginRight: 15,
+                                                                    borderRadius: 4
+                                                                }}
+                                                            />
+                                                        )
+                                                }
+                                                <Text
+                                                    style={{
+                                                        fontSize: 15,
+                                                        fontWeight: '400',
+                                                        fontFamily: MontserratRegular,
+                                                        color: '#000'
+                                                    }}
+                                                >
+                                                    Все собранные заказы
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        {
+                                            show4
+                                                ? <AllCollectedOrders
+                                                    finishOrders={this.state.finishOrder}
+                                                    navigation={this.props.navigation}
+                                                />
+                                                : null
+                                        }
+                                    </View>
+                                </ScrollView>
+                            </>
                         )
                 }
             </>

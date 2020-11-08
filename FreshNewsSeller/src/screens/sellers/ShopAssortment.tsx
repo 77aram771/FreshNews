@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from "react-native";
 // @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
-import {size20, WINDOW_WIDTH} from "../../share/consts";
+import {size20, size34, WINDOW_WIDTH} from "../../share/consts";
 import {ShopAssortmentItem} from "./components/ShopAssortmentItem";
 import {MontserratSemiBold} from "../../share/fonts";
+import Feather from "react-native-vector-icons/Feather";
 
 export default class ShopAssortment extends Component<any, any> {
 
@@ -34,6 +35,33 @@ export default class ShopAssortment extends Component<any, any> {
                     paddingTop: 15,
                 }}
             >
+                <TouchableOpacity
+                    onPress={() => this.props.handleOpenAddModal()}
+                    style={{
+                        borderWidth: 2,
+                        borderColor: '#8CC83F',
+                        borderStyle: "solid",
+                        borderRadius: 10,
+                        width: WINDOW_WIDTH / 2.5,
+                        height: 200,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }}
+                >
+                    <Feather
+                        name={'plus'}
+                        size={60}
+                        color={'#8CC83F'}
+                    />
+                    <Text
+                        style={{
+                            color: '#8CC83F',
+                            fontSize: 14
+                        }}
+                    >
+                        Добавитъ товар
+                    </Text>
+                </TouchableOpacity>
                 {
                     this.state.allData !== null
                         ? (
@@ -43,7 +71,14 @@ export default class ShopAssortment extends Component<any, any> {
                                 style={{marginBottom: 15}}
                                 renderItem={(item: any) => {
                                     return (
-                                        <ShopAssortmentItem image={item.item.image} number={item.quantity} title={item.item.name}/>
+                                        <ShopAssortmentItem
+                                            id={item.item.id}
+                                            image={item.item.image}
+                                            number={item.quantity}
+                                            title={item.item.name}
+                                            handleOpenEditModal={() => this.props.handleOpenEditModal(item.item.id)}
+                                            handleOpenInfoModal={() => this.props.handleOpenInfoModal(item.item.id)}
+                                        />
                                     )
                                 }}
                                 renderSectionHeader={({section}: any) => (

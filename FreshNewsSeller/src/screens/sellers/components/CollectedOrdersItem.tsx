@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 
-export const CollectedOrdersItem = ({navigation, id, name, status}: {navigation: any, id: number, name: string, status: any }) => {
+export const CollectedOrdersItem = ({navigation, id, name, status}: { navigation: any, id: number, name: string, status: any }) => {
     if (status === 3) {
         return (
             <TouchableOpacity
@@ -71,8 +71,7 @@ export const CollectedOrdersItem = ({navigation, id, name, status}: {navigation:
                 </View>
             </TouchableOpacity>
         )
-    }
-    else if (status === 4) {
+    } else if (status === 4) {
         return (
             <TouchableOpacity
                 onPress={() => navigation.navigate('OldOrdersScreen', {
@@ -139,8 +138,7 @@ export const CollectedOrdersItem = ({navigation, id, name, status}: {navigation:
                 </View>
             </TouchableOpacity>
         )
-    }
-    else if (status === 5) {
+    } else if (status === 5) {
         return (
             <TouchableOpacity
                 onPress={() => navigation.navigate('OldOrdersScreen', {

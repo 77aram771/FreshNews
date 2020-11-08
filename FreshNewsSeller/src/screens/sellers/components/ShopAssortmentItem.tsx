@@ -3,10 +3,13 @@ import {View, Text, Image, TouchableOpacity} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratMedium, MontserratSemiBold} from "../../../share/fonts";
 
-export const ShopAssortmentItem = ({title, number, image}: { title: string, number: number, image: string }) => {
+export const ShopAssortmentItem = (
+    {id, title, number, image, handleOpenEditModal, handleOpenInfoModal}:
+        { id: any, title: string, number: number, image: string, handleOpenEditModal: any, handleOpenInfoModal: any }
+) => {
     return (
         <TouchableOpacity
-            onPress={() => alert('Тест!')}
+            onPress={() => handleOpenInfoModal(id)}
             style={{
                 width: WINDOW_WIDTH / 2.2,
                 height: 220,
@@ -77,7 +80,8 @@ export const ShopAssortmentItem = ({title, number, image}: { title: string, numb
                         </Text>
                     </Text>
                 </View>
-                <View
+                <TouchableOpacity
+                    onPress={() => handleOpenEditModal(id)}
                     style={{
                         height: 20,
                         borderRadius: 8,
@@ -98,7 +102,7 @@ export const ShopAssortmentItem = ({title, number, image}: { title: string, numb
                     >
                         Изменить
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
         </TouchableOpacity>
     )

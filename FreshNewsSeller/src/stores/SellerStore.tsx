@@ -90,14 +90,22 @@ class SellerStore {
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-        axios.post(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}&image=${image}`, {headers})
-            .then((res) => {
-                console.log('re getAddItem', res)
-            })
-            .catch(error => {
-                console.log('getAddItem error', error);
-                this.errorData = error;
-            });
+        const formData = new FormData();
+        formData.append('Image', {
+            uri: image,
+            type: 'image/jpeg',
+            name: "image.jpg",
+        });
+        let requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+            redirect: 'follow'
+        };
+        console.log(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`);
+        fetch(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
     };
 
     @action
@@ -106,14 +114,22 @@ class SellerStore {
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-        axios.post(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}&image=${image}`, {headers})
-            .then((res) => {
-                console.log('re getEditItem', res)
-            })
-            .catch(error => {
-                console.log('getEditItem error', error);
-                this.errorData = error;
-            });
+        const formData = new FormData();
+        formData.append('Image', {
+            uri: image,
+            type: 'image/jpeg',
+            name: "image.jpg",
+        });
+        let requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
+            // .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
     };
 
     @action
