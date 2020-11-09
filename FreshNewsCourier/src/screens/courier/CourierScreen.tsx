@@ -5,7 +5,6 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Image,
     Platform,
     BackHandler,
     ScrollView
@@ -28,9 +27,13 @@ import {toJS} from "mobx";
 import {NavigationEvents} from "react-navigation";
 import userInfo from '../../stores/UserInfo';
 import courierStore from '../../stores/CourierStore';
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import * as Location from 'expo-location';
 import {NextListItem} from "./components/NextListItem";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from "./modals/ErrorModal";
 
 @observer
 export default class CourierScreen extends React.Component<NavigationProps, any> {
@@ -41,6 +44,8 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         refreshing: false,
         location: null,
         errorMassage: '',
+        errorModal: false,
+        errorData: [],
     };
 
     async componentDidMount() {
@@ -60,6 +65,12 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
+            if (courierStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(courierStore.errorData),
+                    errorModal: true
+                })
+            }
             const firstItem = toJS(courierUserData)[0];
             const AllData = toJS(courierUserData).splice(0, 1);
             if (toJS(courierUserData).length === 1) {
@@ -156,6 +167,20 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         courierStore.getCourierOrderConfirmation(id, code)
     };
 
+    handleOpenErrorModal = async () => {
+        this.setState({
+            errorModal: true,
+            errorData: toJS(courierStore.errorData),
+        }, () => console.log('errorData', this.state.errorData));
+    };
+
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
     render() {
         return (
             <>
@@ -178,159 +203,190 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                             </View>
                         )
                         : (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    marginTop: Platform.OS === "ios" ? 0 : 40
-                                }}
-                            >
-                                <NavigationEvents onDidFocus={() => this.onRefresh()}/>
-                                <Header
-                                    headerLeft={
-                                        <TouchableOpacity
-                                            style={{marginLeft: 8}}
-                                            onPress={() => this.props.navigation.navigate('CourierProfile')}
+                            <>
+                                <Modal
+                                    visible={this.state.errorModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
+                                            style={{
+                                                backgroundColor: 'red'
+                                            }}
                                         >
-                                            <Feather
-                                                name={'menu'}
-                                                size={size34}
-                                                color={'rgba(112, 112, 112, 0.4)'}
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
+                                                }}
+                                                onPress={() => this.handleCloseErrorModal()}
                                             />
-                                        </TouchableOpacity>
+                                        </ModalFooter>
                                     }
-                                    headerMid={
-                                        <LogoAndTitle courier={true}/>
-                                    }
-                                    headerRight={
-                                        <TouchableOpacity
-                                            style={{marginRight: 28}}
-                                            onPress={() => this.props.navigation.navigate('TakeOrderScreen')}
-                                        >
-                                            <FontAwesome5
-                                                name={'map-marker'}
-                                                size={size28}
-                                                color={'#8CC83F'}
-                                            />
-                                        </TouchableOpacity>
-                                    }
-                                />
-                                <ScrollView
+                                    onTouchOutside={() => {
+                                        this.setState({errorModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <ErrorModal
+                                            data={this.state.errorData}
+                                            handleCloseErrorModal={this.handleCloseErrorModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
+                                <View
                                     style={{
                                         flex: 1,
-                                        width: WINDOW_WIDTH,
+                                        alignItems: 'center',
+                                        marginTop: Platform.OS === "ios" ? 0 : 40
                                     }}
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this.onRefresh.bind(this)}
-                                        />
-                                    }
                                 >
-                                    {
-                                        this.state.ActiveOrder !== null
-                                            ? (
-                                                <View>
-                                                    {
-                                                        this.state.ActiveOrder.map((item: any) => {
-                                                            return (
-                                                                <View key={item.id}>
-                                                                    <View
-                                                                        style={{
-                                                                            backgroundColor: '#F5F4F4',
-                                                                            paddingVertical: size16
-                                                                        }}
-                                                                    >
-                                                                        <Text
+                                    <NavigationEvents onDidFocus={() => this.onRefresh()}/>
+                                    <Header
+                                        headerLeft={
+                                            <TouchableOpacity
+                                                style={{marginLeft: 8}}
+                                                onPress={() => this.props.navigation.navigate('CourierProfile')}
+                                            >
+                                                <Feather
+                                                    name={'menu'}
+                                                    size={size34}
+                                                    color={'rgba(112, 112, 112, 0.4)'}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                        headerMid={
+                                            <LogoAndTitle courier={true}/>
+                                        }
+                                        headerRight={
+                                            <TouchableOpacity
+                                                style={{marginRight: 28}}
+                                                onPress={() => this.props.navigation.navigate('TakeOrderScreen')}
+                                            >
+                                                <FontAwesome5
+                                                    name={'map-marker'}
+                                                    size={size28}
+                                                    color={'#8CC83F'}
+                                                />
+                                            </TouchableOpacity>
+                                        }
+                                    />
+                                    <ScrollView
+                                        style={{
+                                            flex: 1,
+                                            width: WINDOW_WIDTH,
+                                        }}
+                                        refreshControl={
+                                            <RefreshControl
+                                                refreshing={this.state.refreshing}
+                                                onRefresh={this.onRefresh.bind(this)}
+                                            />
+                                        }
+                                    >
+                                        {
+                                            this.state.ActiveOrder !== null
+                                                ? (
+                                                    <View>
+                                                        {
+                                                            this.state.ActiveOrder.map((item: any) => {
+                                                                return (
+                                                                    <View key={item.id}>
+                                                                        <View
                                                                             style={{
-                                                                                fontFamily: MontserratSemiBold,
-                                                                                fontSize: size16,
-                                                                                paddingHorizontal: size16,
+                                                                                backgroundColor: '#F5F4F4',
+                                                                                paddingVertical: size16
                                                                             }}
                                                                         >
-                                                                            {'Активный заказ'}
-                                                                        </Text>
+                                                                            <Text
+                                                                                style={{
+                                                                                    fontFamily: MontserratSemiBold,
+                                                                                    fontSize: size16,
+                                                                                    paddingHorizontal: size16,
+                                                                                }}
+                                                                            >
+                                                                                {'Активный заказ'}
+                                                                            </Text>
+                                                                        </View>
+                                                                        <ListItem
+                                                                            item={item}
+                                                                            onPress={() => this.props.navigation.navigate('ConfirmScreen', {
+                                                                                item: item,
+                                                                            })}
+                                                                            navigation={this.props.navigation}
+                                                                            handleScanner={this.handleScanner}
+                                                                        />
                                                                     </View>
-                                                                    <ListItem
-                                                                        item={item}
-                                                                        onPress={() => this.props.navigation.navigate('ConfirmScreen', {
-                                                                            item: item,
-                                                                        })}
-                                                                        navigation={this.props.navigation}
-                                                                        handleScanner={this.handleScanner}
-                                                                    />
-                                                                </View>
-                                                            )
-                                                        })
-                                                    }
-                                                    <SectionList
-                                                        showsVerticalScrollIndicator={false}
-                                                        sections={this.state.AllOrder}
-                                                        keyExtractor={(item: any, index: any) => item + index}
-                                                        renderItem={({item}) => (
-                                                            <NextListItem
-                                                                item={item}
-                                                            />
-                                                        )}
-                                                        renderSectionHeader={({section: {title}}) => (
-                                                            <View
-                                                                style={{
-                                                                    backgroundColor: '#F5F4F4',
-                                                                    paddingVertical: size16
-                                                                }}
-                                                            >
-                                                                <Text
+                                                                )
+                                                            })
+                                                        }
+                                                        <SectionList
+                                                            showsVerticalScrollIndicator={false}
+                                                            sections={this.state.AllOrder}
+                                                            keyExtractor={(item: any, index: any) => item + index}
+                                                            renderItem={({item}) => (
+                                                                <NextListItem
+                                                                    item={item}
+                                                                />
+                                                            )}
+                                                            renderSectionHeader={({section: {title}}) => (
+                                                                <View
                                                                     style={{
-                                                                        fontFamily: MontserratSemiBold,
-                                                                        fontSize: size16,
-                                                                        paddingHorizontal: size16,
+                                                                        backgroundColor: '#F5F4F4',
+                                                                        paddingVertical: size16
                                                                     }}
                                                                 >
-                                                                    {title}
-                                                                </Text>
-                                                            </View>
-                                                        )}
-                                                    />
-                                                </View>
-                                            )
-                                            : (
-                                                <View
-                                                    style={{
-                                                        flex: 1,
-                                                        justifyContent: "center",
-                                                        alignItems: 'center'
-                                                    }}
-                                                >
-                                                    <Text
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: size16,
+                                                                            paddingHorizontal: size16,
+                                                                        }}
+                                                                    >
+                                                                        {title}
+                                                                    </Text>
+                                                                </View>
+                                                            )}
+                                                        />
+                                                    </View>
+                                                )
+                                                : (
+                                                    <View
                                                         style={{
-                                                            fontFamily: MontserratSemiBold,
-                                                            fontSize: size16,
-                                                            alignSelf: 'center'
+                                                            flex: 1,
+                                                            justifyContent: "center",
+                                                            alignItems: 'center'
                                                         }}
                                                     >
-                                                        Нет активных заказов
-                                                    </Text>
-                                                    {/*<View*/}
-                                                    {/*    style={{*/}
-                                                    {/*        alignContent: "flex-end",*/}
-                                                    {/*        alignSelf: "flex-end",*/}
-                                                    {/*        borderWidth: 1,*/}
-                                                    {/*        borderColor: 'red',*/}
-                                                    {/*    }}*/}
-                                                    {/*>*/}
-                                                    {/*    <Image*/}
-                                                    {/*        style={{*/}
-                                                    {/*            width: 200,*/}
-                                                    {/*            height: 200,*/}
-                                                    {/*        }}*/}
-                                                    {/*        source={require('../../../assets/images/background_not_item.png')}*/}
-                                                    {/*    />*/}
-                                                    {/*</View>*/}
-                                                </View>
-                                            )
-                                    }
-                                </ScrollView>
-                            </View>
+                                                        <Text
+                                                            style={{
+                                                                fontFamily: MontserratSemiBold,
+                                                                fontSize: size16,
+                                                                alignSelf: 'center'
+                                                            }}
+                                                        >
+                                                            Нет активных заказов
+                                                        </Text>
+                                                        {/*<View*/}
+                                                        {/*    style={{*/}
+                                                        {/*        alignContent: "flex-end",*/}
+                                                        {/*        alignSelf: "flex-end",*/}
+                                                        {/*        borderWidth: 1,*/}
+                                                        {/*        borderColor: 'red',*/}
+                                                        {/*    }}*/}
+                                                        {/*>*/}
+                                                        {/*    <Image*/}
+                                                        {/*        style={{*/}
+                                                        {/*            width: 200,*/}
+                                                        {/*            height: 200,*/}
+                                                        {/*        }}*/}
+                                                        {/*        source={require('../../../assets/images/background_not_item.png')}*/}
+                                                        {/*    />*/}
+                                                        {/*</View>*/}
+                                                    </View>
+                                                )
+                                        }
+                                    </ScrollView>
+                                </View>
+                            </>
                         )
                 }
             </>

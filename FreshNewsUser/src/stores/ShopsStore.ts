@@ -16,9 +16,9 @@ class ShopsStore {
     @observable getShopsItem: any = [];
     @observable getShopShares: any = [];
     @observable isShowShopInformation: boolean = false;
-    @observable getShopItemInfo: any = []
-    @observable allOrders: any = []
-    @observable Error: any = []
+    @observable getShopItemInfo: any = [];
+    @observable allOrders: any = [];
+    @observable errorData: any = null;
 
     @action
     selectCategory = (index: number) => {
@@ -62,8 +62,9 @@ class ShopsStore {
                 this.getShopData = res.data;
 
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getShopsHome', error);
+                this.errorData = error
             })
     }
 
@@ -74,8 +75,9 @@ class ShopsStore {
             .then((res) => {
                 this.getShopSection = res.data;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getShopsSections', error);
+                this.errorData = error
             })
     }
 
@@ -91,8 +93,9 @@ class ShopsStore {
                 //     this.getShopLoader = false;
                 // }
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getShop', error);
+                this.errorData = error
             })
     }
 
@@ -105,8 +108,9 @@ class ShopsStore {
                 console.log('getShops', res)
                 this.getShopsItem = res.data;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getShops', error);
+                this.errorData = error
             })
     }
 
@@ -119,8 +123,9 @@ class ShopsStore {
                 console.log('getPromoCode', res)
                 this.getShopShares = res.data;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getPromoCode', error);
+                this.errorData = error
             })
     }
 
@@ -147,9 +152,9 @@ class ShopsStore {
             .then((res) => {
                 this.allOrders = res.data;
             })
-            .catch((e) => {
-                console.log('orderUserTime error', e)
-                this.Error = e
+            .catch((error) => {
+                console.log('error getPromoCode', error);
+                this.errorData = error
             })
     }
 }

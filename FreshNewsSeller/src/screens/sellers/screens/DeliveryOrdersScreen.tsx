@@ -8,6 +8,7 @@ import sellerStore from "../../../stores/SellerStore";
 import {toJS} from "mobx";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {ErrorModal} from "../modals/ErrorModal";
+// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 export default class DeliveryOrdersScreen extends Component<any, any> {

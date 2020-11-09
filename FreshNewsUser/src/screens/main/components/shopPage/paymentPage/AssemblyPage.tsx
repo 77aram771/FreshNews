@@ -24,7 +24,7 @@ import paymentStore from "../../../../../stores/PaymentStore";
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
 import Modal from "react-native-modal";
-import ErrorMode from "../../ErrorMode";
+import ErrorMode from "../../modals/ErrorMode";
 let moment = require('moment');
 
 @observer

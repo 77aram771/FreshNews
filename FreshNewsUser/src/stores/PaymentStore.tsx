@@ -10,7 +10,7 @@ class PaymentStore {
     @observable time: any = [];
     @observable selectAddress: any = [];
     @observable selectTime: any = [];
-    @observable Error: any = null;
+    @observable errorData: any = null;
 
     @action
     onSelectPayment = (value: string) => {
@@ -28,9 +28,9 @@ class PaymentStore {
             .then((res) => {
                 this.time = res.data;
             })
-            .catch((e) => {
-                console.log('orderUserTime error', e)
-                this.Error = e
+            .catch((error) => {
+                console.log('error orderUserTime', error);
+                this.errorData = error
             })
     };
 
@@ -46,9 +46,9 @@ class PaymentStore {
                 console.log('getOrder res', res)
                 this.order = res.data;
             })
-            .catch((e) => {
-                console.log('getOrder error', e)
-                this.Error = e
+            .catch((error) => {
+                console.log('error getOrder', error);
+                this.errorData = error
             })
     };
 
@@ -70,16 +70,16 @@ class PaymentStore {
             .then(res => {
                 console.log('res pay===--------', res)
             })
-            .catch((e) => {
-                console.log('orderUserTime error', e)
-                this.Error = e
+            .catch((error) => {
+                console.log('error getOrder', error);
+                this.errorData = error
             })
     };
 
     @action
     getSelectAddress = async (address: any) => {
         this.selectAddress = address;
-    }
+    };
 
     @action
     getSelectTime = async (time: any) => {
@@ -101,7 +101,7 @@ class PaymentStore {
         let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
         console.log(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`);
-        var requestOptions = {
+        let requestOptions = {
             method: 'POST',
             headers: headers,
             redirect: 'follow'
@@ -111,15 +111,15 @@ class PaymentStore {
                 console.log('res', res)
                 this.order = res;
             })
-            .catch((e) => {
-                console.log('finishPayment error', e)
-                this.Error = e
+            .catch((error) => {
+                console.log('error getOrder', error);
+                this.errorData = error
             })
-    }
+    };
 
     @action
     closeErrorModal = () => {
-        this.Error = null;
+        this.errorData = null;
     };
 }
 

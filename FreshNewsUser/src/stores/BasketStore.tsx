@@ -6,8 +6,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 class BasketStore {
     @observable productCount: number = 0;
-    @observable cartUserInfo: any = []
-    @observable allPrice: number = 0
+    @observable cartUserInfo: any = [];
+    @observable allPrice: number = 0;
+    @observable errorData: any = null;
 
     @action
     getCartUserInfo = async () => {
@@ -32,11 +33,11 @@ class BasketStore {
 
                 this.allPrice = AllSum;
             })
-            .catch((e) => {
-                console.log(e)
+            .catch((error) => {
+                console.log('error getCartUserInfo', error);
+                this.errorData = error
             })
-
-    }
+    };
 
     @action
     getAddCartUser = async (id: number, count: number) => {
@@ -56,7 +57,10 @@ class BasketStore {
                     this.getCartUserInfo()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((error) => {
+                console.log('error getAddCartUser', error);
+                this.errorData = error
+            })
     }
 
     @action
@@ -78,7 +82,10 @@ class BasketStore {
                     this.getCartUserInfo()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((error) => {
+                console.log('error getDeleteCartItem', error);
+                this.errorData = error
+            })
     }
 
     @action
@@ -100,7 +107,10 @@ class BasketStore {
                     this.getCartUserInfo()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((error) => {
+                console.log('error getDeleteCarAllItem', error);
+                this.errorData = error
+            })
     }
 
     @action
@@ -122,7 +132,10 @@ class BasketStore {
                     this.getCartUserInfo()
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch((error) => {
+                console.log('error getUpdateCartItem', error);
+                this.errorData = error
+            })
     }
 }
 

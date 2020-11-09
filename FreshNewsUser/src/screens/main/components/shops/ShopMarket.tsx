@@ -24,7 +24,9 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
     state = {
         refreshing: true,
         promo: null,
-        sections: null
+        sections: null,
+        errorModal: false,
+        errorData: [],
     }
 
     async componentDidMount() {
@@ -62,6 +64,20 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
             shopCode: code
         })
     }
+
+    handleOpenErrorModal = async () => {
+        this.setState({
+            errorModal: true,
+            errorData: toJS(shopsStore.errorData),
+        }, () => console.log('errorData', this.state.errorData));
+    };
+
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
 
     render() {
 

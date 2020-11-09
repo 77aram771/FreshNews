@@ -13,6 +13,14 @@ import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
+import Modal from "react-native-modal";
+import modalsStore from "../../stores/ModalsStore";
+import CourierInformation from './components/sideBar/CourierInformation';
+import LegalEntities from "./components/sideBar/LegalEntities";
+import Delivery from "./components/sideBar/Delivery";
+import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
+import Feedback from "./components/sideBar/Feedback";
+import TermsOfUse from './components/sideBar/TermsOfUse';
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language : "ru"});
 
@@ -74,6 +82,79 @@ export default class MainScreen extends React.Component<NavigationProps> {
                         height: HEADER_HEIGHT
                     }}
                 />
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowCourierInformation}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowCourierInformation}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowCourierInformation}
+                >
+                    <CourierInformation/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowLegalEntities}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowLegalEntities}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowLegalEntities}
+                >
+                    <LegalEntities/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowDelivery}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowDelivery}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowDelivery}
+                >
+                    <Delivery/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowQuestionsAndAnswers}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowQuestionsAndAnswers}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowQuestionsAndAnswers}
+                >
+                    <QuestionsAndAnswers/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowFeedback}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowFeedback}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowFeedback}
+                >
+                    <Feedback/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={modalsStore.onShowTermsOfUse}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={modalsStore.onShowTermsOfUse}
+                    style={{margin: 0}}
+                    isVisible={modalsStore.isShowTermsOfUse}
+                >
+                    <TermsOfUse/>
+                </Modal>
+
                 <MainHeader
                     navigation={this.props.navigation}
                 />

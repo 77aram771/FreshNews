@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import {WINDOW_HEIGHT, WINDOW_WIDTH} from "../../../share/consts";
-import {MontserratSemiBold} from "../../../share/fonts";
-import paymentStore from "../../../stores/PaymentStore";
+import {WINDOW_HEIGHT, WINDOW_WIDTH} from "../../../../share/consts";
+import {MontserratSemiBold} from "../../../../share/fonts";
+import paymentStore from "../../../../stores/PaymentStore";
 
 export default function ErrorMode({errorMassage= 'test test test', errorCode = '500'}) {
     return (

@@ -36,8 +36,6 @@ export default class CourierProfile extends React.Component<NavigationProps> {
     render() {
 
         const {offline} = this.state;
-
-        const {onShowCourierProfileModal} = modalsStore;
         const {userData} = userInfo;
 
         return (

@@ -1,6 +1,6 @@
 // @ts-ignore
 import {action, observable} from 'mobx';
-import {Animated, Text} from 'react-native';
+import {Animated} from 'react-native';
 import React from "react";
 
 class ModalsStore {

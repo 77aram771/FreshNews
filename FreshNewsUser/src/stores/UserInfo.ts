@@ -6,7 +6,7 @@ import axios from "axios";
 
 class UserInfo {
     @observable userData: any = [];
-    @observable Еrror: any = null;
+    @observable errorData: any = null;
 
     @action
     getUserData = async () => {
@@ -20,7 +20,7 @@ class UserInfo {
             })
             .catch(error => {
                 console.log('getUserData error', error);
-                this.Еrror = error;
+                this.errorData = error;
             });
     };
 
@@ -46,7 +46,7 @@ class UserInfo {
             })
             .catch(error => {
                 console.log('getUserDataUpdate error', error);
-                this.Еrror = error;
+                this.errorData = error;
             });
     }
 
@@ -72,7 +72,7 @@ class UserInfo {
             })
             .catch(error => {
                 console.log('getUserDataAddAddress error', error);
-                this.Еrror = error;
+                this.errorData = error;
             });
     }
 
@@ -98,7 +98,7 @@ class UserInfo {
             })
             .catch(error => {
                 console.log('getUserDataAddAddress error', error);
-                this.Еrror = error;
+                this.errorData = error;
             });
     }
 }
