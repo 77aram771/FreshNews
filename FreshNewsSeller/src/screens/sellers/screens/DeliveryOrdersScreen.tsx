@@ -7,13 +7,17 @@ import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from "../../../stores/SellerStore";
 import {toJS} from "mobx";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {ErrorModal} from "../modals/ErrorModal";
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 export default class DeliveryOrdersScreen extends Component<any, any> {
 
     state = {
         refreshing: false,
         mockData: [],
-        code: ''
+        code: '',
+        errorModal: false,
+        errorData: [],
     };
 
     async componentDidMount() {
@@ -26,6 +30,12 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                 mockData: toJS(sellerStore.infoOrder),
                 refreshing: false
             });
+            if (sellerStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(sellerStore.errorData),
+                    errorModal: true
+                })
+            }
         }, 2000);
     };
 
@@ -35,10 +45,25 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
         });
         await sellerStore.getScan(id, code);
         setTimeout(() => {
-            this.setState({
-                mockData: [toJS(sellerStore.scanData)],
-            })
+            if (sellerStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(sellerStore.errorData),
+                    errorModal: true
+                })
+            }
+            else {
+                this.setState({
+                    mockData: [toJS(sellerStore.scanData)],
+                })
+            }
         }, 3000)
+    };
+
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
     };
 
     renderItem(item: any) {
@@ -250,6 +275,36 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                                     flex: 1
                                 }}
                             >
+                                <Modal
+                                    visible={this.state.errorModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
+                                            style={{
+                                                backgroundColor: 'red'
+                                            }}
+                                        >
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
+                                                }}
+                                                onPress={() => this.handleCloseErrorModal()}
+                                            />
+                                        </ModalFooter>
+                                    }
+                                    onTouchOutside={() => {
+                                        this.setState({errorModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <ErrorModal
+                                            data={this.state.errorData}
+                                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                                            handleCloseErrorModal={this.handleCloseErrorModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
                                 <View
                                     style={{
                                         width: WINDOW_WIDTH,

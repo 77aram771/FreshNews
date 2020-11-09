@@ -17,15 +17,16 @@ import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals
 import {EditModal} from "./modals/EditModal";
 import {InfoModal} from "./modals/InfoModal";
 import {AddModal} from "./modals/AddModal";
+import {ErrorModal} from "./modals/ErrorModal";
 
 @observer
 export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
 
     state = {
-        show1: false,
+        show1: true,
         show2: false,
-        show3: true,
+        show3: false,
         show4: false,
         refreshing: false,
         orders: null,
@@ -39,6 +40,8 @@ class HomeSellerPage extends Component<any, any> {
         infoData: [],
         addModal: false,
         addData: [],
+        errorModal: false,
+        errorData: [],
     };
 
     componentDidMount() {
@@ -52,6 +55,12 @@ class HomeSellerPage extends Component<any, any> {
                 orders: toJS(sellerStore.sellerData.orders),
                 products: toJS(sellerStore.sellerData.products),
             }, () => {
+                if (sellerStore.errorData !== null) {
+                    this.setState({
+                        errorData: toJS(sellerStore.errorData),
+                        errorModal: true
+                    })
+                }
                 // @ts-ignore
                 this.state.orders.map((item: any) => {
                     if (item.status === 1) {
@@ -192,7 +201,21 @@ class HomeSellerPage extends Component<any, any> {
             infoModal: !this.state.infoModal,
             editModal: !this.state.editModal,
         })
-    }
+    };
+
+    handleOpenErrorModal = async () => {
+        this.setState({
+            errorModal: true,
+            errorData: toJS(sellerStore.errorData),
+        }, () => console.log('errorData', this.state.errorData));
+    };
+
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
 
     render() {
 
@@ -310,6 +333,36 @@ class HomeSellerPage extends Component<any, any> {
                                     <ModalContent>
                                         <AddModal
                                             handleCloseAddModal={this.handleCloseAddModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
+                                <Modal
+                                    visible={this.state.errorModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
+                                            style={{
+                                                backgroundColor: 'red'
+                                            }}
+                                        >
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
+                                                }}
+                                                onPress={() => this.handleCloseErrorModal()}
+                                            />
+                                        </ModalFooter>
+                                    }
+                                    onTouchOutside={() => {
+                                        this.setState({errorModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <ErrorModal
+                                            data={this.state.errorData}
+                                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                                            handleCloseErrorModal={this.handleCloseErrorModal}
                                         />
                                     </ModalContent>
                                 </Modal>

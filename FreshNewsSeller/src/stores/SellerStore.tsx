@@ -63,9 +63,9 @@ class SellerStore {
 
     @action
     getScan = async (id: any, code: any) => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
         let requestOptions = {
@@ -76,7 +76,11 @@ class SellerStore {
         fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
-                this.scanData = res;
+                if (res.status_code === 200) {
+                    this.scanData = res;
+                } else {
+                    this.errorData = res;
+                }
             })
             .catch(error => {
                 console.log('getScan error', error);
@@ -105,7 +109,10 @@ class SellerStore {
         console.log(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`);
         fetch(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
             .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                console.log('getAddItem error', error);
+                this.errorData = error;
+            });
     };
 
     @action
@@ -127,9 +134,11 @@ class SellerStore {
             redirect: 'follow'
         };
         fetch(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
-            // .then(response => response.json())
             .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                console.log('getEditItem error', error);
+                this.errorData = error;
+            });
     };
 
     @action
