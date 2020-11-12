@@ -22,6 +22,7 @@ import {
 import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import {PaymentElement} from './PaymentElement';
+// @ts-ignore
 import {LiteCreditCardInput} from "react-native-credit-card-input";
 import paymentStore from "../../../../../stores/PaymentStore";
 import RNPickerSelect from "react-native-picker-select";
@@ -29,52 +30,9 @@ import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
 let moment = require('moment');
 
-// const PaymentRequest = require('react-native-payments').PaymentRequest;
-//
-// const METHOD_DATA = [{
-//     supportedMethods: ['apple-pay'],
-//     data: {
-//         merchantIdentifier: 'merchant.apple.test',
-//         supportedNetworks: ['visa', 'mastercard', 'amex'],
-//         countryCode: 'US',
-//         currencyCode: 'USD'
-//     }
-// }];
-//
-// const DETAILS = {
-//     id: 'basic-example',
-//     displayItems: [
-//         {
-//             label: 'Movie Ticket',
-//             amount: { currency: 'USD', value: '15.00' }
-//         },
-//         {
-//             label: 'Grocery',
-//             amount: { currency: 'USD', value: '5.00' }
-//         }
-//     ],
-//     shippingOptions: [{
-//         id: 'economy',
-//         label: 'Economy Shipping',
-//         amount: { currency: 'USD', value: '0.00' },
-//         detail: 'Arrives in 3-5 days' // `detail` is specific to React Native Payments
-//     }],
-//     total: {
-//         label: 'Enappd Store',
-//         amount: { currency: 'USD', value: '20.00' }
-//     }
-// };
-// const OPTIONS = {
-//     requestPayerName: true,
-//     requestPayerPhone: true,
-//     requestPayerEmail: true,
-//     requestShipping: true
-// };
-//
-// const paymentRequest = new PaymentRequest(METHOD_DATA, DETAILS, OPTIONS);
-
 @observer
-export default class FinishPaymentPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class FinishPaymentPage extends Component<NavigationProps> {
 
     state = {
         address: '',
@@ -83,8 +41,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
         apartment: '',
         intercom: '',
         messageToCourier: '',
-        date: '',
-        time: '',
         addressInput: false,
         porchInput: false,
         levelInput: false,
@@ -123,7 +79,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
         });
         // const {orderUserTime} = paymentStore;
         // orderUserTime();
-    }
+    };
 
     handleValidationAddress(value: string) {
         if (value.length === 0) {
@@ -152,7 +108,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 }
             }
         }
-    }
+    };
 
     handleValidationPorch(value: string) {
         if (value.length === 0) {
@@ -181,7 +137,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 }
             }
         }
-    }
+    };
 
     handleValidationLevel(value: string) {
         if (value.length === 0) {
@@ -210,7 +166,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 }
             }
         }
-    }
+    };
 
     handleValidationApartment(value: string) {
         if (value.length === 0) {
@@ -238,7 +194,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 }
             }
         }
-    }
+    };
 
     handleValidationIntercom(value: string) {
         if (value.length === 0) {
@@ -266,7 +222,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 }
             }
         }
-    }
+    };
 
     handleSelectAddress(value: string) {
         if (value) {
@@ -288,12 +244,12 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
 
     _onChange(form: any) {
         //console.log(form);
-    }
+    };
 
     handlePayment() {
         paymentStore.finishPayment(this.props.navigation.state.params.id, paymentStore.isSelectedPayment)
         this.props.navigation.navigate('FinishPaymentScreen')
-    }
+    };
 
     render() {
         const placeholder = {
@@ -307,8 +263,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
             level,
             apartment,
             intercom,
-            date,
-            time,
             messageToCourier,
             addressInput,
             porchInput,
@@ -338,7 +292,7 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                         <Text style={styles.headerMiddleTitle}>
                             Заказы в{' '}
                             <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                                Supermango
+                                {this.props.navigation.state.params.shopName}
                             </Text>
                         </Text>
                     }
@@ -346,7 +300,6 @@ export default class FinishPaymentPage extends Component<NavigationProps> {
                 <ScrollView
                     style={{
                         paddingHorizontal: 26,
-                        marginBottom: 50,
                     }}
                 >
                     <Text

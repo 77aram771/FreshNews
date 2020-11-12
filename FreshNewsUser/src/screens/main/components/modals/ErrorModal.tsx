@@ -83,7 +83,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratMedium
                         }}
                     >
-                        Собшения ошибки
+                        Сообшения ошибки
                     </Text>
                     <Text
                         style={{

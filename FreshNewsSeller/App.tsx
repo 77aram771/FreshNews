@@ -80,6 +80,9 @@ const SellerStackScreen = ({navigation}: any) => {
                             />
                         </TouchableOpacity>
                     ),
+                    headerRight: () => (
+                        <View/>
+                    )
                 }}
             />
             <SellerStack.Screen
@@ -116,6 +119,9 @@ const SellerStackScreen = ({navigation}: any) => {
                             />
                         </TouchableOpacity>
                     ),
+                    headerRight: () => (
+                        <View/>
+                    )
                 }}
             />
             <SellerStack.Screen
@@ -152,6 +158,9 @@ const SellerStackScreen = ({navigation}: any) => {
                             />
                         </TouchableOpacity>
                     ),
+                    headerRight: () => (
+                        <View/>
+                    )
                 }}
             />
             <SellerStack.Screen

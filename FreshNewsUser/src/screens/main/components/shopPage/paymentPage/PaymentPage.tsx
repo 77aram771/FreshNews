@@ -49,7 +49,7 @@ class PaymentPage extends Component<NavigationProps> {
             addressArray: [],
             timeArray: []
         };
-    }
+    };
 
     componentDidMount() {
         paymentStore.orderUserTime();
@@ -70,7 +70,7 @@ class PaymentPage extends Component<NavigationProps> {
                     value: toJS(time)[key],
                 }))
             }
-        }
+        };
     }
 
     handleValidationAddress(value: string) {
@@ -214,6 +214,11 @@ class PaymentPage extends Component<NavigationProps> {
                 }
             }
         }
+    };
+
+    handleComment(value: string){
+        this.setState({messageToCourier: value});
+        paymentStore.handleComment(value);
     };
 
     handleSelectAddress(value: string) {
@@ -485,7 +490,7 @@ class PaymentPage extends Component<NavigationProps> {
                         multiline={true}
                         numberOfLines={3}
                         value={messageToCourier}
-                        onChangeText={value => this.setState({messageToCourier: value})}
+                        onChangeText={value => this.handleComment(value)}
                         textInputStyle={{
                             flex: 1,
                             fontFamily: MontserratRegular,

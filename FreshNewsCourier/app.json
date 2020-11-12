@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "FreshNews",
-    "slug": "FreshNews",
-    "version": "1.0.8",
+    "name": "FreshNewsCourier",
+    "slug": "FreshNewsCourier",
+    "version": "3.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo_ios.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

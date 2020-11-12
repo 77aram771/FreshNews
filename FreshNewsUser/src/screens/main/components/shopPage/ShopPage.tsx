@@ -3,10 +3,10 @@ import {
     ImageBackground,
     RefreshControl,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
 } from 'react-native';
+// @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../../../share/interfaces';
@@ -21,10 +21,9 @@ import {
 } from '../../../../share/consts';
 import Modal from 'react-native-modal';
 import ProductPage from './productPage/ProductPage';
-import MainHeader from '../../../../share/components/MainHeader';
 import {toJS} from "mobx";
 import shopsStore from '../../../../stores/ShopsStore';
-import modalsStore from "../../../../stores/ModalsStore";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import Header from "../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -32,7 +31,8 @@ import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
 import basketStore from "../../../../stores/BasketStore";
 
 @observer
-export default class ShopPage extends React.Component<NavigationProps> {
+export default // @ts-ignore
+class ShopPage extends React.Component<NavigationProps> {
 
     state = {
         shopData: [],
@@ -111,7 +111,6 @@ export default class ShopPage extends React.Component<NavigationProps> {
                         )
                         : (
                             <>
-                                <View style={{height: HEADER_HEIGHT}}/>
                                 <Modal
                                     animationInTiming={400}
                                     animationOutTiming={400}
@@ -173,9 +172,9 @@ export default class ShopPage extends React.Component<NavigationProps> {
                                             <ShopListItem data={productData}/>
                                         </TouchableOpacity>
                                     )}
-                                    renderSectionHeader={({section}: any) => (
-                                        <Text style={styles.sectionHeader}>{section.title}</Text>
-                                    )}
+                                    // renderSectionHeader={({section}: any) => (
+                                    //     <Text style={styles.sectionHeader}>{section.title}</Text>
+                                    // )}
                                     refreshControl={
                                         <RefreshControl
                                             refreshing={this.state.refreshing}
@@ -197,6 +196,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        marginBottom: 20
     },
     sectionHeader: {
         color: '#BABABA',
@@ -205,10 +205,5 @@ const styles = StyleSheet.create({
         marginLeft: 16,
         marginTop: 45,
         marginBottom: 12,
-    },
-    categoryContainer: {
-        paddingVertical: 16,
-        paddingHorizontal: size20,
-        borderRadius: 10,
-    },
+    }
 });

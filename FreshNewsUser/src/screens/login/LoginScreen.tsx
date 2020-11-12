@@ -14,6 +14,7 @@ import {ActionButton} from '../../share/components/ActionButton';
 import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import authStore from "../../stores/AuthStore";
 import basketStore from "../../stores/BasketStore";
@@ -23,7 +24,8 @@ import shopsStore from "../../stores/ShopsStore";
 import modalsStore from "../../stores/ModalsStore";
 
 @observer
-export default class LoginScreen extends React.Component<NavigationProps> {
+export default // @ts-ignore
+class LoginScreen extends React.Component<NavigationProps> {
 
     constructor(props: any) {
         super(props);
@@ -37,20 +39,11 @@ export default class LoginScreen extends React.Component<NavigationProps> {
             numberInput: false,
             codeInput: false,
             smsStatus: false,
-            client: true,
             valid: false,
             showMessage: false,
             disabled: false,
         };
-    }
-
-    // async componentDidMount() {
-    //     let getToken = await AsyncStorage.getItem('Token')
-    //     if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
-    //         console.log('this.state.client', this.state.client)
-    //         this.state.client ? this.props.navigation.navigate('MainScreen') : this.props.navigation.navigate('CourierScreen');
-    //     }
-    // }
+    };
 
     componentWillUnmount() {
         this.setState({
@@ -61,7 +54,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
             codeInput: false,
             smsStatus: false
         })
-    }
+    };
 
     submitPhoneNumber() {
         const checkValid = this.phoneInput.current?.isValidNumber(this.state.value);
@@ -100,7 +93,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
         this.setState({
             confirmationPin: String(text)
         })
-    }
+    };
 
     async submitPin() {
         if (String(this.state.confirmationPin).length === 4) {
@@ -241,7 +234,7 @@ export default class LoginScreen extends React.Component<NavigationProps> {
                 </Text>
             </View>
         );
-    }
+    };
 }
 
 const styles = StyleSheet.create({
@@ -266,6 +259,7 @@ const styles = StyleSheet.create({
     },
     phoneInputTrue: {
         marginTop: WINDOW_HEIGHT / 10,
+        width: WINDOW_WIDTH - 90,
         backgroundColor: '#F5F4F4',
         borderStyle: 'solid',
         borderWidth: 1,
@@ -274,6 +268,7 @@ const styles = StyleSheet.create({
     phoneInputFalse: {
         marginTop: WINDOW_HEIGHT / 10,
         backgroundColor: '#F5F4F4',
+        width: WINDOW_WIDTH - 95,
     },
     codeInputTrue: {
         marginTop: 14,

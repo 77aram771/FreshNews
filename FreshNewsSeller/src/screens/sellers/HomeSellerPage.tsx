@@ -24,7 +24,7 @@ export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
 
     state = {
-        show1: true,
+        show1: false,
         show2: false,
         show3: false,
         show4: false,
@@ -211,7 +211,6 @@ class HomeSellerPage extends Component<any, any> {
     };
 
     handleCloseErrorModal = async () => {
-        // alert('test')
         await this.setState({
             errorModal: false,
         }, () => console.log('errorModal', this.state.errorModal))

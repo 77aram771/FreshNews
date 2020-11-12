@@ -294,6 +294,7 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                 onChangeText={text => Price(text)}
                                 value={String(price)}
                                 placeholder={String(data.price)}
+                                keyboardType={"number-pad"}
                             />
                         </View>
                     </View>

@@ -6,7 +6,7 @@ import axios from "axios";
 class CourierStore {
     @observable courierUserData: any = [];
     @observable courierData: any = [];
-    @observable errorData: any = [];
+    @observable errorData: any = null;
 
     @action
     getCourierData = async () => {
@@ -138,8 +138,8 @@ class CourierStore {
             redirect: 'follow'
         };
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
-            .then(response => response.text())
-            // .then(res => console.log('getCourierCoordinate, res', res))
+            .then(response => response.json())
+            .then(res => console.log('getCourierCoordinate, res', res))
             .catch((err) => {
                 console.log('getCourierCoordinate error', err);
                 this.errorData = err;

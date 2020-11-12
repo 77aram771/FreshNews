@@ -281,6 +281,7 @@ export const AddModal = ({handleCloseAddModal}: any) => {
                                 onChangeText={text => Price(text)}
                                 value={String(price)}
                                 placeholder={'Цена товара'}
+                                keyboardType={"number-pad"}
                             />
                         </View>
                     </View>

@@ -10,6 +10,7 @@ class PaymentStore {
     @observable time: any = [];
     @observable selectAddress: any = [];
     @observable selectTime: any = [];
+    @observable commentText: any = '';
     @observable errorData: any = null;
 
     @action
@@ -64,9 +65,9 @@ class PaymentStore {
             redirect: 'follow'
         };
 
-        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${comment}&date=${date}&time=${time}`)
+        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`)
 
-        fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${comment}&date=${date}&time=${time}`, requestOptions)
+        fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
                 console.log('res pay===--------', res)
             })
@@ -118,8 +119,9 @@ class PaymentStore {
     };
 
     @action
-    closeErrorModal = () => {
-        this.errorData = null;
+    handleComment = (text: string) => {
+        console.log('text comment', text)
+        this.commentText = text;
     };
 }
 

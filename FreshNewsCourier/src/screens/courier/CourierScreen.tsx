@@ -65,6 +65,7 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
+            console.log('courierStore.errorData', courierStore.errorData);
             if (courierStore.errorData !== null) {
                 this.setState({
                     errorData: toJS(courierStore.errorData),
@@ -79,7 +80,9 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     ActiveOrder: obj,
                     refreshing: false,
                 }, async () => {
-                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    setInterval(async () => {
+                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    }, 5000);
                 })
             } else if (toJS(courierUserData).length >= 1) {
                 let obj1 = [
@@ -94,7 +97,9 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     AllOrder: obj1,
                     refreshing: false
                 }, async () => {
-                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    setInterval(async () => {
+                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    }, 5000);
                 })
             } else {
                 this.setState({
@@ -123,8 +128,9 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     ActiveOrder: obj,
                     refreshing: false
                 }, async () => {
-                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                })
+                    setInterval(async () => {
+                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    }, 5000);                })
             } else if (toJS(courierUserData).length >= 1) {
                 let obj1 = [
                     {
@@ -138,8 +144,9 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     AllOrder: obj1,
                     refreshing: false
                 }, async () => {
-                    await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                })
+                    setInterval(async () => {
+                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                    }, 5000);                })
             } else {
                 this.setState({
                     ActiveOrder: null,

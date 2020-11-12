@@ -20,7 +20,7 @@ class FinishOfferPage extends Component<NavigationProps> {
         disabledBool: true,
         shopData: null,
         refreshing: true
-    }
+    };
 
     async componentDidMount() {
         const {getOrder} = paymentStore;
@@ -34,7 +34,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                 shopData: paymentStore.order
             }, ( ) => console.log('shopData.price', toJS(this.state.shopData)))
         }, 3000)
-    }
+    };
 
     async handleDeleteItem(id: number) {
         console.log('handleDeleteItem id', id)
@@ -328,7 +328,8 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                     : (
                                                                         <TouchableOpacity
                                                                             onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
-                                                                                id: this.props.navigation.state.params.id
+                                                                                id: this.props.navigation.state.params.id,
+                                                                                shopName: shopData.items[0].product.shop.name
                                                                             })}
                                                                             style={{
                                                                                 backgroundColor: '#8CC83F',

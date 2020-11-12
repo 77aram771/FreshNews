@@ -22,7 +22,7 @@ import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
 import Feedback from "./components/sideBar/Feedback";
 import TermsOfUse from './components/sideBar/TermsOfUse';
 
-Geocoder.init(GOOGLE_MAPS_APIKEY, {language : "ru"});
+Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 
 @observer
 export default class MainScreen extends React.Component<NavigationProps> {
@@ -33,9 +33,9 @@ export default class MainScreen extends React.Component<NavigationProps> {
         errorMessage: ""
     };
 
-   async componentDidMount() {
+    async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token')
-        if(getToken !== null) {
+        if (getToken !== null) {
             basketStore.getCartUserInfo()
             userInfo.getUserData();
             paymentStore.orderUserTime();
@@ -69,7 +69,6 @@ export default class MainScreen extends React.Component<NavigationProps> {
     };
 
     render() {
-
         return (
             <View
                 style={{
@@ -161,5 +160,5 @@ export default class MainScreen extends React.Component<NavigationProps> {
                 <ShopMarket navigation={this.props.navigation} getGeocodeAsync={() => this.getGeocodeAsync()}/>
             </View>
         );
-    }
+    };
 }

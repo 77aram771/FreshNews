@@ -23,8 +23,10 @@ import basketStore from '../../../../../stores/BasketStore';
 import paymentStore from "../../../../../stores/PaymentStore";
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
-import Modal from "react-native-modal";
-import ErrorMode from "../../modals/ErrorMode";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from '../../modals/ErrorModal';
+
 let moment = require('moment');
 
 @observer
@@ -37,28 +39,20 @@ class AssemblyPage extends Component<NavigationProps> {
         shopData: [],
         selectAddress: '',
         date: '',
-        errorCode: '',
-        errorMessage: ''
-    }
+        errorModal: false,
+        errorData: [],
+    };
 
     componentDidMount() {
+        console.log('AssemblyPage----------');
         const NewDate = moment().format('YYYY-MM-DD');
         this.setState({
             date: NewDate,
         });
         const {cartUserInfo} = basketStore;
-        // const {orderUserTime} = paymentStore;
-        // orderUserTime()
         this.setState({
             shopData: cartUserInfo
         });
-        console.log('paymentStore.Error', paymentStore.Error)
-        if(paymentStore.Error !== null){
-            // alert('test1234')
-        }
-        else {
-            // alert('test53241')
-        }
     };
 
     renderList(item: any): any {
@@ -108,50 +102,69 @@ class AssemblyPage extends Component<NavigationProps> {
     };
 
     handlePayment() {
-        console.log('paymentStore.selectAddress', toJS(paymentStore.selectAddress))
         const {userData} = userInfo;
         const {addresses} = userData;
-        toJS(addresses).find((item: any) =>  {
-            if(item.address === paymentStore.selectAddress){
+        toJS(addresses).find((item: any) => {
+            if (item.address === paymentStore.selectAddress) {
                 paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
-                if(paymentStore.Error === null){
+                console.log('paymentStore.Error', paymentStore.errorData);
+                if (paymentStore.errorData !== null) {
+                    this.setState({
+                        errorData: toJS(paymentStore.errorData),
+                        errorModal: true
+                    })
+                } else {
                     this.props.navigation.navigate('CloudPayment')
-                    console.log('paymentStore.Error if', paymentStore.Error)
                 }
-                else {
-                    console.log('paymentStore.Error else', paymentStore.Error)
-                }
-            }
-            else {
+            } else {
                 console.log('false')
             }
         });
+    };
+
+    handleCloseErrorModal = async () => {
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
     };
 
     render() {
 
         const {allPrice} = basketStore;
 
-        const {disabledBool, shopData, errorCode, errorMessage} = this.state;
-
-        const {Error, closeErrorModal} = paymentStore;
+        const {disabledBool, shopData, errorModal, errorData} = this.state;
 
         return (
             <>
                 <Modal
-                    animationInTiming={400}
-                    animationOutTiming={400}
-                    onBackButtonPress={closeErrorModal}
-                    hideModalContentWhileAnimating={true}
-                    backdropOpacity={0}
-                    onBackdropPress={closeErrorModal}
-                    style={{margin: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.3)',}}
-                    isVisible={Error}
+                    visible={errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрить"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
                 >
-                    <ErrorMode
-                        errorCode={errorCode}
-                        errorMassage={errorMessage}
-                    />
+                    <ModalContent>
+                        <ErrorModal
+                            data={errorData}
+                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
                 </Modal>
                 <Header
                     style={styles.headers}
@@ -483,7 +496,7 @@ class AssemblyPage extends Component<NavigationProps> {
 
             </>
         )
-    }
+    };
 }
 
 const styles = StyleSheet.create({
