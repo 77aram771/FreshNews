@@ -5,7 +5,7 @@ import Feather from "react-native-vector-icons/Feather";
 import {MontserratMedium, MontserratRegular} from "../../../share/fonts";
 
 export const InfoModal = ({data, handleCloseInfoModal, handleChangeInfoModalToEditModal}: any) => {
-    console.log('data', data);
+    // console.log('data', data);
     return (
         <View
             style={{

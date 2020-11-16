@@ -150,7 +150,7 @@ export const ListItem = ({
     handleScanner?: any;
 }) => {
 
-    console.log('item id', item.id)
+    console.log('item', item)
     const openMapUser = (address: any) => {
         showLocation({
             latitude: 38.8976763,

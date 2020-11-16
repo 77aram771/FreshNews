@@ -15,6 +15,12 @@ import PhoneInput from 'react-native-phone-number-input';
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import AsyncStorage from '@react-native-community/async-storage';
+import {toJS} from "mobx";
+import sellerStore from "../../stores/SellerStore";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from "../sellers/modals/ErrorModal";
+import authStore from "../../stores/UserInfo";
 
 @observer
 export default // @ts-ignore
@@ -36,6 +42,8 @@ class LoginScreen extends React.Component<any> {
             valid: false,
             showMessage: false,
             disabled: false,
+            errorModal: false,
+            errorData: [],
         };
     };
 
@@ -83,11 +91,20 @@ class LoginScreen extends React.Component<any> {
                         showConfirmScreen: true,
                     })
                 })
-                .catch(e => {
-                    console.error(e);
+                .catch(err => {
+                    console.log(err);
+                    let error = toJS(String(sellerStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    console.log('errorCode', errorCode);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
                     this.setState({
-                        isLoading: false
-                    })
+                        isLoading: false,
+                        errorData: errorData,
+                        errorModal: true
+                    });
                 });
         } else {
             this.setState({
@@ -114,18 +131,29 @@ class LoginScreen extends React.Component<any> {
                     const Token = JSON.stringify(res.data.token)
                     AsyncStorage.setItem('Token', Token)
                     if (res.status === 200) {
-                        this.props.navigation.navigate('Home')
+                        this.props.navigation.navigate('Home');
+                        sellerStore.getUserData();
+                        authStore.getUserInfo();
                         this.setState({
                             smsStatus: false,
                             isLoading: false,
                         })
                     }
                 })
-                .catch(e => {
-                    console.error(e);
+                .catch(err => {
+                    console.log(err);
+                    let error = toJS(String(sellerStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    console.log('errorCode', errorCode);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
                     this.setState({
                         isLoading: false,
-                    })
+                        errorData: errorData,
+                        errorModal: true
+                    });
                 });
         } else {
             this.setState({
@@ -135,9 +163,46 @@ class LoginScreen extends React.Component<any> {
         }
     };
 
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    visible={this.state.errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрить"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
+                >
+                    <ModalContent>
+                        <ErrorModal
+                            data={this.state.errorData}
+                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
+                </Modal>
                 <Image
                     resizeMode={'contain'}
                     source={require('../../../assets/iconImages/LogoTitle.png')}

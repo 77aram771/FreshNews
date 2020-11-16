@@ -92,7 +92,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratRegular
                         }}
                     >
-                        {data.message && data.errors.message[0]}
+                        {data.message || data.errors.message[0]}
                     </Text>
                 </View>
             </View>

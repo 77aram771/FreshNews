@@ -34,8 +34,6 @@ export default class CourierProfile extends React.Component<NavigationProps> {
     }
 
     render() {
-
-        const {offline} = this.state;
         const {userData} = userInfo;
 
         return (
@@ -45,14 +43,15 @@ export default class CourierProfile extends React.Component<NavigationProps> {
                     justifyContent: 'space-around',
                     alignItems: 'center',
                     backgroundColor: '#464646',
+                    paddingTop: 50
                 }}
             >
                 <TouchableOpacity
                     onPress={() => this.props.navigation.goBack()}
                     style={{
                         width: WINDOW_WIDTH,
-                        paddingTop: size20,
-                        paddingLeft: size20,
+                        paddingTop: 10,
+                        paddingLeft: 10,
                     }}
                 >
                     <EvilIcons name={'close'} size={size34 * 1.5} color={'#949494'}/>
@@ -98,47 +97,6 @@ export default class CourierProfile extends React.Component<NavigationProps> {
                     >
                         {`+${userData.phone}`}
                     </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity
-                        onPress={() => this.setState({offline: false})}
-                        style={{
-                            paddingVertical: size16,
-                            backgroundColor: !offline ? '#8CC83F' : '#585858',
-                            borderTopLeftRadius: 10,
-                            borderBottomLeftRadius: 10,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                color: '#FFFFFF',
-                                fontFamily: MontserratRegular,
-                                fontSize: size12,
-                                paddingHorizontal: size44,
-                            }}
-                        >
-                            Оффлайн
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => this.setState({offline: true})}
-                        style={{
-                            paddingVertical: size16,
-                            backgroundColor: offline ? '#8CC83F' : '#585858',
-                            borderTopRightRadius: 10,
-                            borderBottomRightRadius: 10,
-                        }}>
-                        <Text
-                            style={{
-                                color: '#FFFFFF',
-                                fontFamily: MontserratRegular,
-                                fontSize: size12,
-                                paddingHorizontal: size44,
-                            }}
-                        >
-                            Работаю
-                        </Text>
-                    </TouchableOpacity>
                 </View>
                 <View
                     style={{

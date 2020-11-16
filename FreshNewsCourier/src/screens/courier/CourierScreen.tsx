@@ -65,43 +65,23 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
-            console.log('courierStore.errorData', courierStore.errorData);
             if (courierStore.errorData !== null) {
                 this.setState({
                     errorData: toJS(courierStore.errorData),
                     errorModal: true
                 })
             }
-            const firstItem = toJS(courierUserData)[0];
-            const AllData = toJS(courierUserData).splice(0, 1);
             if (toJS(courierUserData).length === 1) {
-                let obj = [firstItem];
                 this.setState({
-                    ActiveOrder: obj,
+                    ActiveOrder: toJS(courierUserData),
                     refreshing: false,
                 }, async () => {
                     setInterval(async () => {
                         await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                     }, 5000);
                 })
-            } else if (toJS(courierUserData).length >= 1) {
-                let obj1 = [
-                    {
-                        title: 'Следующий заказ',
-                        data: AllData
-                    }
-                ]
-                let obj2 = [firstItem];
-                this.setState({
-                    ActiveOrder: obj2,
-                    AllOrder: obj1,
-                    refreshing: false
-                }, async () => {
-                    setInterval(async () => {
-                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                    }, 5000);
-                })
-            } else {
+            }
+            else {
                 this.setState({
                     ActiveOrder: null,
                     AllOrder: null,
@@ -120,34 +100,23 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             getCourierData();
-            const firstItem = toJS(courierUserData)[0];
-            const AllData = toJS(courierUserData).splice(0, 1);
+            if (courierStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(courierStore.errorData),
+                    errorModal: true
+                })
+            }
             if (toJS(courierUserData).length === 1) {
-                let obj = [firstItem];
                 this.setState({
-                    ActiveOrder: obj,
-                    refreshing: false
+                    ActiveOrder: toJS(courierUserData),
+                    refreshing: false,
                 }, async () => {
                     setInterval(async () => {
                         await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                    }, 5000);                })
-            } else if (toJS(courierUserData).length >= 1) {
-                let obj1 = [
-                    {
-                        title: 'Следующий заказ',
-                        data: AllData
-                    }
-                ]
-                let obj2 = [firstItem];
-                this.setState({
-                    ActiveOrder: obj2,
-                    AllOrder: obj1,
-                    refreshing: false
-                }, async () => {
-                    setInterval(async () => {
-                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                    }, 5000);                })
-            } else {
+                    }, 5000);
+                })
+            }
+            else {
                 this.setState({
                     ActiveOrder: null,
                     AllOrder: null,
@@ -157,18 +126,18 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         }, 1000);
     };
 
-    componentWillMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    };
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    };
-
-    handleBackButtonClick = () => {
-        this.props.navigation.goBack('CourierScreen');
-        return true;
-    };
+    // componentWillMount() {
+    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    // };
+    //
+    // componentWillUnmount() {
+    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    // };
+    //
+    // handleBackButtonClick = () => {
+    //     this.props.navigation.goBack('CourierScreen');
+    //     return true;
+    // };
 
     handleScanner(id: any, code: any) {
         courierStore.getCourierOrderConfirmation(id, code)
@@ -267,7 +236,9 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         headerRight={
                                             <TouchableOpacity
                                                 style={{marginRight: 28}}
-                                                onPress={() => this.props.navigation.navigate('TakeOrderScreen')}
+                                                onPress={() => this.props.navigation.navigate('TakeOrderScreen', {
+                                                    ActiveOrder: this.state.ActiveOrder
+                                                })}
                                             >
                                                 <FontAwesome5
                                                     name={'map-marker'}
@@ -279,8 +250,11 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                     />
                                     <ScrollView
                                         style={{
-                                            flex: 1,
                                             width: WINDOW_WIDTH,
+                                        }}
+                                        contentContainerStyle={{
+                                            flexGrow: 1,
+                                            justifyContent: 'center',
                                         }}
                                         refreshControl={
                                             <RefreshControl
@@ -292,7 +266,7 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         {
                                             this.state.ActiveOrder !== null
                                                 ? (
-                                                    <View>
+                                                    <>
                                                         {
                                                             this.state.ActiveOrder.map((item: any) => {
                                                                 return (
@@ -353,25 +327,59 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                                                 </View>
                                                             )}
                                                         />
-                                                    </View>
+                                                    </>
                                                 )
                                                 : (
                                                     <View
                                                         style={{
                                                             flex: 1,
                                                             justifyContent: "center",
-                                                            alignItems: 'center'
+                                                            alignItems: 'center',
+                                                            alignSelf: "center",
+                                                            alignContent: "center",
                                                         }}
                                                     >
-                                                        <Text
+                                                        <View
                                                             style={{
-                                                                fontFamily: MontserratSemiBold,
-                                                                fontSize: size16,
-                                                                alignSelf: 'center'
+                                                                justifyContent: "center",
+                                                                alignItems: "center",
                                                             }}
                                                         >
-                                                            Нет активных заказов
-                                                        </Text>
+                                                            <Text
+                                                                style={{
+                                                                    fontFamily: MontserratSemiBold,
+                                                                    fontSize: 20,
+                                                                    alignSelf: 'center',
+                                                                    marginBottom: 40
+                                                                }}
+                                                            >
+                                                                Нет активных заказов
+                                                            </Text>
+
+                                                            <TouchableOpacity
+                                                                onPress={() => this.props.navigation.navigate('TakeOrderScreen', {
+                                                                    ActiveOrder: this.state.ActiveOrder
+                                                                })}
+                                                                style={{
+                                                                    borderRadius: 10,
+                                                                    width: WINDOW_WIDTH - 100,
+                                                                    height: 60,
+                                                                    backgroundColor: '#8CC83F',
+                                                                    justifyContent: "center",
+                                                                    alignItems: "center"
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        color: '#fff',
+                                                                        fontFamily: MontserratSemiBold,
+                                                                        fontSize: 20
+                                                                    }}
+                                                                >
+                                                                    Взят заказ
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        </View>
                                                         {/*<View*/}
                                                         {/*    style={{*/}
                                                         {/*        alignContent: "flex-end",*/}

@@ -10,8 +10,13 @@ import {HeaderText} from '../HeaderText';
 import {StocksListItem} from '../stocks/StocksListItem';
 import HeaderContent from '../headerContent/HeaderContent';
 import shopsStore from "../../../../stores/ShopsStore";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {ShopMarketItem} from "./ShopMarketItem";
+import paymentStore from "../../../../stores/PaymentStore";
+import {ErrorModal} from "../modals/ErrorModal";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 interface ShopMarketInterface {
     getGeocodeAsync: any,
@@ -32,30 +37,41 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
     async componentDidMount() {
         this.setState({
             refreshing: true
-        })
-        shopsStore.getShopsSections()
+        });
+        shopsStore.getShopsSections();
         setTimeout(() => {
             this.setState({
-                    refreshing: false,
-                    promo: toJS(shopsStore.getShopSection.promocodes),
-                    sections: toJS(shopsStore.getShopSection.sections)
-                }
-            )
-        }, 1000)
-    }
+                refreshing: false,
+                promo: toJS(shopsStore.getShopSection.promocodes),
+                sections: toJS(shopsStore.getShopSection.sections)
+            });
+            if (shopsStore.errorData !== null) {
+                let error = toJS(String(shopsStore.errorData));
+                let errorCode = error.substr(error.length - 3);
+                let errorData = {
+                    status_code: errorCode,
+                    message: 'Network Error',
+                };
+                this.setState({
+                    errorData,
+                    errorModal: true
+                })
+            }
+        }, 1000);
+    };
 
     onRefresh() {
         this.setState({
             shopData: toJS(shopsStore.getShopData)
         })
-    }
+    };
 
     handleNavigation(id: number, name: string) {
         shopsStore.getShops(id)
         this.props.navigation.navigate('ShopsList', {
             shopName: name
         })
-    }
+    };
 
     handleNavigationShares(id: number, discount: number, code: number) {
         shopsStore.getPromoCode(id)
@@ -63,7 +79,7 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
             shopDiscount: discount,
             shopCode: code
         })
-    }
+    };
 
     handleOpenErrorModal = async () => {
         this.setState({
@@ -102,55 +118,87 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
                             </View>
                         )
                         : (
-                            <FlatList
-                                ListHeaderComponent={
-                                    <>
-                                        <HeaderContent
-                                            navigation={this.props.navigation}
-                                            getGeocodeAsync={() => this.props.getGeocodeAsync()}
-                                        />
-                                        <HeaderText title={'Акции'}/>
-                                        <FlatList
-                                            style={{paddingTop: 25}}
-                                            keyExtractor={item => item.toString()}
-                                            showsHorizontalScrollIndicator={false}
-                                            horizontal={true}
-                                            data={this.state.promo.length === 0 ? [] : this.state.promo}
-                                            renderItem={({item}) => {
-                                                return (
-                                                    <StocksListItem
-                                                        keyIndex={item}
-                                                        style={{marginLeft: 16}}
-                                                        discount={item.discount}
-                                                        onPressNavigation={() => this.handleNavigationShares(item.id, item.discount, item.code)}
-                                                    />
-                                                );
+                            <>
+                                <Modal
+                                    visible={this.state.errorModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
+                                            style={{
+                                                backgroundColor: 'red'
                                             }}
+                                        >
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
+                                                }}
+                                                onPress={() => this.handleCloseErrorModal()}
+                                            />
+                                        </ModalFooter>
+                                    }
+                                    onTouchOutside={() => {
+                                        this.setState({errorModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <ErrorModal
+                                            data={this.state.errorData}
+                                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                                            handleCloseErrorModal={this.handleCloseErrorModal}
                                         />
-                                        <HeaderText title={'Ринки'}/>
-                                    </>
-                                }
-                                scrollEnabled={true}
-                                keyExtractor={item => item.id.toString()}
-                                showsVerticalScrollIndicator={true}
-                                data={this.state.sections.length === 0 ? data : this.state.sections}
-                                renderItem={({item, index}) => {
-                                    return (
-                                        <ShopMarketItem
-                                            key={index}
-                                            name={item.name}
-                                            backgroundImage={item.background_image}
-                                            onPressNavigation={() => this.handleNavigation(item.id, item.name)}
+                                    </ModalContent>
+                                </Modal>
+                                <FlatList
+                                    ListHeaderComponent={
+                                        <>
+                                            <HeaderContent
+                                                navigation={this.props.navigation}
+                                                getGeocodeAsync={() => this.props.getGeocodeAsync()}
+                                            />
+                                            <HeaderText title={'Акции'}/>
+                                            <FlatList
+                                                style={{paddingTop: 25}}
+                                                keyExtractor={item => item.toString()}
+                                                showsHorizontalScrollIndicator={false}
+                                                horizontal={true}
+                                                data={this.state.promo}
+                                                renderItem={({item}) => {
+                                                    return (
+                                                        <StocksListItem
+                                                            keyIndex={item}
+                                                            style={{marginLeft: 16}}
+                                                            discount={item.discount}
+                                                            onPressNavigation={() => this.handleNavigationShares(item.id, item.discount, item.code)}
+                                                        />
+                                                    );
+                                                }}
+                                            />
+                                            <HeaderText title={'Ринки'}/>
+                                        </>
+                                    }
+                                    scrollEnabled={true}
+                                    keyExtractor={item => item.id.toString()}
+                                    showsVerticalScrollIndicator={true}
+                                    data={this.state.sections}
+                                    renderItem={({item, index}) => {
+                                        return (
+                                            <ShopMarketItem
+                                                key={index}
+                                                name={item.name}
+                                                backgroundImage={item.background_image}
+                                                onPressNavigation={() => this.handleNavigation(item.id, item.name)}
+                                            />
+                                        )
+                                    }}
+                                    refreshControl={
+                                        <RefreshControl
+                                            refreshing={this.state.refreshing}
+                                            onRefresh={this.onRefresh.bind(this)}
                                         />
-                                    )
-                                }}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.refreshing}
-                                        onRefresh={this.onRefresh.bind(this)}
-                                    />
-                                }
-                            />
+                                    }
+                                />
+                            </>
                         )
                 }
             </View>

@@ -22,6 +22,9 @@ import userInfo from "../../stores/UserInfo";
 import paymentStore from "../../stores/PaymentStore";
 import shopsStore from "../../stores/ShopsStore";
 import modalsStore from "../../stores/ModalsStore";
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from "../main/components/modals/ErrorModal";
+import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -42,6 +45,8 @@ class LoginScreen extends React.Component<NavigationProps> {
             valid: false,
             showMessage: false,
             disabled: false,
+            errorModal: false,
+            errorData: [],
         };
     };
 
@@ -75,11 +80,20 @@ class LoginScreen extends React.Component<NavigationProps> {
                         showConfirmScreen: true,
                     })
                 })
-                .catch(e => {
-                    console.error(e);
+                .catch(err => {
+                    console.log(err);
+                    let error = toJS(String(shopsStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    console.log('errorCode', errorCode);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
                     this.setState({
-                        isLoading: false
-                    })
+                        isLoading: false,
+                        errorData: errorData,
+                        errorModal: true
+                    });
                 });
         } else {
             this.setState({
@@ -111,7 +125,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                         userInfo.getUserData();
                         paymentStore.orderUserTime();
                         shopsStore.getAllOrders();
-                        // modalsStore.onChangeView();
+                        modalsStore.onChangeView();
                         this.props.navigation.navigate('MainScreen');
                         this.setState({
                             smsStatus: false,
@@ -119,11 +133,19 @@ class LoginScreen extends React.Component<NavigationProps> {
                         })
                     }
                 })
-                .catch(e => {
-                    console.error(e);
+                .catch(err => {
+                    console.log(err);
+                    let error = toJS(String(shopsStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
                     this.setState({
                         isLoading: false,
-                    })
+                        errorData: errorData,
+                        errorModal: true
+                    });
                 });
         } else {
             this.setState({
@@ -133,9 +155,46 @@ class LoginScreen extends React.Component<NavigationProps> {
         }
     };
 
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
     render() {
         return (
             <View style={styles.container}>
+                <Modal
+                    visible={this.state.errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрить"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
+                >
+                    <ModalContent>
+                        <ErrorModal
+                            data={this.state.errorData}
+                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
+                </Modal>
                 <Image
                     resizeMode={'contain'}
                     source={require('../../../assets/iconImages/LogoTitle.png')}

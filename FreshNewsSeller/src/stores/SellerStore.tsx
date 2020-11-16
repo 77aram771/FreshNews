@@ -1,10 +1,9 @@
-import {action, observable, toJS} from 'mobx';
+import {action, observable} from 'mobx';
 import AsyncStorage from "@react-native-community/async-storage";
 import {SERVER_BASE} from "../share/consts";
-import axios from "axios";
 
 class SellerStore {
-    @observable sellerData: any = null;
+    @observable sellerData: any = [];
     @observable dataInfo: any = null;
     @observable infoOrder: any = null;
     @observable scanData: any = null;
@@ -12,13 +11,20 @@ class SellerStore {
 
     @action
     getUserData = async () => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
-        axios.get(`${SERVER_BASE}/seller`, {headers})
+        let requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+
+        fetch("https://fructonosback.ru/api/seller", requestOptions)
+            .then(response => response.json())
             .then((res) => {
-                this.sellerData = res.data;
+                this.sellerData = res;
             })
             .catch(error => {
                 console.log('getUserData error', error);
@@ -28,14 +34,19 @@ class SellerStore {
 
     @action
     getDataInfo = async (id: any) => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/seller/products/${id}`);
-        axios.get(`${SERVER_BASE}/seller/products/${id}`, {headers})
+        let requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/seller/products/${id}`, requestOptions)
+            .then(response => response.json())
             .then((res) => {
-                this.dataInfo = res.data;
+                this.dataInfo = res;
             })
             .catch(error => {
                 console.log('getDataInfo error', error);
@@ -46,14 +57,19 @@ class SellerStore {
     @action
     getInfoOrder = async (id: any) => {
         this.infoOrder = [];
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/seller/orders/${id}`);
-        axios.get(`${SERVER_BASE}/seller/orders/${id}`, {headers})
+        let requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+        fetch(`${SERVER_BASE}/seller/orders/${id}`, requestOptions)
+            .then(response => response.json())
             .then((res) => {
-                this.infoOrder = res.data.items;
+                this.infoOrder = res;
             })
             .catch(error => {
                 console.log('getInfoOrder error', error);
@@ -135,7 +151,7 @@ class SellerStore {
         };
         fetch(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
             .then(result => {
-                console.log('result, getEditItem', result)
+                console.log('result, getEditItem', result);
             })
             .catch(error => {
                 console.log('getEditItem error', error);

@@ -27,10 +27,21 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
 
     state = {
         allData: null,
-        refreshing: false
+        refreshing: false,
+        bool: false
     }
 
     async componentDidMount() {
+        if(this.props.navigation.state.params.ActiveOrder !== null){
+            this.setState({
+                bool: false
+            })
+        }
+        else {
+            this.setState({
+                bool: true
+            })
+        }
         await courierStore.getCourierDataAll();
 
         this.setState({
@@ -51,7 +62,6 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                 refreshing: false
             }, () => {
                 console.log('allData', this.state.allData[0].data.length)
-                // console.log('toJS(courierData)', toJS(courierData).data.length)
             })
         }, 1000)
     }
@@ -74,7 +84,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
             this.setState({
                 allData: obj,
                 refreshing: false
-            }, () => console.log('allData', this.state.allData))
+            })
         }, 1000)
     }
 
@@ -144,6 +154,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                                                 courierStore.getCourierDataAdd(id)
                                                                 this.props.navigation.goBack()
                                                             }}
+                                                            bool={this.state.bool}
                                                         />
                                                     )}
                                                     renderSectionHeader={({section: {title}}) => (

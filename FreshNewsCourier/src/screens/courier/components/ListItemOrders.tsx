@@ -32,17 +32,10 @@ interface IProps {
     apartment: string;
     intercom: string;
     comment: string;
+    onPress: any;
 }
 
-export const ListItemOrders = ({
-                                   item,
-                                   onPress
-                               }: {
-    item: IProps;
-    onPress: () => void;
-    takeOrderType?: boolean;
-}) => {
-
+export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: any, bool: boolean }) => {
     const openMapUser = (address: any) => {
         showLocation({
             latitude: 38.8976763,
@@ -60,7 +53,8 @@ export const ListItemOrders = ({
             naverCallerName: 'com.example.myapp' // to link into Naver Map You should provide your appname which is the bundle ID in iOS and applicationId in android.
             // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // app: 'uber'  // optionally specify specific app to use
-        })    }
+        })
+    }
 
     const openMapShop = (address: any) => {
         showLocation({
@@ -196,59 +190,64 @@ export const ListItemOrders = ({
             >
                 {item.comment}
             </Text>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    marginTop: size34,
-                    justifyContent: 'center',
-                }}
-            >
-                <TouchableOpacity
-                    onPress={() => onPress(item.id)}
-                    style={{
-                        paddingVertical: size16,
-                        backgroundColor: '#8CC83F',
-                        borderRadius: 10,
-                        flex: 1,
-                        alignItems: 'center',
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: '#FFFFFF',
-                            fontFamily: MontserratRegular,
-                            fontSize: size12,
-                            paddingHorizontal: size36,
-                        }}
-                    >
-                        Взять заказ
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        alert('отказ от заказа')
-                    }}
-                    style={{
-                        paddingVertical: size16,
-                        backgroundColor: '#AAA8A8',
-                        borderRadius: 10,
-                        marginLeft: size16,
-                        flex: 1,
-                        alignItems: 'center',
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: '#FFFFFF',
-                            fontFamily: MontserratRegular,
-                            fontSize: size12,
-                            paddingHorizontal: size44,
-                        }}
-                    >
-                        Отказаться
-                    </Text>
-                </TouchableOpacity>
-            </View>
+            {
+                bool
+                    ? (
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                marginTop: size34,
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => onPress(item.id)}
+                                style={{
+                                    paddingVertical: size16,
+                                    backgroundColor: '#8CC83F',
+                                    borderRadius: 10,
+                                    flex: 1,
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontFamily: MontserratRegular,
+                                        fontSize: size12,
+                                        paddingHorizontal: size36,
+                                    }}
+                                >
+                                    Взять заказ
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    alert('отказ от заказа')
+                                }}
+                                style={{
+                                    paddingVertical: size16,
+                                    backgroundColor: '#AAA8A8',
+                                    borderRadius: 10,
+                                    marginLeft: size16,
+                                    flex: 1,
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#FFFFFF',
+                                        fontFamily: MontserratRegular,
+                                        fontSize: size12,
+                                        paddingHorizontal: size44,
+                                    }}
+                                >
+                                    Отказаться
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : null
+            }
             <ActionButton
                 style={{
                     paddingVertical: 16,

@@ -44,7 +44,7 @@ class HomeSellerPage extends Component<any, any> {
         errorData: [],
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         sellerStore.getUserData();
         authStore.getUserInfo();
         this.setState({
@@ -56,13 +56,28 @@ class HomeSellerPage extends Component<any, any> {
                 products: toJS(sellerStore.sellerData.products),
             }, () => {
                 if (sellerStore.errorData !== null) {
+                    console.log('----------')
+                    console.log('sellerStore.errorData', toJS(sellerStore.errorData))
                     this.setState({
                         errorData: toJS(sellerStore.errorData),
                         errorModal: true
                     })
+                } else if (authStore.errorData !== null) {
+                    console.log('authStore.errorData ', authStore.errorData);
+                    let error = toJS(String(authStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    console.log('errorCode', errorCode);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
+                    this.setState({
+                        errorData: errorData,
+                        errorModal: true
+                    })
                 }
                 // @ts-ignore
-                this.state.orders.map((item: any) => {
+                this.state.orders && this.state.orders.map((item: any) => {
                     if (item.status === 1) {
                         // @ts-ignore
                         this.state.startOrder.push(item);
@@ -124,8 +139,29 @@ class HomeSellerPage extends Component<any, any> {
                 orders: toJS(sellerStore.sellerData.orders),
                 products: toJS(sellerStore.sellerData.products),
             }, () => {
+                if (sellerStore.errorData !== null) {
+                    console.log('----------')
+                    console.log('sellerStore.errorData', toJS(sellerStore.errorData))
+                    this.setState({
+                        errorData: toJS(sellerStore.errorData),
+                        errorModal: true
+                    })
+                } else if (authStore.errorData !== null) {
+                    console.log('authStore.errorData ', authStore.errorData);
+                    let error = toJS(String(authStore.errorData));
+                    let errorCode = error.substr(error.length - 3);
+                    console.log('errorCode', errorCode);
+                    let errorData = {
+                        status_code: errorCode,
+                        message: 'Network Error',
+                    };
+                    this.setState({
+                        errorData: errorData,
+                        errorModal: true
+                    })
+                }
                 // @ts-ignore
-                this.state.orders.map((item: any) => {
+                this.state.orders && this.state.orders.map((item: any) => {
                     if (item.status === 1) {
                         // @ts-ignore
                         this.state.startOrder.push(item);
@@ -148,7 +184,6 @@ class HomeSellerPage extends Component<any, any> {
     };
 
     handleOpenEditModal = async (id: any) => {
-        console.log('id', id);
         sellerStore.getDataInfo(id);
         setTimeout(() => {
             this.setState({
@@ -597,18 +632,21 @@ class HomeSellerPage extends Component<any, any> {
 
                                     </View>
                                     <View
-                                        style={show4 ? {
-                                                flexDirection: "column",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                marginBottom: 45
-                                            }
-                                            : {
-                                                flexDirection: "column",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                marginBottom: 5
-                                            }}
+                                        style={
+                                            show4
+                                                ? {
+                                                    flexDirection: "column",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    marginBottom: 45
+                                                }
+                                                : {
+                                                    flexDirection: "column",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    marginBottom: 5
+                                                }
+                                        }
                                     >
                                         <TouchableOpacity
                                             onPress={() => this.handleShow4()}

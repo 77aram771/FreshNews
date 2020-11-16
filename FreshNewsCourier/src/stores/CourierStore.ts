@@ -137,12 +137,13 @@ class CourierStore {
             headers: myHeaders,
             redirect: 'follow'
         };
+        // console.log(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`);
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
             .then(response => response.json())
-            .then(res => console.log('getCourierCoordinate, res', res))
+            // .then(res => console.log('getCourierCoordinate, res', res))
             .catch((err) => {
-                console.log('getCourierCoordinate error', err);
-                this.errorData = err;
+                // console.log('getCourierCoordinate error', err);
+                // this.errorData = err;
             })
     }
 
@@ -157,21 +158,11 @@ class CourierStore {
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
 
         let requestOptions = {
-            method: 'POST',
+            method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow'
         };
-        // axios.delete(`${SERVER_BASE}/courier/orders/items/${id}`, {headers})
-        //     .then(res => {
-        //         if (res.status === 200) {
-        //             this.getCourierData()
-        //             this.getCourierDataAll()
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log('getCourierDeleteItem error', err);
-        //         this.errorData = err;
-        //     })
+        console.log(`${SERVER_BASE}/courier/orders/items/${id}`)
         fetch(`${SERVER_BASE}/courier/orders/items/${id}`, requestOptions)
             .then(res => {
                 if (res.status === 200) {

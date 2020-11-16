@@ -18,7 +18,7 @@ import {
     size44, WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
-import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
+import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from 'mobx';
@@ -70,7 +70,8 @@ class PaymentPage extends Component<NavigationProps> {
                     value: toJS(time)[key],
                 }))
             }
-        };
+        }
+        ;
     }
 
     handleValidationAddress(value: string) {
@@ -216,7 +217,7 @@ class PaymentPage extends Component<NavigationProps> {
         }
     };
 
-    handleComment(value: string){
+    handleComment(value: string) {
         this.setState({messageToCourier: value});
         paymentStore.handleComment(value);
     };
@@ -375,6 +376,19 @@ class PaymentPage extends Component<NavigationProps> {
                                         height: 40
                                     }}
                                 />
+                                <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>
+                                    <Text
+                                        style={{
+                                            fontFamily: MontserratBold
+                                        }}
+                                    >
+                                        Пример: {' '}
+                                        <Text
+                                            style={{
+                                                fontFamily: MontserratSemiBold
+                                            }}
+                                        >Москва ул. Тверская 11</Text></Text>
+                                </View>
                                 <View
                                     style={{
                                         flexDirection: 'row',

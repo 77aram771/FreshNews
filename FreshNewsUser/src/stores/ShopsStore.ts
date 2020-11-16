@@ -71,6 +71,7 @@ class ShopsStore {
     @action
     getShopsSections = async () => {
         this.getShopSection = [];
+        console.log(`${SERVER_BASE}/sections`);
         await axios.get(`${SERVER_BASE}/sections`)
             .then((res) => {
                 this.getShopSection = res.data;

@@ -13,7 +13,6 @@ import * as Permissions from 'expo-permissions';
 import Geocoder from 'react-native-geocoding';
 import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
-import Modal from "react-native-modal";
 import modalsStore from "../../stores/ModalsStore";
 import CourierInformation from './components/sideBar/CourierInformation';
 import LegalEntities from "./components/sideBar/LegalEntities";
@@ -21,6 +20,7 @@ import Delivery from "./components/sideBar/Delivery";
 import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
 import Feedback from "./components/sideBar/Feedback";
 import TermsOfUse from './components/sideBar/TermsOfUse';
+import Modal from 'react-native-modal';
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 
@@ -30,7 +30,7 @@ export default class MainScreen extends React.Component<NavigationProps> {
     state = {
         location: null,
         geocode: null,
-        errorMessage: ""
+        errorMessage: "",
     };
 
     async componentDidMount() {
@@ -153,7 +153,6 @@ export default class MainScreen extends React.Component<NavigationProps> {
                 >
                     <TermsOfUse/>
                 </Modal>
-
                 <MainHeader
                     navigation={this.props.navigation}
                 />

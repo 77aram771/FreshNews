@@ -19,7 +19,7 @@ import {
     size44,
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
-import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
+import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import {PaymentElement} from './PaymentElement';
 // @ts-ignore
@@ -432,6 +432,19 @@ class FinishPaymentPage extends Component<NavigationProps> {
                                             height: 40
                                         }}
                                     />
+                                    <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>
+                                        <Text
+                                            style={{
+                                                fontFamily: MontserratBold
+                                            }}
+                                        >
+                                            Пример: {' '}
+                                            <Text
+                                                style={{
+                                                    fontFamily: MontserratSemiBold
+                                                }}
+                                            >Москва ул. Тверская 11</Text></Text>
+                                    </View>
                                     <View
                                         style={{
                                             flexDirection: 'row',
