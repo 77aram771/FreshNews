@@ -46,7 +46,7 @@ class SellerStore {
         fetch(`${SERVER_BASE}/seller/products/${id}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
-                console.log('res', res);
+                // console.log('res getDataInfo', res);
                 this.dataInfo = res;
             })
             .catch(error => {
@@ -70,7 +70,7 @@ class SellerStore {
         fetch(`${SERVER_BASE}/seller/orders/${id}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
-                console.log('res getInfoOrder', res)
+                // console.log('res getInfoOrder', res);
                 this.infoOrder = res;
             })
             .catch(error => {
@@ -109,11 +109,11 @@ class SellerStore {
     @action
     getAddItem = async (name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
         let getToken = await AsyncStorage.getItem('Token');
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
         const formData = new FormData();
-        formData.append('Image', {
+        formData.append('image', {
             uri: image,
             type: 'image/jpeg',
             name: "image.jpg",
@@ -126,7 +126,14 @@ class SellerStore {
         };
         console.log(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`);
         fetch(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
-            .then(result => console.log(result))
+            .then(res => {
+                if (res.status === 200) {
+                    console.log('result getAddItem status 200', res)
+                } else {
+                    console.log('result getAddItem', res);
+                    this.errorData = res;
+                }
+            })
             .catch(error => {
                 console.log('getAddItem error', error);
                 this.errorData = error;
@@ -135,12 +142,12 @@ class SellerStore {
 
     @action
     getEditItem = async (id: any, name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
         const formData = new FormData();
-        formData.append('Image', {
+        formData.append('image', {
             uri: image,
             type: 'image/jpeg',
             name: "image.jpg",
@@ -152,8 +159,13 @@ class SellerStore {
             redirect: 'follow'
         };
         fetch(`${SERVER_BASE}/seller/products/${id}?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
-            .then(result => {
-                console.log('result, getEditItem', result);
+            .then(res => {
+                if (res.status === 200) {
+                    console.log('result getEditItem status 200', res)
+                } else {
+                    console.log('result getEditItem', res);
+                    this.errorData = res;
+                }
             })
             .catch(error => {
                 console.log('getEditItem error', error);

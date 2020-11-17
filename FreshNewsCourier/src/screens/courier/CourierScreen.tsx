@@ -86,7 +86,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                 })
             }
         }, 1000);
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     };
 
     async onRefresh() {

@@ -278,7 +278,7 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                             >
                                 <Modal
                                     visible={this.state.errorModal}
-                                    useNativeDriver={false}
+                                    useNativeDriver={true}
                                     footer={
                                         <ModalFooter
                                             style={{

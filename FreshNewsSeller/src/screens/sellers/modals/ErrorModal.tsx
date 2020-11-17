@@ -64,7 +64,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratBold
                         }}
                     >
-                        Код ошибки {data.status_code}
+                        Код ошибки {data.status_code || data.status}
                     </Text>
                 </View>
                 <View
@@ -85,15 +85,15 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                     >
                         Собшения ошибки
                     </Text>
-                    <Text
-                        style={{
-                            color: 'red',
-                            fontSize: 18,
-                            fontFamily: MontserratRegular
-                        }}
-                    >
-                        {data.message || data.errors.message[0]}
-                    </Text>
+                    {/*<Text*/}
+                    {/*    style={{*/}
+                    {/*        color: 'red',*/}
+                    {/*        fontSize: 18,*/}
+                    {/*        fontFamily: MontserratRegular*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    {data.message || data.errors.message[0]}*/}
+                    {/*</Text>*/}
                 </View>
             </View>
         </View>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useFonts} from 'expo-font';
 import {AppLoading} from 'expo';
 import LoginScreen from "./src/screens/login/LoginScreen";
@@ -16,6 +16,7 @@ import Feather from "react-native-vector-icons/Feather";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {size34, size16} from "./src/share/consts";
 import OldOrdersScreen from "./src/screens/sellers/screens/OldOrdersScreen";
+import AsyncStorage from "@react-native-community/async-storage";
 
 console.disableYellowBox = true;
 
@@ -175,6 +176,17 @@ const SellerStackScreen = ({navigation}: any) => {
 };
 
 export default function App() {
+
+    // useEffect(() => {
+    //     (async () => {
+    //         let getToken = await AsyncStorage.getItem('Token');
+    //         console.log('navigation', navigation);
+    //         console.log('getToken', getToken);
+    //         // if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
+    //         //     props.navigation.navigate('Home');
+    //         // }
+    //     })();
+    // })
 
     let [fontsLoaded] = useFonts(customFonts);
 

@@ -5,9 +5,8 @@ import Feather from "react-native-vector-icons/Feather";
 import {MontserratRegular} from "../../../share/fonts";
 import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
-import sellerStore from "../../../stores/SellerStore";
 
-export const EditModal = ({data, handleCloseEditModal}: any) => {
+export const EditModal = ({data, handleCloseEditModal, handleSaveEditItem}: any) => {
     const placeholderWeight = {
         label: String(data.weight),
         value: null,
@@ -53,6 +52,12 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
             }
+            console.log('data', data);
+            setName(data.name);
+            setPrice(data.price);
+            setWeight(data.weight);
+            setDescription(data.description);
+            setImage(data.image);
         })();
     }, []);
 
@@ -74,27 +79,22 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
 
     const Name = (value: any) => {
         setName(value);
-        console.log('name', name);
     };
 
     const Price = (value: any) => {
         setPrice(value.replace(/[^0-9]/g, ''));
-        console.log('price', price);
     };
 
     const Weight = (value: any) => {
         setWeight(value);
-        console.log('weight', weight);
     };
 
     const Description = (value: any) => {
         setDescription(value);
-        console.log('value', value);
     };
 
     const Save = () => {
-        sellerStore.getEditItem(data.id, name, data.category_id, weight, data.type, price, description, image);
-        handleCloseEditModal();
+        handleSaveEditItem(data.id, name, data.category_id, weight, data.type, price, description, image);
     };
 
     return (
@@ -109,21 +109,12 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
             <View
                 style={{
                     width: '100%',
-                    justifyContent: "space-between",
+                    justifyContent: "flex-end",
                     alignItems: "center",
                     flexDirection: 'row',
                     marginBottom: 20
                 }}
             >
-                <TouchableOpacity
-                    onPress={() => alert('edit')}
-                >
-                    <Feather
-                        name={'edit'}
-                        size={size34}
-                        color={'rgba(112, 112, 112, 0.4)'}
-                    />
-                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => handleCloseEditModal()}
                 >
@@ -245,7 +236,8 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                     width: WINDOW_WIDTH / 1.22,
                                     height: 40,
                                     borderColor: 'gray',
-                                    borderWidth: 2
+                                    borderWidth: 2,
+                                    paddingLeft: 10
                                 }}
                                 onChangeText={text => Name(text)}
                                 value={name}
@@ -289,11 +281,12 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                     width: WINDOW_WIDTH / 1.22,
                                     height: 40,
                                     borderColor: 'gray',
-                                    borderWidth: 2
+                                    borderWidth: 2,
+                                    paddingLeft: 10
                                 }}
                                 onChangeText={text => Price(text)}
                                 value={String(price)}
-                                placeholder={String(data.price)}
+                                placeholder={String(price)}
                                 keyboardType={"number-pad"}
                             />
                         </View>
@@ -341,6 +334,7 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                         borderColor: 'gray',
                                         borderWidth: 2,
                                         color: 'black',
+                                        paddingLeft: 10
                                     },
                                     inputAndroid: {
                                         fontSize: 16,
@@ -349,6 +343,7 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                         borderColor: 'gray',
                                         borderWidth: 2,
                                         color: 'black',
+                                        paddingLeft: 10
                                     },
                                 }}
                                 value={weight}
@@ -394,6 +389,7 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                     borderColor: 'gray',
                                     borderWidth: 2,
                                     width: WINDOW_WIDTH / 1.22,
+                                    paddingLeft: 10
                                 }}
                                 underlineColorAndroid="transparent"
                                 placeholder="Описание"
@@ -401,6 +397,7 @@ export const EditModal = ({data, handleCloseEditModal}: any) => {
                                 numberOfLines={10}
                                 multiline={true}
                                 onChangeText={text => Description(text)}
+                                value={description}
                             />
                         </View>
                     </View>

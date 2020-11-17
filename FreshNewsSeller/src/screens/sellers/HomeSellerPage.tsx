@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {View, Text, TouchableOpacity, ScrollView, RefreshControl} from "react-native";
+import {View, Text, TouchableOpacity, ScrollView, RefreshControl, BackHandler} from "react-native";
 import {WINDOW_WIDTH} from "../../share/consts";
 import {observer} from "mobx-react";
 import DeliveryOrders from "./DeliveryOrders";
@@ -55,6 +55,7 @@ class HomeSellerPage extends Component<any, any> {
                 orders: toJS(sellerStore.sellerData.orders),
                 products: toJS(sellerStore.sellerData.products),
             }, () => {
+                console.log('sellerStore.errorData', sellerStore.errorData);
                 if (sellerStore.errorData !== null) {
                     console.log('----------')
                     console.log('sellerStore.errorData', toJS(sellerStore.errorData))
@@ -97,6 +98,7 @@ class HomeSellerPage extends Component<any, any> {
                 refreshing: false
             })
         }, 2000);
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     };
 
     handleShow1() {
@@ -139,27 +141,6 @@ class HomeSellerPage extends Component<any, any> {
                 orders: toJS(sellerStore.sellerData.orders),
                 products: toJS(sellerStore.sellerData.products),
             }, () => {
-                if (sellerStore.errorData !== null) {
-                    console.log('----------')
-                    console.log('sellerStore.errorData', toJS(sellerStore.errorData))
-                    this.setState({
-                        errorData: toJS(sellerStore.errorData),
-                        errorModal: true
-                    })
-                } else if (authStore.errorData !== null) {
-                    console.log('authStore.errorData ', authStore.errorData);
-                    let error = toJS(String(authStore.errorData));
-                    let errorCode = error.substr(error.length - 3);
-                    console.log('errorCode', errorCode);
-                    let errorData = {
-                        status_code: errorCode,
-                        message: 'Network Error',
-                    };
-                    this.setState({
-                        errorData: errorData,
-                        errorModal: true
-                    })
-                }
                 // @ts-ignore
                 this.state.orders && this.state.orders.map((item: any) => {
                     if (item.status === 1) {
@@ -238,18 +219,51 @@ class HomeSellerPage extends Component<any, any> {
         })
     };
 
-    handleOpenErrorModal = async () => {
-        this.setState({
-            errorModal: true,
-            errorData: toJS(sellerStore.errorData),
-        }, () => console.log('errorData', this.state.errorData));
-    };
-
     handleCloseErrorModal = async () => {
         await this.setState({
             errorModal: false,
         }, () => console.log('errorModal', this.state.errorModal))
     };
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    };
+
+    onBackPress = () => {
+        this.props.navigation.navigate('HomeSellerPage')
+        return true;
+    };
+
+    handleSaveAddItem = (name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
+        sellerStore.getAddItem(name, 1, weight, 'piece', price, description, image);
+        setTimeout(() => {
+            this.handleCloseAddModal();
+            if (sellerStore.errorData !== null) {
+                console.log('----------')
+                console.log('sellerStore.errorData', toJS(sellerStore.errorData))
+                this.setState({
+                    errorData: toJS(sellerStore.errorData),
+                    errorModal: true
+                })
+            }
+        }, 3000)
+    }
+
+    handleSaveEditItem = (id: any, name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
+        sellerStore.getEditItem(id, name, category_id, weight, type, price, description, image);
+        setTimeout(() => {
+            this.handleCloseEditModal();
+            if (sellerStore.errorData !== null) {
+                console.log('----------')
+                console.log('sellerStore.errorData', toJS(sellerStore.errorData))
+                this.setState({
+                    errorData: toJS(sellerStore.errorData),
+                    errorModal: true
+                })
+            }
+        }, 3000)
+    }
+
 
     render() {
 
@@ -279,7 +293,7 @@ class HomeSellerPage extends Component<any, any> {
                             <>
                                 <Modal
                                     visible={this.state.editModal}
-                                    useNativeDriver={false}
+                                    useNativeDriver={true}
                                     footer={
                                         <ModalFooter
                                             style={{
@@ -305,12 +319,13 @@ class HomeSellerPage extends Component<any, any> {
                                         <EditModal
                                             data={this.state.editData}
                                             handleCloseEditModal={this.handleCloseEditModal}
+                                            handleSaveEditItem={this.handleSaveEditItem}
                                         />
                                     </ModalContent>
                                 </Modal>
                                 <Modal
                                     visible={this.state.infoModal}
-                                    useNativeDriver={false}
+                                    useNativeDriver={true}
                                     footer={
                                         <ModalFooter
                                             style={{
@@ -342,7 +357,7 @@ class HomeSellerPage extends Component<any, any> {
                                 </Modal>
                                 <Modal
                                     visible={this.state.addModal}
-                                    useNativeDriver={false}
+                                    useNativeDriver={true}
                                     footer={
                                         <ModalFooter
                                             style={{
@@ -367,12 +382,13 @@ class HomeSellerPage extends Component<any, any> {
                                     <ModalContent>
                                         <AddModal
                                             handleCloseAddModal={this.handleCloseAddModal}
+                                            handleSaveAddItem={this.handleSaveAddItem}
                                         />
                                     </ModalContent>
                                 </Modal>
                                 <Modal
                                     visible={this.state.errorModal}
-                                    useNativeDriver={false}
+                                    useNativeDriver={true}
                                     footer={
                                         <ModalFooter
                                             style={{

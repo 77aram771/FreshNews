@@ -175,7 +175,7 @@ class LoginScreen extends React.Component<any> {
             <View style={styles.container}>
                 <Modal
                     visible={this.state.errorModal}
-                    useNativeDriver={false}
+                    useNativeDriver={true}
                     footer={
                         <ModalFooter
                             style={{

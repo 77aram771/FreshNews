@@ -21,7 +21,6 @@ class UserInfo {
         fetch(`${SERVER_BASE}/profile`, requestOptions)
             .then(response => response.json())
             .then((res) => {
-                console.log('getUserData res', res)
                 this.userData = res;
             })
             .catch(error => {

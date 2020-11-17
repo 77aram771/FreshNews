@@ -7,7 +7,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 import sellerStore from "../../../stores/SellerStore";
 
-export const AddModal = ({handleCloseAddModal}: any) => {
+export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
     const placeholderWeight = {
         label: 'Вес',
         value: null,
@@ -74,27 +74,22 @@ export const AddModal = ({handleCloseAddModal}: any) => {
 
     const Name = (value: any) => {
         setName(value);
-        console.log('name', name);
     };
 
     const Price = (value: any) => {
         setPrice(value.replace(/[^0-9]/g, ''));
-        console.log('price', price);
     };
 
     const Weight = (value: any) => {
         setWeight(value);
-        console.log('weight', weight);
     };
 
     const Description = (value: any) => {
         setDescription(value);
-        console.log('value', value);
     };
 
     const Save = () => {
-        sellerStore.getAddItem(name, 1, weight, 'piece', price, description, image);
-        handleCloseAddModal();
+        handleSaveAddItem(name, 1, weight, 'piece', price, description, image)
     };
 
     return (
