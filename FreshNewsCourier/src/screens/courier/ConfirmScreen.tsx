@@ -9,7 +9,6 @@ import {
     size16,
     size20,
     size34,
-    size44,
     WINDOW_WIDTH,
 } from '../../share/consts';
 import {LogoAndTitle} from '../../share/components/LogoAndTitle';
@@ -17,13 +16,50 @@ import {MontserratSemiBold} from '../../share/fonts';
 import {ClientAddress} from './components/ClientAddress';
 import {PhoneComponent} from './components/PhoneComponent';
 import {ActionButton} from '../../share/components/ActionButton';
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from "./modals/ErrorModal";
+import {toJS} from "mobx";
 
 @observer
-export default class ConfirmScreen extends React.Component<NavigationProps, {
-    navigation: any
-}> {
+export default class ConfirmScreen extends React.Component<NavigationProps, { navigation: any }> {
+
+    state = {
+        errorModal: false,
+        errorData: [],
+    }
+
+    componentDidMount() {
+        if (courierStore.errorData !== null) {
+            this.setState({
+                errorData: toJS(courierStore.errorData),
+                errorModal: true
+            })
+        }
+    }
+
+    handleCloseErrorModal = async () => {
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
+    handleFinishOrder = async (id: number) => {
+        courierStore.getCourierDataFinish(id);
+        setTimeout(() => {
+            console.log('courierStore.errorData', courierStore.errorData);
+            if (courierStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(courierStore.errorData),
+                    errorModal: true
+                })
+            } else {
+                this.props.navigation.goBack();
+            }
+        }, 1000)
+    }
+
     render() {
 
         const {item} = this.props.navigation.state.params;
@@ -38,21 +74,51 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
                     marginTop: Platform.OS === "ios" ? 0 : 40
                 }}
             >
+                <Modal
+                    visible={this.state.errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрить"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
+                >
+                    <ModalContent>
+                        <ErrorModal
+                            data={this.state.errorData}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
+                </Modal>
                 <Header
                     headerLeft={
                         <TouchableOpacity
-                            style={{marginLeft: 8}}
                             onPress={() => this.props.navigation.goBack()}>
                             <AntDesign
-                                style={{paddingLeft: 8}}
                                 name={'left'}
-                                size={size16}
+                                size={18}
                                 color={'#000'}
                             />
                         </TouchableOpacity>
                     }
                     headerMid={
                         <LogoAndTitle courier={true}/>
+                    }
+                    headerRight={
+                        <View/>
                     }
                 />
                 <View
@@ -80,10 +146,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, {
                         style={{
                             marginTop: 50,
                         }}
-                        onPress={() => {
-                            courierStore.getCourierDataFinish(item.id);
-                            this.props.navigation.goBack();
-                        }}
+                        onPress={() => this.handleFinishOrder(item.id)}
                         text={'Завершить доставку'}
                     />
                     <ActionButton

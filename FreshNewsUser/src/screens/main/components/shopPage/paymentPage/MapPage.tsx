@@ -100,8 +100,8 @@ export default class MapPage extends Component<NavigationProps> {
             this.setState({
                 courierCordinate: courierCordinate
             }, () => {
-                console.log('userLocation', this.state.userLocation)
-                console.log('courierCordinate', this.state.courierCordinate)
+                console.log('userLocation', this.state.userLocation);
+                console.log('courierCordinate', this.state.courierCordinate);
             });
         }, 1000)
     };

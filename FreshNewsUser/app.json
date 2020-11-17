@@ -25,6 +25,9 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "",
+    "notification": {
+      "icon": "./assets/logo_ios.png"
+    },
     "android": {
       "useNextNotificationsApi": true,
       "package": "com.yourcompany.yourappname",

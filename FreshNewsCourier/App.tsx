@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Platform, SafeAreaView, View} from 'react-native';
+import {Platform, SafeAreaView} from 'react-native';
 import {useFonts} from 'expo-font';
 import {AppLoading} from 'expo';
 import {NavigationProps} from './src/share/interfaces';
@@ -67,7 +67,6 @@ const CourierStack = createStackNavigator(
     },
 );
 
-
 const RootStack = createStackNavigator(
     {
         Login: {
@@ -88,7 +87,7 @@ const AppContainer = createAppContainer(RootStack);
 export default function App(navigation: NavigationProps) {
 
     useEffect(() => {
-        (async ()=>{
+        (async () => {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
         })()
     })
@@ -97,19 +96,14 @@ export default function App(navigation: NavigationProps) {
 
     if (!fontsLoaded) {
         return <AppLoading/>;
-    } else {
+    }
+    else {
         return (
             <>
                 {
                     Platform.OS === "ios"
                         ? (
-                            <View
-                                style={{
-                                    flex: 1,
-                                }}
-                            >
-                                <AppContainer/>
-                            </View>
+                            <AppContainer/>
                         )
                         : (
                             <SafeAreaView

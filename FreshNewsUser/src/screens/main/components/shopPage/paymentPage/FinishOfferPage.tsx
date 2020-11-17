@@ -32,7 +32,7 @@ class FinishOfferPage extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 shopData: paymentStore.order
-            }, ( ) => console.log('shopData.price', toJS(this.state.shopData)))
+            }, () => console.log('shopData.price', toJS(this.state.shopData)))
         }, 3000)
     };
 
@@ -42,7 +42,6 @@ class FinishOfferPage extends Component<NavigationProps> {
     };
 
     renderList(item: any): any {
-        console.log('item', toJS(item));
         return (
             <View
                 key={item.id}

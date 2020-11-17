@@ -46,6 +46,7 @@ class SellerStore {
         fetch(`${SERVER_BASE}/seller/products/${id}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
+                console.log('res', res);
                 this.dataInfo = res;
             })
             .catch(error => {
@@ -69,6 +70,7 @@ class SellerStore {
         fetch(`${SERVER_BASE}/seller/orders/${id}`, requestOptions)
             .then(response => response.json())
             .then((res) => {
+                console.log('res getInfoOrder', res)
                 this.infoOrder = res;
             })
             .catch(error => {

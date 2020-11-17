@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View} from 'react-native';
 import {
     size12,
     size16,
@@ -54,7 +54,7 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
             // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // app: 'uber'  // optionally specify specific app to use
         })
-    }
+    };
 
     const openMapShop = (address: any) => {
         showLocation({
@@ -74,14 +74,17 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
             // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // app: 'uber'  // optionally specify specific app to use
         })
-    }
+    };
 
     return (
         <View
             style={{
-                marginBottom: size44,
                 paddingHorizontal: size16,
                 paddingTop: size28,
+                borderBottomWidth: 2,
+                borderColor: '#b4b4b4',
+                marginBottom: 10,
+                paddingBottom: 35
             }}
         >
             <Text style={{fontSize: size20}}>
@@ -103,7 +106,6 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
             >
                 Показать на карте
             </Text>
-            <PhoneComponent phone={item.phone}/>
             <View
                 style={{
                     height: 1,
@@ -111,7 +113,9 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
                     marginVertical: size20,
                 }}
             />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+                style={{flexDirection: 'row', alignItems: 'center'}}
+            >
                 <Text
                     style={{
                         color: '#8CC83F',
@@ -139,7 +143,7 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
                         marginLeft: 9,
                     }}
                 >
-                    4
+                    {item.delivery_time}
                 </Text>
                 <Text
                     style={{
@@ -162,7 +166,7 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
             </View>
             <ClientAddress item={item.client}/>
             <Text
-                onPress={() => openMapUser(item.address)}
+                onPress={() => openMapUser(item.client.address)}
                 style={{
                     fontFamily: MontserratRegular,
                     paddingTop: size12,
@@ -223,7 +227,7 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => {
-                                    alert('отказ от заказа')
+                                    alert('На данный момент невозможно отказ от заказа')
                                 }}
                                 style={{
                                     paddingVertical: size16,

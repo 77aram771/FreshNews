@@ -17,10 +17,12 @@ import paymentStore from "../../../../stores/PaymentStore";
 import {ErrorModal} from "../modals/ErrorModal";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import userInfo from '../../../../stores/UserInfo';
 
 interface ShopMarketInterface {
     getGeocodeAsync: any,
     navigation: any,
+    sendPushNotification: any
 }
 
 @observer
@@ -61,6 +63,8 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
     };
 
     onRefresh() {
+        userInfo.getUserNotifications();
+        this.props.sendPushNotification();
         this.setState({
             shopData: toJS(shopsStore.getShopData)
         })

@@ -6,21 +6,23 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image
 } from 'react-native';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
 import Header from '../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {
-    size16,
-    WINDOW_WIDTH,
-} from '../../share/consts';
+import {size16, WINDOW_HEIGHT, WINDOW_WIDTH,} from '../../share/consts';
 import {LogoAndTitle} from '../../share/components/LogoAndTitle';
 import {MontserratSemiBold} from '../../share/fonts';
 import {toJS} from "mobx";
 import {ListItemOrders} from "./components/ListItemOrders";
 import courierStore from '../../stores/CourierStore';
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
+import {ErrorModal} from "./modals/ErrorModal";
+// @ts-ignore
+import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 @observer
 export default class TakeOrderScreen extends React.Component<NavigationProps> {
@@ -28,11 +30,13 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
     state = {
         allData: null,
         refreshing: false,
-        bool: false
-    }
+        bool: false,
+        errorModal: false,
+        errorData: [],
+    };
 
     async componentDidMount() {
-        if(this.props.navigation.state.params.ActiveOrder !== null){
+        if (this.props.navigation.state.params.ActiveOrder !== null) {
             this.setState({
                 bool: false
             })
@@ -43,14 +47,19 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
             })
         }
         await courierStore.getCourierDataAll();
-
+        if (courierStore.errorData !== null) {
+            this.setState({
+                errorData: toJS(courierStore.errorData),
+                errorModal: true
+            })
+        }
         this.setState({
             refreshing: true
         })
 
         setTimeout(() => {
             const {getCourierData, courierData} = courierStore;
-            getCourierData()
+            getCourierData();
             let obj = [
                 {
                     title: 'Вы можете взять заказ',
@@ -61,10 +70,10 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                 allData: obj,
                 refreshing: false
             }, () => {
-                console.log('allData', this.state.allData[0].data.length)
+                console.log('allData', this.state.allData)
             })
         }, 1000)
-    }
+    };
 
     async onRefresh() {
 
@@ -86,7 +95,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                 refreshing: false
             })
         }, 1000)
-    }
+    };
 
     render() {
         return (
@@ -113,20 +122,46 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                             <View
                                 style={{
                                     flex: 1,
-                                    alignItems: 'center',
-                                    marginTop: Platform.OS === "ios" ? 0 : 40
+                                    alignItems: 'center'
                                 }}
                             >
+                                <Modal
+                                    visible={this.state.errorModal}
+                                    useNativeDriver={false}
+                                    footer={
+                                        <ModalFooter
+                                            style={{
+                                                backgroundColor: 'red'
+                                            }}
+                                        >
+                                            <ModalButton
+                                                text="Закрить"
+                                                textStyle={{
+                                                    color: '#fff'
+                                                }}
+                                                onPress={() => this.handleCloseErrorModal()}
+                                            />
+                                        </ModalFooter>
+                                    }
+                                    onTouchOutside={() => {
+                                        this.setState({errorModal: false});
+                                    }}
+                                >
+                                    <ModalContent>
+                                        <ErrorModal
+                                            data={this.state.errorData}
+                                            handleCloseErrorModal={this.handleCloseErrorModal}
+                                        />
+                                    </ModalContent>
+                                </Modal>
                                 <Header
                                     headerLeft={
                                         <TouchableOpacity
-                                            style={{marginLeft: 8}}
                                             onPress={() => this.props.navigation.goBack()}
                                         >
                                             <AntDesign
-                                                style={{paddingLeft: 8}}
                                                 name={'left'}
-                                                size={size16}
+                                                size={18}
                                                 color={'#000'}
                                             />
                                         </TouchableOpacity>
@@ -134,65 +169,91 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                     headerMid={
                                         <LogoAndTitle courier={true}/>
                                     }
+                                    headerRight={
+                                        <View/>
+                                    }
                                 />
                                 {
                                     this.state.allData !== null
                                         ? (
-                                            <View
-                                                style={{
-                                                    width: WINDOW_WIDTH,
-                                                }}
-                                            >
-                                                <SectionList
-                                                    showsVerticalScrollIndicator={false}
-                                                    sections={this.state.allData}
-                                                    keyExtractor={(item: any, index) => item + index}
-                                                    renderItem={({item}) => (
-                                                        <ListItemOrders
-                                                            item={item}
-                                                            onPress={(id: number) => {
-                                                                courierStore.getCourierDataAdd(id)
-                                                                this.props.navigation.goBack()
-                                                            }}
-                                                            bool={this.state.bool}
-                                                        />
-                                                    )}
-                                                    renderSectionHeader={({section: {title}}) => (
-                                                        <View
-                                                            style={{backgroundColor: '#8CC83F', paddingVertical: size16}}
-                                                        >
-                                                            <Text
-                                                                style={{
-                                                                    fontFamily: MontserratSemiBold,
-                                                                    fontSize: size16,
-                                                                    paddingHorizontal: size16,
-                                                                    color: '#FFFFFF',
-                                                                }}>
-                                                                {title}
-                                                            </Text>
-                                                        </View>
-                                                    )}
-                                                    refreshControl={
-                                                        <RefreshControl
-                                                            refreshing={this.state.refreshing}
-                                                            onRefresh={this.onRefresh.bind(this)}
-                                                        />
-                                                    }
-                                                />
-                                            </View>
+                                            <SectionList
+                                                showsVerticalScrollIndicator={false}
+                                                sections={this.state.allData}
+                                                keyExtractor={(item: any, index) => item + index}
+                                                renderItem={({item}) => (
+                                                    <ListItemOrders
+                                                        item={item}
+                                                        onPress={(id: number) => {
+                                                            courierStore.getCourierDataAdd(id)
+                                                            this.props.navigation.goBack()
+                                                        }}
+                                                        bool={this.state.bool}
+                                                    />
+                                                )}
+                                                renderSectionHeader={({section: {title}}) => (
+                                                    <View
+                                                        style={{backgroundColor: '#8CC83F', paddingVertical: size16}}
+                                                    >
+                                                        <Text
+                                                            style={{
+                                                                fontFamily: MontserratSemiBold,
+                                                                fontSize: size16,
+                                                                paddingHorizontal: size16,
+                                                                color: '#FFFFFF',
+                                                            }}>
+                                                            {title}
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                                refreshControl={
+                                                    <RefreshControl
+                                                        refreshing={this.state.refreshing}
+                                                        onRefresh={this.onRefresh.bind(this)}
+                                                    />
+                                                }
+                                            />
                                         )
                                         : (
                                             <View
                                                 style={{
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    alignContent: 'center',
-                                                    alignSelf: 'center',
+                                                    flex: 1,
+                                                    justifyContent: "flex-end",
                                                 }}
                                             >
-                                                <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
-                                                    Нет активных заказов
-                                                </Text>
+                                                <View
+                                                    style={{
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        alignSelf: "center"
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={{
+                                                            fontFamily: MontserratSemiBold,
+                                                            fontSize: 20,
+                                                            alignSelf: 'center',
+                                                            marginBottom: WINDOW_HEIGHT / 5
+                                                        }}
+                                                    >
+                                                        Нет заказов
+                                                    </Text>
+                                                </View>
+                                                <View
+                                                    style={{
+                                                        alignContent: "flex-end",
+                                                        alignSelf: "flex-end",
+                                                        marginLeft: 50
+                                                    }}
+                                                >
+                                                    <Image
+                                                        style={{
+                                                            width: WINDOW_WIDTH / 1.4,
+                                                            height: WINDOW_HEIGHT / 3,
+                                                        }}
+                                                        resizeMode={"contain"}
+                                                        source={require('../../../assets/images/background_not_item.png')}
+                                                    />
+                                                </View>
                                             </View>
                                         )
                                 }
@@ -201,5 +262,5 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                 }
             </>
         );
-    }
+    };
 }

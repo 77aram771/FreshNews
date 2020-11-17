@@ -5,6 +5,7 @@ import Feather from "react-native-vector-icons/Feather";
 import {MontserratBold, MontserratMedium, MontserratRegular} from "../../../share/fonts";
 
 export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
+    console.log('data', data);
     return (
         <View
             style={{
@@ -64,7 +65,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratBold
                         }}
                     >
-                        Код ошибки {data.status_code}
+                        Код ошибки {data.status_code || data.status}
                     </Text>
                 </View>
                 <View
@@ -92,7 +93,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratRegular
                         }}
                     >
-                        {data.message && data.errors.message[0]}
+                        {data.message || data.errors.message[0]}
                     </Text>
                 </View>
             </View>

@@ -29,7 +29,7 @@ export const ActionButton = ({
             onPress={onPress}
             style={[
                 {
-                    paddingHorizontal: 68,
+                    paddingHorizontal: 40,
                     paddingVertical: 16,
                     backgroundColor: '#8CC83F',
                     borderRadius: 10,

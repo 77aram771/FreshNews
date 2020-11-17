@@ -4,15 +4,15 @@ import {SERVER_BASE} from "../share/consts";
 import axios from "axios";
 
 class CourierStore {
-    @observable courierUserData: any = [];
-    @observable courierData: any = [];
+    @observable courierUserData: any = null;
+    @observable courierData: any = null;
     @observable errorData: any = null;
 
     @action
     getCourierData = async () => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
         axios.get(`${SERVER_BASE}/courier/orders`, {headers})
             .then((res) => {
@@ -33,6 +33,7 @@ class CourierStore {
 
         axios.get(`${SERVER_BASE}/courier/orders/pending`, {headers})
             .then((res) => {
+                // console.log('res.data', res.data);
                 this.courierData = res.data;
             })
             .catch((err) => {
@@ -56,6 +57,7 @@ class CourierStore {
         };
 
         fetch(`${SERVER_BASE}/courier/orders/take/${id}`, requestOptions)
+            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
@@ -73,7 +75,6 @@ class CourierStore {
         console.log('id', id);
         console.log('code', code);
         let getToken = await AsyncStorage.getItem('Token');
-        console.log('getToken', getToken);
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -86,7 +87,9 @@ class CourierStore {
         };
 
         fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`, requestOptions)
+            .then(response => response.json())
             .then(res => {
+                console.log('res getCourierOrderConfirmation-------------------------', res);
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
@@ -96,34 +99,37 @@ class CourierStore {
                 console.log('getCourierOrderConfirmation error', err);
                 this.errorData = err;
             })
-    }
+    };
 
     @action
     getCourierDataFinish = async (id: number) => {
-        let getToken = await AsyncStorage.getItem('Token')
-        let str = getToken.slice(1)
-        let strTrue = str.substring(0, str.length - 1)
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
-
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
-
         fetch(`${SERVER_BASE}/courier/orders/deliver/${id}`, requestOptions)
+            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
                 }
+                else {
+                    this.errorData = res;
+                }
             })
             .catch((err) => {
-                console.log('getCourierDataFinish error', err);
+                console.log('---------------------------------------------------');
                 this.errorData = err;
+                console.log('getCourierDataFinish error', err);
             })
-    }
+    };
 
     @action
     getCourierCoordinate = async (id: number, lat: string, lon: string) => {
@@ -145,7 +151,7 @@ class CourierStore {
                 // console.log('getCourierCoordinate error', err);
                 // this.errorData = err;
             })
-    }
+    };
 
     @action
     getCourierDeleteItem = async (id: number) => {
@@ -164,6 +170,7 @@ class CourierStore {
         };
         console.log(`${SERVER_BASE}/courier/orders/items/${id}`)
         fetch(`${SERVER_BASE}/courier/orders/items/${id}`, requestOptions)
+            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
@@ -174,7 +181,7 @@ class CourierStore {
                 console.log('getCourierDeleteItem error', err);
                 this.errorData = err;
             })
-    }
+    };
 }
 
 const authStore = new CourierStore();

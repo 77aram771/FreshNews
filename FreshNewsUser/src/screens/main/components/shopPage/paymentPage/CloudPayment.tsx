@@ -12,7 +12,6 @@ export class CloudPayment extends Component<NavigationProps> {
     componentDidMount() {
         const {getAllOrders, allOrders} = shopsStore;
         getAllOrders();
-        console.log('allOrders CloudPayment', toJS(allOrders)[0].id)
         setTimeout(() => {
             this.props.navigation.navigate('FinishOfferPage', {
                 id: toJS(allOrders)[0].id

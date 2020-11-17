@@ -44,7 +44,6 @@ class AssemblyPage extends Component<NavigationProps> {
     };
 
     componentDidMount() {
-        console.log('AssemblyPage----------');
         const NewDate = moment().format('YYYY-MM-DD');
         this.setState({
             date: NewDate,

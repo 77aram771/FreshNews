@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     RefreshControl,
-    SectionList,
     Text,
     TouchableOpacity,
     View,
@@ -30,7 +29,6 @@ import courierStore from '../../stores/CourierStore';
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import * as Location from 'expo-location';
-import {NextListItem} from "./components/NextListItem";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "./modals/ErrorModal";
@@ -40,7 +38,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
 
     state = {
         ActiveOrder: null,
-        AllOrder: null,
         refreshing: false,
         location: null,
         errorMassage: '',
@@ -77,18 +74,19 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     refreshing: false,
                 }, async () => {
                     setInterval(async () => {
-                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                        if (this.state.ActiveOrder !== null) {
+                            await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
+                        }
                     }, 5000);
                 })
-            }
-            else {
+            } else {
                 this.setState({
                     ActiveOrder: null,
-                    AllOrder: null,
                     refreshing: false
                 })
             }
         }, 1000);
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
     };
 
     async onRefresh() {
@@ -111,43 +109,27 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     ActiveOrder: toJS(courierUserData),
                     refreshing: false,
                 }, async () => {
-                    setInterval(async () => {
-                        await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
-                    }, 5000);
                 })
-            }
-            else {
+            } else {
                 this.setState({
                     ActiveOrder: null,
-                    AllOrder: null,
                     refreshing: false
                 })
             }
         }, 1000);
     };
 
-    // componentWillMount() {
-    //     BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // };
-    //
-    // componentWillUnmount() {
-    //     BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
-    // };
-    //
-    // handleBackButtonClick = () => {
-    //     this.props.navigation.goBack('CourierScreen');
-    //     return true;
-    // };
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    }
+
+    onBackPress = () => {
+        this.props.navigation.navigate('CourierScreen')
+        return true;
+    }
 
     handleScanner(id: any, code: any) {
         courierStore.getCourierOrderConfirmation(id, code)
-    };
-
-    handleOpenErrorModal = async () => {
-        this.setState({
-            errorModal: true,
-            errorData: toJS(courierStore.errorData),
-        }, () => console.log('errorData', this.state.errorData));
     };
 
     handleCloseErrorModal = async () => {
@@ -212,15 +194,13 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                 <View
                                     style={{
                                         flex: 1,
-                                        alignItems: 'center',
-                                        marginTop: Platform.OS === "ios" ? 0 : 40
+                                        marginTop: Platform.OS === "ios" ? 0 : 40,
                                     }}
                                 >
                                     <NavigationEvents onDidFocus={() => this.onRefresh()}/>
                                     <Header
                                         headerLeft={
                                             <TouchableOpacity
-                                                style={{marginLeft: 8}}
                                                 onPress={() => this.props.navigation.navigate('CourierProfile')}
                                             >
                                                 <Feather
@@ -235,7 +215,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         }
                                         headerRight={
                                             <TouchableOpacity
-                                                style={{marginRight: 28}}
                                                 onPress={() => this.props.navigation.navigate('TakeOrderScreen', {
                                                     ActiveOrder: this.state.ActiveOrder
                                                 })}
@@ -299,34 +278,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                                                 )
                                                             })
                                                         }
-                                                        <SectionList
-                                                            showsVerticalScrollIndicator={false}
-                                                            sections={this.state.AllOrder}
-                                                            keyExtractor={(item: any, index: any) => item + index}
-                                                            renderItem={({item}) => (
-                                                                <NextListItem
-                                                                    item={item}
-                                                                />
-                                                            )}
-                                                            renderSectionHeader={({section: {title}}) => (
-                                                                <View
-                                                                    style={{
-                                                                        backgroundColor: '#F5F4F4',
-                                                                        paddingVertical: size16
-                                                                    }}
-                                                                >
-                                                                    <Text
-                                                                        style={{
-                                                                            fontFamily: MontserratSemiBold,
-                                                                            fontSize: size16,
-                                                                            paddingHorizontal: size16,
-                                                                        }}
-                                                                    >
-                                                                        {title}
-                                                                    </Text>
-                                                                </View>
-                                                            )}
-                                                        />
                                                     </>
                                                 )
                                                 : (

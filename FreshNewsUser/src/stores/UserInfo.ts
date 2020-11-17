@@ -6,6 +6,7 @@ import axios from "axios";
 
 class UserInfo {
     @observable userData: any = [];
+    @observable notificationsData: any = null;
     @observable errorData: any = null;
 
     @action
@@ -74,7 +75,7 @@ class UserInfo {
                 console.log('getUserDataAddAddress error', error);
                 this.errorData = error;
             });
-    }
+    };
 
     @action
     getUserDataDeleteAddress = async (id: number) => {
@@ -100,7 +101,31 @@ class UserInfo {
                 console.log('getUserDataAddAddress error', error);
                 this.errorData = error;
             });
-    }
+    };
+
+    @action
+    getUserNotifications = async () => {
+        // this.notificationsData = [];
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://fructonosback.ru/api/notifications", requestOptions)
+            .then(response => response.json())
+            .then(res => {
+                // console.log('res, getUserNotifications', res)
+                this.notificationsData = res
+            })
+            .catch(error => console.log('error', error));
+    };
 }
 
 const authStore = new UserInfo();

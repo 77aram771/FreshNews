@@ -28,7 +28,7 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
         });
         setTimeout(() => {
             this.setState({
-                mockData: toJS(sellerStore.infoOrder),
+                mockData: toJS(sellerStore.infoOrder.items),
                 refreshing: false
             });
             if (sellerStore.errorData !== null) {

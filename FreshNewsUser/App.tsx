@@ -6,7 +6,7 @@ import {NavigationProps} from './src/share/interfaces';
 import {createStackNavigator, TransitionPresets} from "react-navigation-stack";
 import {createAppContainer} from "react-navigation";
 import LoginScreen from "./src/screens/login/LoginScreen";
-import MainScreen from "./src/screens/main/MainScreen";
+import {MainScreen} from "./src/screens/main/MainScreen";
 import SideBar from "./src/screens/main/components/sideBar/SideBar";
 import MyData from "./src/screens/main/components/sideBar/MyData";
 import ShopPage from "./src/screens/main/components/shopPage/ShopPage";

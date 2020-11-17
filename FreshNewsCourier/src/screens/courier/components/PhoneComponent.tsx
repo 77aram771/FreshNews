@@ -22,7 +22,7 @@ export const PhoneComponent = ({
                     },
                     textStyle,
                 ]}>
-                {phone}
+                {`+${phone}`}
             </Text>
         </View>
     );

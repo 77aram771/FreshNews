@@ -138,19 +138,21 @@ const renderItem = (item: any) => {
     )
 };
 
-export const ListItem = ({
-                             item,
-                             onPress,
-                             navigation,
-                             handleScanner
-                         }: {
-    item: IProps;
-    onPress: () => void;
-    navigation?: any;
-    handleScanner?: any;
-}) => {
+export const ListItem = (
+    {
+        item,
+        onPress,
+        navigation,
+        handleScanner
+    }: {
+        item: IProps;
+        onPress: () => void;
+        navigation?: any;
+        handleScanner?: any;
+    }) => {
 
-    console.log('item', item)
+    console.log('item', item);
+
     const openMapUser = (address: any) => {
         showLocation({
             latitude: 38.8976763,
@@ -169,7 +171,7 @@ export const ListItem = ({
             // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // app: 'uber'  // optionally specify specific app to use
         })
-    }
+    };
 
     const openMapShop = (address: any) => {
         showLocation({
@@ -189,7 +191,7 @@ export const ListItem = ({
             // appTitles: { 'google-maps': 'My custom Google Maps title' } // optionally you can override default app titles
             // app: 'uber'  // optionally specify specific app to use
         })
-    }
+    };
 
     return (
         <View
@@ -253,7 +255,7 @@ export const ListItem = ({
                         marginLeft: 9,
                     }}
                 >
-                    4
+                    {item.delivery_time}
                 </Text>
                 <Text
                     style={{
@@ -311,12 +313,10 @@ export const ListItem = ({
             }
             <View
                 style={{
-                    width: '100%',
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
                 }}
             >
-
                 {
                     item.products[0].status === 5
                         ? (
@@ -361,7 +361,10 @@ export const ListItem = ({
                                     Отсканирован
                                 </Text>
                                 <ActionButton
-                                    style={{marginTop: 24, width: WINDOW_WIDTH * 0.9}}
+                                    style={{
+                                        marginTop: 24,
+                                        width: WINDOW_WIDTH * 0.9,
+                                    }}
                                     onPress={onPress}
                                     text={'Заказ доставлен'}
                                     textStyle={{fontSize: size12}}
@@ -369,24 +372,24 @@ export const ListItem = ({
                             </>
                         )
                 }
+                <ActionButton
+                    style={{
+                        // paddingVertical: 16,
+                        backgroundColor: '#F5F4F4',
+                        borderRadius: 10,
+                        width: WINDOW_WIDTH * 0.9,
+                        alignItems: 'center',
+                        marginTop: size16,
+                    }}
+                    onPress={() => alert('Связаться с менеджером')}
+                    text={'Связаться с менеджером'}
+                    textStyle={{
+                        color: '#000000',
+                        fontFamily: MontserratSemiBold,
+                        fontSize: size12,
+                    }}
+                />
             </View>
-            <ActionButton
-                style={{
-                    paddingVertical: 16,
-                    backgroundColor: '#F5F4F4',
-                    borderRadius: 10,
-                    width: WINDOW_WIDTH * 0.9,
-                    alignItems: 'center',
-                    marginTop: size16,
-                }}
-                onPress={() => alert('Связаться с менеджером')}
-                text={'Связаться с менеджером'}
-                textStyle={{
-                    color: '#000000',
-                    fontFamily: MontserratSemiBold,
-                    fontSize: size12,
-                }}
-            />
         </View>
     );
 };
