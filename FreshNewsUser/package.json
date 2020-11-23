@@ -21,6 +21,7 @@
     "@react-native-community/netinfo": "^5.9.7",
     "@react-native-community/picker": "1.6.0",
     "@types/react-native-vector-icons": "^6.4.5",
+    "add": "^2.0.6",
     "axios": "^0.19.2",
     "expo": "^38.0.0",
     "expo-barcode-scanner": "~8.2.1",
@@ -54,10 +55,12 @@
     "react-native-cloudpayments": "^1.0.0",
     "react-native-config": "^1.3.2",
     "react-native-country-picker-modal": "^2.0.0",
+    "react-native-credit-card-display": "^0.3.4",
     "react-native-credit-card-input": "^0.4.1",
     "react-native-credit-card-input-fullpage": "^0.2.0",
     "react-native-default-preference": "^1.4.3",
     "react-native-device-info": "^6.0.2",
+    "react-native-dropdown-picker": "^3.7.1",
     "react-native-geocoding": "^0.4.0",
     "react-native-geolocation-service": "^5.0.0",
     "react-native-gesture-handler": "~1.6.0",
@@ -75,6 +78,7 @@
     "react-native-phone-input": "^0.2.4",
     "react-native-phone-number-input": "^1.1.0",
     "react-native-picker-select": "^8.0.2",
+    "react-native-push-notification-popup": "^1.6.0",
     "react-native-ratings": "^7.2.0",
     "react-native-rn-apple-pay-button": "^1.0.2",
     "react-native-safe-area-context": "~3.0.7",
@@ -85,7 +89,7 @@
     "react-native-web": "~0.11.7",
     "react-navigation": "4.0.9",
     "react-navigation-stack": "^2.8.2",
-    "yarn": "^1.22.4"
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

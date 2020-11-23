@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, StyleSheet, View} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {
@@ -9,7 +9,7 @@ import {
     size20,
     size28,
     size34,
-    size44,
+    size44, WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../share/consts';
 import {CustomInput} from '../../../../share/components/CustomInput';
@@ -22,11 +22,13 @@ import modalsStore from '../../../../stores/ModalsStore';
 import shopsStore from "../../../../stores/ShopsStore";
 import Header from "../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
-let num = 1;
+import {AddAddressUser} from "../modals/AddAddressUser";
+// @ts-ignore
+import {CreditCardInput} from "react-native-credit-card-input";
 
 @observer
-export default class MyData extends Component {
+export default // @ts-ignore
+class MyData extends Component {
 
     state = {
         name: '',
@@ -34,8 +36,8 @@ export default class MyData extends Component {
         surname: '',
         patronymic: '',
         phone: '',
-        address: [],
         alertsIsOn: true,
+        address: [],
         addAddress: '',
         porch: '',
         floor: '',
@@ -46,7 +48,10 @@ export default class MyData extends Component {
         floorInput: false,
         intercomInput: false,
         levelInput: false,
-        saveButton: false
+        saveButton: false,
+        creditCart: [],
+        enterCart: null,
+        saveButtonCart: false
     };
 
     componentDidMount() {
@@ -61,40 +66,40 @@ export default class MyData extends Component {
             phone: phone,
             address: toJS(addresses),
         })
-    }
+    };
 
     alertsToggleHandle(state: boolean) {
         this.setState({alertsIsOn: state});
-    }
+    };
 
     handleSave(name: string, email: string, surname: string, patronymic: string) {
         modalsStore.onShowMyDataModal()
-        userInfo.getUserDataUpdate(name, email, surname, patronymic)
-    }
+        userInfo.getUserDataUpdate(name, email, surname, patronymic);
+    };
 
     handleName(value: string) {
         this.setState({
             name: value
         })
-    }
+    };
 
     handleSurname(value: string) {
         this.setState({
             surname: value
         })
-    }
+    };
 
     handleEmail(value: string) {
         this.setState({
             email: value
         })
-    }
+    };
 
     handleSandAddress(value: string) {
+        console.log('Address', value);
         this.setState({
             addAddress: value
         }, () => {
-            console.log('addAddress', this.state.addAddress.length)
             if (this.state.addAddress.length > -1) {
                 if (this.state.porch.length > -1) {
                     if (this.state.floor.length > -1) {
@@ -112,13 +117,13 @@ export default class MyData extends Component {
                 })
             }
         })
-    }
+    };
 
     handleSandPorch(value: string) {
+        console.log('Porch', value);
         this.setState({
                 porch: value
             }, () => {
-                console.log('porch', this.state.porch)
                 if (this.state.addAddress.length > -1) {
                     if (this.state.porch.length > -1) {
                         if (this.state.floor.length > -1) {
@@ -137,13 +142,13 @@ export default class MyData extends Component {
                 }
             }
         )
-    }
+    };
 
     handleSandFloor(value: string) {
+        console.log('Floor', value);
         this.setState({
             floor: value
         }, () => {
-            console.log('porch', this.state.porch)
             if (this.state.addAddress.length > -1) {
                 if (this.state.porch.length > -1) {
                     if (this.state.floor.length > -1) {
@@ -161,13 +166,13 @@ export default class MyData extends Component {
                 })
             }
         })
-    }
+    };
 
     handleSandIntercom(value: string) {
+        console.log('Intercom', value);
         this.setState({
             intercom: value
         }, () => {
-            console.log('porch', this.state.porch)
             if (this.state.addAddress.length > -1) {
                 if (this.state.porch.length > -1) {
                     if (this.state.floor.length > -1) {
@@ -185,13 +190,13 @@ export default class MyData extends Component {
                 })
             }
         })
-    }
+    };
 
     handleSandLevel(value: string) {
+        console.log('Level', value);
         this.setState({
             level: value
         }, () => {
-            console.log('porch', this.state.porch)
             if (this.state.addAddress.length > -1) {
                 if (this.state.porch.length > -1) {
                     if (this.state.floor.length > -1) {
@@ -209,11 +214,11 @@ export default class MyData extends Component {
                 })
             }
         })
-    }
+    };
 
     handleAddAddress() {
         let obj = {
-            id: num++,
+            id: new Date().getUTCMilliseconds(),
             address: this.state.addAddress,
             porch: this.state.porch,
             floor: this.state.floor,
@@ -225,8 +230,8 @@ export default class MyData extends Component {
         });
 
         userInfo.getUserDataAddAddress(this.state.addAddress, this.state.porch, this.state.floor, this.state.intercom)
-        shopsStore.onShowShopInformation()
-    }
+        shopsStore.onShowAddAddressModal()
+    };
 
     handleDeleteAddress(id: number) {
         userInfo.getUserDataDeleteAddress(id)
@@ -235,15 +240,22 @@ export default class MyData extends Component {
         this.setState({
             address: obj
         })
+    };
 
-    }
-
-    handleOpenModal() {
+    handleOpenModalAddAddress() {
         this.setState({
-            addAddress: ''
+            addAddress: '',
+            porch: '',
+            floor: '',
+            intercom: '',
+            level: '',
         })
-        shopsStore.onShowShopInformation()
-    }
+        shopsStore.onShowAddAddressModal()
+    };
+
+    handleOpenModalCreditCart() {
+        shopsStore.onShowAddCreditCart()
+    };
 
     renderAddressItem(item: any) {
         return (
@@ -290,11 +302,128 @@ export default class MyData extends Component {
                 />
             </View>
         )
-    }
+    };
+
+    _onChange = (formData: any) => {
+        this.setState({
+            enterCart: formData.values
+        }, () => {
+            if (formData.values.number.length > 0) {
+                if (formData.values.expiry.length > 0) {
+                    if (formData.values.cvc.length > 0) {
+                        if (formData.values.name.length > 0) {
+                            this.setState({
+                                saveButtonCart: true
+                            })
+                        } else {
+                            this.setState({
+                                saveButtonCart: false
+                            })
+                        }
+                    } else {
+                        this.setState({
+                            saveButtonCart: false
+                        })
+                    }
+                } else {
+                    this.setState({
+                        saveButtonCart: false
+                    })
+                }
+            } else {
+                this.setState({
+                    saveButtonCart: false
+                })
+            }
+        })
+    };
+
+    handleAddCart() {
+        let obj = this.state.enterCart;
+        obj.id = new Date().getUTCMilliseconds();
+        console.log('obj', obj);
+        this.setState({
+            creditCart: [...this.state.creditCart, this.state.enterCart]
+        }, () => console.log('creditCart', this.state.creditCart));
+        shopsStore.onShowAddCreditCart()
+    };
+
+    handleDeleteCart(id: number) {
+        // userInfo.getUserDataDeleteAddress(id)
+        let obj = this.state.creditCart.filter(item => item.id !== id)
+
+        this.setState({
+            creditCart: obj
+        })
+    };
+
+    renderCartItem(item: any) {
+        console.log('item', item);
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}
+                key={item.id}
+            >
+                <View
+                    style={{
+                        justifyContent: "flex-start"
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: MontserratBold,
+                            fontSize: 14,
+                            marginBottom: 5
+                        }}
+                    >
+                        Имя: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.name}</Text>
+                    </Text>
+                    <Text
+                        style={{
+                            fontFamily: MontserratBold,
+                            fontSize: 14,
+                            marginBottom: 5
+                        }}
+                    >
+                        Номер: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.number}</Text>
+                    </Text>
+                    <Text
+                        style={{
+                            fontFamily: MontserratBold,
+                            fontSize: 14,
+                            marginBottom: 5
+                        }}
+                    >
+                        CVC: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.cvc}</Text>
+                    </Text>
+                    <Text
+                        style={{
+                            fontFamily: MontserratBold,
+                            fontSize: 14,
+                            marginBottom: 5
+                        }}
+                    >
+                        Дата: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.expiry}</Text>
+                    </Text>
+                </View>
+                <EvilIcons
+                    onPress={() => this.handleDeleteCart(item.id)}
+                    name={'close'}
+                    size={size28}
+                    color={'#707070'}
+                    style={{paddingLeft: 16}}
+                />
+            </View>
+        )
+    };
 
     render() {
 
-        const {isShowShopInformation, onShowShopInformation} = shopsStore;
+        const {isShowAddAddressModal, isShowAddCreditCart, onShowAddAddressModal, onShowAddCreditCart} = shopsStore;
 
         const {
             name,
@@ -308,6 +437,7 @@ export default class MyData extends Component {
             level,
             floor,
             intercom,
+            creditCart
         } = this.state;
 
         return (
@@ -315,15 +445,15 @@ export default class MyData extends Component {
                 <Modal
                     animationInTiming={200}
                     animationOutTiming={100}
-                    onBackButtonPress={onShowShopInformation}
+                    onBackButtonPress={onShowAddAddressModal}
                     hideModalContentWhileAnimating={true}
                     backdropOpacity={0}
-                    onBackdropPress={onShowShopInformation}
+                    onBackdropPress={onShowAddAddressModal}
                     style={{
                         margin: 0,
                         backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     }}
-                    isVisible={isShowShopInformation}
+                    isVisible={isShowAddAddressModal}
                 >
                     <View
                         style={{
@@ -547,6 +677,108 @@ export default class MyData extends Component {
                         </View>
                     </View>
                 </Modal>
+                <Modal
+                    animationInTiming={200}
+                    animationOutTiming={100}
+                    onBackButtonPress={onShowAddCreditCart}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={onShowAddCreditCart}
+                    style={{
+                        margin: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                    }}
+                    isVisible={isShowAddCreditCart}
+                >
+                    <View
+                        style={{
+                            width: WINDOW_WIDTH * 0.9,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                        }}
+                    >
+                        <View
+                            style={{
+                                backgroundColor: '#dbdbdb',
+                                width: WINDOW_WIDTH * 0.9,
+                                height: WINDOW_HEIGHT / 1.8,
+                                alignItems: 'center',
+                                paddingBottom: 120,
+                                paddingTop: 30,
+                                borderRadius: 20,
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontFamily: MontserratSemiBold,
+                                    fontSize: 16,
+                                    color: '#000',
+                                    marginBottom: 10
+                                }}
+                            >
+                                Добавить Карту
+                            </Text>
+                            <CreditCardInput
+                                autoFocus
+                                requiresName
+                                requiresCVC
+                                requiresPostalCode
+                                labelStyle={{
+                                    color: "black",
+                                    fontSize: 12,
+                                }}
+                                inputStyle={{
+                                    fontSize: 16,
+                                    color: "black",
+                                }}
+                                inputContainerStyle={{
+                                    borderWidth: 0.4,
+                                    borderStyle: "solid",
+                                    borderColor: '#000'
+                                }}
+                                validColor={"black"}
+                                invalidColor={"red"}
+                                placeholderColor={"darkgray"}
+                                onChange={this._onChange}
+                            />
+                            <TouchableOpacity
+                                onPress={() => this.handleAddCart()}
+                                style={
+                                    this.state.saveButtonCart
+                                        ? {
+                                            borderRadius: 10,
+                                            backgroundColor: '#8CC83F',
+                                            marginTop: 20,
+                                            paddingTop: 20,
+                                            paddingBottom: 20,
+                                            paddingLeft: 25,
+                                            paddingRight: 25
+                                        }
+                                        : {
+                                            borderRadius: 10,
+                                            backgroundColor: 'grey',
+                                            marginTop: 20,
+                                            paddingTop: 20,
+                                            paddingBottom: 20,
+                                            paddingLeft: 25,
+                                            paddingRight: 25
+                                        }}
+                                disabled={!this.state.saveButtonCart}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: MontserratSemiBold,
+                                        fontSize: 18,
+                                        color: '#fff'
+                                    }}
+                                >
+                                    Добавит
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
                 <Header
                     style={{borderBottomWidth: 2,}}
                     headerLeft={
@@ -662,7 +894,6 @@ export default class MyData extends Component {
                                 headerStyleWidth={WINDOW_WIDTH - 90}
                                 headerStyleText={WINDOW_WIDTH / 1.6}
                             />
-
                         </View>
                         <Text
                             style={{
@@ -741,7 +972,7 @@ export default class MyData extends Component {
                                     <View/>
                                 )
                                 : (
-                                    <TouchableOpacity onPress={() => this.handleOpenModal()}>
+                                    <TouchableOpacity onPress={() => this.handleOpenModalAddAddress()}>
                                         <Text
                                             style={{
                                                 fontFamily: MontserratSemiBold,
@@ -751,6 +982,44 @@ export default class MyData extends Component {
                                             }}
                                         >
                                             Добавить адрес
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                        }
+                        <Text
+                            style={{
+                                color: '#BABABA',
+                                fontFamily: MontserratSemiBold,
+                                fontSize: size20,
+                                paddingTop: size34,
+                                paddingBottom: size34,
+                            }}
+                        >
+                            Кредитные карты
+                        </Text>
+                        <View>
+                            {
+                                creditCart.map(item => {
+                                    return this.renderCartItem(item)
+                                })
+                            }
+                        </View>
+                        {
+                            creditCart.length === 5
+                                ? (
+                                    <View/>
+                                )
+                                : (
+                                    <TouchableOpacity onPress={() => this.handleOpenModalCreditCart()}>
+                                        <Text
+                                            style={{
+                                                fontFamily: MontserratSemiBold,
+                                                fontSize: size14,
+                                                color: '#8CC83F',
+                                                paddingTop: 24,
+                                            }}
+                                        >
+                                            Добавить Карты
                                         </Text>
                                     </TouchableOpacity>
                                 )
@@ -785,11 +1054,11 @@ export default class MyData extends Component {
                         style={{
                             height: 50,
                             backgroundColor: '#8CC83F',
-                            borderRadius: 20,
+                            borderRadius: 10,
                             justifyContent: 'center',
                             alignItems: 'center',
                             width: WINDOW_WIDTH * 0.9 + 1,
-                            marginBottom: 60
+                            marginBottom: 30
                         }}
                     >
                         <Text style={{color: '#FFFFFF'}}>Сохранить</Text>

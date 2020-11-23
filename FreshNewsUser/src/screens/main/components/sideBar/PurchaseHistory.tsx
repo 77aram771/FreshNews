@@ -36,7 +36,6 @@ export default class PurchaseHistory extends Component<NavigationProps> {
     }
 
     renderItem(item: any) {
-        console.log('item', toJS(item));
         if (item.status === 1) {
             return (
                 <TouchableOpacity

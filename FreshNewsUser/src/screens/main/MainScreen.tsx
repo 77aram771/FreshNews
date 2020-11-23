@@ -55,7 +55,6 @@ export const MainScreen = ({navigation}) => {
         getLocationAsync();
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
-            console.log('getToken', getToken);
             if (getToken !== null) {
                 basketStore.getCartUserInfo()
                 userInfo.getUserData();
@@ -68,7 +67,12 @@ export const MainScreen = ({navigation}) => {
                 setNotification(notification);
             });
             responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                console.log(response);
+                userInfo.getUserNotificationsRead();
+                navigation.navigate('FinishOfferPage', {
+                    id: response.notification.request.content.data.id,
+                    // transaction: true,
+                    // status: item.status
+                })
             });
             await sendPushNotification(expoPushToken);
             return () => {
@@ -79,24 +83,30 @@ export const MainScreen = ({navigation}) => {
     }, []);
 
     async function sendPushNotification(expoPushToken) {
-        userInfo.getUserNotifications();
-        let lastNotification = toJS(userInfo.notificationsData[userInfo.notificationsData.length - 1]);
-        console.log('lastNotification', lastNotification);
-        setTimeout(async () => {
-            await fetch('https://exp.host/--/api/v2/push/send', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Accept-encoding': 'gzip, deflate',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    to: expoPushToken,
-                    sound: 'default',
-                    title: lastNotification.data.message,
-                }),
-            });
-        }, 3000)
+        let getToken = await AsyncStorage.getItem('Token');
+        if (getToken !== null) {
+            userInfo.getUserNotifications();
+        }
+        if(toJS(userInfo.notificationsData) !== null){
+            let lastNotification = toJS(userInfo.notificationsData[userInfo.notificationsData.length - 1]);
+            setTimeout(async () => {
+                await fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Accept-encoding': 'gzip, deflate',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        to: expoPushToken,
+                        sound: 'default',
+                        title: lastNotification.data.message,
+                        data: {id: lastNotification.id},
+
+                    }),
+                })
+            }, 3000);
+        }
     }
 
     async function registerForPushNotificationsAsync() {
@@ -141,7 +151,6 @@ export const MainScreen = ({navigation}) => {
     };
 
     const getGeocodeAsync = async () => {
-        console.log('location', location);
         Geocoder.from(location.latitude, location.longitude)
             .then((json: any) => {
                 let addressComponent = json.results[5].formatted_address;
@@ -158,11 +167,7 @@ export const MainScreen = ({navigation}) => {
                 alignItems: 'center'
             }}
         >
-            <View
-                style={{
-                    height: HEADER_HEIGHT
-                }}
-            />
+            <View style={{height: HEADER_HEIGHT}}/>
             <Modal
                 animationInTiming={400}
                 animationOutTiming={400}

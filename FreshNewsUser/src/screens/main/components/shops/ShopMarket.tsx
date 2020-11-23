@@ -3,7 +3,6 @@ import {FlatList, StyleSheet, View, RefreshControl} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
 import {MontserratRegular} from '../../../../share/fonts';
-import {data} from '../../../../share/info';
 import {size16} from '../../../../share/consts';
 import {NavigationProps} from '../../../../share/interfaces';
 import {HeaderText} from '../HeaderText';
@@ -13,7 +12,6 @@ import shopsStore from "../../../../stores/ShopsStore";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {ShopMarketItem} from "./ShopMarketItem";
-import paymentStore from "../../../../stores/PaymentStore";
 import {ErrorModal} from "../modals/ErrorModal";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
@@ -85,13 +83,6 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
         })
     };
 
-    handleOpenErrorModal = async () => {
-        this.setState({
-            errorModal: true,
-            errorData: toJS(shopsStore.errorData),
-        }, () => console.log('errorData', this.state.errorData));
-    };
-
     handleCloseErrorModal = async () => {
         // alert('test')
         await this.setState({
@@ -100,7 +91,6 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
     };
 
     render() {
-
         return (
             <View style={styles.shopsListContainer}>
                 {

@@ -16,6 +16,8 @@ class ShopsStore {
     @observable getShopsItem: any = [];
     @observable getShopShares: any = [];
     @observable isShowShopInformation: boolean = false;
+    @observable isShowAddAddressModal: boolean = false;
+    @observable isShowAddCreditCart: boolean = false;
     @observable getShopItemInfo: any = [];
     @observable allOrders: any = [];
     @observable errorData: any = null;
@@ -106,7 +108,6 @@ class ShopsStore {
         this.getShopInfo = [];
         await axios.get(`${SERVER_BASE}/shops/${id}`)
             .then((res) => {
-                console.log('getShops', res)
                 this.getShopsItem = res.data;
             })
             .catch((error) => {
@@ -121,7 +122,6 @@ class ShopsStore {
         this.getShopShares = [];
         await axios.get(`${SERVER_BASE}/promocode/${id}`)
             .then((res) => {
-                console.log('getPromoCode', res)
                 this.getShopShares = res.data;
             })
             .catch((error) => {
@@ -140,6 +140,16 @@ class ShopsStore {
     @action
     onShowShopInformation = () => {
         this.isShowShopInformation = !this.isShowShopInformation;
+    };
+
+    @action
+    onShowAddCreditCart = () => {
+        this.isShowAddCreditCart = !this.isShowAddCreditCart;
+    };
+
+    @action
+    onShowAddAddressModal = () => {
+        this.isShowAddAddressModal = !this.isShowAddAddressModal;
     };
 
     @action

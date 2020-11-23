@@ -32,13 +32,12 @@ class FinishOfferPage extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 shopData: paymentStore.order
-            }, () => console.log('shopData.price', toJS(this.state.shopData)))
+            })
         }, 3000)
     };
 
     async handleDeleteItem(id: number) {
         console.log('handleDeleteItem id', id)
-        // basketStore.getDeleteCartItem(id);
     };
 
     renderList(item: any): any {

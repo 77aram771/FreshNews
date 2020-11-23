@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Animated, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {Component, useCallback} from 'react';
+import {Animated, Image, StyleSheet, Text, TouchableOpacity, Button, View, Linking} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
 import {MenuTitle} from '../MenuTitle';
@@ -24,18 +24,38 @@ interface SideBarProps {
     navigation: any;
 }
 
+const supportedURL = "https://google.com";
+
+const unsupportedURL = "slack://open?team=123456";
+
+const OpenURLButton = ({ url, children }) => {
+    const handlePress = useCallback(async () => {
+        // Checking if the link is supported for links with custom URL scheme.
+        const supported = await Linking.canOpenURL(url);
+
+        if (supported) {
+            // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+            // by some browser in the mobile
+            await Linking.openURL(url);
+        } else {
+            Alert.alert(`Don't know how to open this URL: ${url}`);
+        }
+    }, [url]);
+
+    return <Button title={children} onPress={handlePress} />;
+};
+
 @observer
 export default class SideBar extends Component<NavigationProps, SideBarProps> {
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token')
-        // console.log('getToken -------', getToken);
         if (getToken === null) {
             authStore.getUser(false);
         } else {
             authStore.getUser(true);
         }
-    }
+    };
 
     handleNavigateToCart() {
         modalsStore.onChangeView()
@@ -62,21 +82,18 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
         authStore.getUser(false);
         modalsStore.onChangeView();
         this.props.navigation.navigate('Login');
-    }
+    };
 
     render() {
         const {
             animatedValue,
             onChangeView,
-            onCloseViewAndShowMyDataModal,
-            onCloseSideBarAndShowAuth,
             onCloseViewAndShowCourierInformationModal,
             onCloseViewAndShowLegalEntities,
             onCloseViewAndShowDelivery,
             onCloseViewAndShowQuestionsAndAnswers,
             onCloseViewAndShowFeedback,
             onCloseViewAndShowTermsOfUse,
-            onShowMyDataModal,
             isShowSideBar
         } = modalsStore;
 
@@ -106,7 +123,7 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Стать курьером'}
-                            handleClick={onCloseViewAndShowCourierInformationModal}
+                            handleClick={() => Linking.openURL('http://google.com')}
                         />
                         <MenuTitle
                             titleStyle={styles.menuTitle}

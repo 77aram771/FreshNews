@@ -5,7 +5,6 @@ import Feather from "react-native-vector-icons/Feather";
 import {MontserratBold, MontserratMedium, MontserratRegular} from "../../../../share/fonts";
 
 export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
-    console.log('data.message', data.message);
     return (
         <View
             style={{

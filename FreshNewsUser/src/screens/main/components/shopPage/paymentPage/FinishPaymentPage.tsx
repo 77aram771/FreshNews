@@ -22,12 +22,13 @@ import {
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import {PaymentElement} from './PaymentElement';
-// @ts-ignore
 import {LiteCreditCardInput} from "react-native-credit-card-input";
 import paymentStore from "../../../../../stores/PaymentStore";
 import RNPickerSelect from "react-native-picker-select";
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from "mobx";
+import DropDownPicker from 'react-native-dropdown-picker';
+import Icon from 'react-native-vector-icons/Fontisto';
 let moment = require('moment');
 
 @observer
@@ -52,6 +53,7 @@ class FinishPaymentPage extends Component<NavigationProps> {
         selectTime: '',
         addressArray: [],
         timeArray: [],
+        card: null
     };
 
     componentDidMount() {
@@ -243,7 +245,7 @@ class FinishPaymentPage extends Component<NavigationProps> {
     };
 
     _onChange(form: any) {
-        //console.log(form);
+        console.log(form);
     };
 
     handlePayment() {
@@ -254,6 +256,11 @@ class FinishPaymentPage extends Component<NavigationProps> {
     render() {
         const placeholder = {
             label: 'Выберите один из адресов',
+            value: null,
+            color: '#9EA0A4',
+        };
+        const placeholder2 = {
+            label: 'Выберите один из кредитных карт',
             value: null,
             color: '#9EA0A4',
         };
@@ -346,17 +353,57 @@ class FinishPaymentPage extends Component<NavigationProps> {
                                 ? (
                                     <View
                                         style={{
-                                            marginTop: 40,
-                                            borderWidth: 3,
-                                            borderStyle: 'solid',
-                                            borderColor: '#EBEBEB',
-                                            borderRadius: 10
+                                            marginTop: 20,
                                         }}
                                     >
+                                        <Text
+                                            style={{
+                                                color: '#BABABA',
+                                                fontFamily: MontserratSemiBold,
+                                                fontSize: size20,
+                                                paddingTop: size34,
+                                                marginBottom: 20
+                                            }}
+                                        >
+                                            Кредитные карты
+                                        </Text>
+                                        <DropDownPicker
+                                            placeholder={'Выберите один из кредитных карт'}
+                                            items={[
+                                                {label: '41111111111111', value: '41111111111111', icon: () => <Icon name="visa" size={18} color="#900" />, hidden: true},
+                                                {label: '51111111111111', value: '51111111111111', icon: () => <Icon name="mastercard" size={18} color="#900" />},
+                                            ]}
+                                            containerStyle={{
+                                                height: 50,
+                                            }}
+                                            style={{
+                                                // paddingVertical: 12,
+                                                // paddingHorizontal: 10,
+                                                // borderWidth: 1,
+                                                // borderColor: 'gray',
+                                                // borderRadius: 4,
+                                                // paddingRight: 30,
+                                            }}
+                                            itemStyle={{
+                                                justifyContent: 'flex-start',
+                                                // borderWidth: 2,
+                                                // borderColor: 'gray',
+                                                // borderRadius: 4,
+                                                paddingRight: 30,
+                                            }}
+                                            dropDownStyle={{backgroundColor: '#fafafa'}}
+                                            onChangeItem={item => this.setState({
+                                                card: item.value
+                                            })}
+                                            placeholderStyle={{
+                                                color: '#9EA0A4',
+                                            }}
+                                        />
                                         <LiteCreditCardInput
+                                            autoFocus
                                             onChange={this._onChange}
                                             inputStyle={{
-                                                height: 40
+                                                height: 40,
                                             }}
                                         />
                                     </View>

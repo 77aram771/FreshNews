@@ -33,8 +33,6 @@ export default class BasketPage extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 shopData: cartUserInfo
-            }, () => {
-                console.log('cartUserInfo', toJS(this.state.shopData));
             })
         }, 1000)
     };

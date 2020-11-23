@@ -44,7 +44,6 @@ class PaymentStore {
         console.log(`${SERVER_BASE}/orders/show/${id}`);
         axios.get(`${SERVER_BASE}/orders/show/${id}`, {headers})
             .then((res) => {
-                console.log('getOrder res', res)
                 this.order = res.data;
             })
             .catch((error) => {
@@ -109,7 +108,7 @@ class PaymentStore {
         };
         fetch(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`, requestOptions)
             .then((res) => {
-                console.log('res', res)
+                console.log('res finishPayment', res)
                 this.order = res;
             })
             .catch((error) => {
@@ -120,7 +119,6 @@ class PaymentStore {
 
     @action
     handleComment = (text: string) => {
-        console.log('text comment', text)
         this.commentText = text;
     };
 }

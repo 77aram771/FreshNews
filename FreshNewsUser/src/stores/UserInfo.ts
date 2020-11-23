@@ -126,6 +126,30 @@ class UserInfo {
             })
             .catch(error => console.log('error', error));
     };
+
+    @action
+    getUserNotificationsRead = async () => {
+        // this.notificationsData = [];
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        fetch("https://fructonosback.ru/api/notifications/read", requestOptions)
+            .then(response => response.json())
+            .then(res => {
+                console.log('res, getUserNotificationsRead', res)
+                // this.notificationsData = res
+            })
+            .catch(error => console.log('error', error));
+    };
 }
 
 const authStore = new UserInfo();
