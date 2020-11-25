@@ -16,6 +16,7 @@ import {
 } from '../../../../share/consts';
 import {NavigationProps} from "../../../../share/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Icon from 'react-native-vector-icons/Ionicons';
 import {imagesPaths} from "../../../../share/info";
 import modalsStore from '../../../../stores/ModalsStore';
 import authStore from "../../../../stores/AuthStore";
@@ -128,27 +129,33 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Юридическим лицам'}
-                            handleClick={onCloseViewAndShowLegalEntities}
+                            // handleClick={onCloseViewAndShowLegalEntities
+                            handleClick={() => Linking.openURL('http://google.com')}
+
                         />
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Доставка'}
-                            handleClick={onCloseViewAndShowDelivery}
+                            // handleClick={onCloseViewAndShowDelivery}
+                            handleClick={() => Linking.openURL('http://google.com')}
                         />
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Вопросы и ответы'}
-                            handleClick={onCloseViewAndShowQuestionsAndAnswers}
+                            // handleClick={onCloseViewAndShowQuestionsAndAnswers}
+                            handleClick={() => Linking.openURL('http://google.com')}
                         />
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Обратная связь'}
-                            handleClick={onCloseViewAndShowFeedback}
+                            // handleClick={onCloseViewAndShowFeedback}
+                            handleClick={() => Linking.openURL('http://google.com')}
                         />
                         <MenuTitle
                             titleStyle={styles.menuTitle}
                             title={'Пользовательское соглашение'}
-                            handleClick={onCloseViewAndShowTermsOfUse}
+                            // handleClick={onCloseViewAndShowTermsOfUse}
+                            handleClick={() => Linking.openURL('http://google.com')}
                         />
                         {
                             isUser
@@ -188,17 +195,17 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                                             />
                                             <Text style={styles.bottomMenuTitle}>История заказов</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity
-                                            onPress={() => this.logOut()}
-                                            style={styles.bottomMenuContainer}
-                                        >
-                                            <Image
-                                                resizeMode={'cover'}
-                                                source={imagesPaths.exitIconImage}
-                                                style={{width: size20, height: size20}}
-                                            />
-                                            <Text style={styles.bottomMenuTitle}>Выход</Text>
-                                        </TouchableOpacity>
+                                        {/*<TouchableOpacity*/}
+                                        {/*    onPress={() => this.logOut()}*/}
+                                        {/*    style={styles.bottomMenuContainer}*/}
+                                        {/*>*/}
+                                        {/*    <Image*/}
+                                        {/*        resizeMode={'cover'}*/}
+                                        {/*        source={imagesPaths.exitIconImage}*/}
+                                        {/*        style={{width: size20, height: size20}}*/}
+                                        {/*    />*/}
+                                        {/*    <Text style={styles.bottomMenuTitle}>Выход</Text>*/}
+                                        {/*</TouchableOpacity>*/}
                                     </>
                                 )
                                 : <View/>
@@ -207,17 +214,48 @@ export default class SideBar extends Component<NavigationProps, SideBarProps> {
                     {
                         isUser
                             ? (
-                                <TouchableOpacity
-                                    style={styles.footerTitle}
-                                    onPress={() => this.handleNavigateToShop()}
+                                // <TouchableOpacity
+                                //     style={styles.footerTitle}
+                                //     onPress={() => this.handleNavigateToShop()}
+                                // >
+                                //     <FontAwesome5
+                                //         name={'shopping-cart'}
+                                //         size={size16}
+                                //         color={'#8cc83f'}
+                                //     />
+                                //     <Text style={styles.bottomMenuTitle}>Магазины</Text>
+                                // </TouchableOpacity>
+                                <View
+                                    style={{
+                                        marginTop: 40,
+                                        flexDirection: 'row',
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
+                                    }}
                                 >
-                                    <FontAwesome5
-                                        name={'shopping-cart'}
-                                        size={size16}
-                                        color={'#8cc83f'}
-                                    />
-                                    <Text style={styles.bottomMenuTitle}>Магазины</Text>
-                                </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.footerButton1}
+                                        onPress={() => this.handleNavigateToShop()}
+                                    >
+                                        <FontAwesome5
+                                            name={'shopping-cart'}
+                                            size={15}
+                                            color={'#8cc83f'}
+                                        />
+                                        <Text style={styles.bottomMenuTitle}>Магазины</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.footerButton3}
+                                        onPress={() => this.logOut()}
+                                    >
+                                        <FontAwesome5
+                                            name={'sign-out-alt'}
+                                            size={18}
+                                            color={'#eeeded'}
+                                        />
+                                        <Text style={styles.bottomMenuTitle2}>Выход</Text>
+                                    </TouchableOpacity>
+                                </View>
                             )
                             : (
                                 <View
@@ -285,6 +323,13 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
         fontFamily: MontserratRegular,
     },
+
+    bottomMenuTitle2: {
+        fontSize: size16,
+        color: '#fff',
+        paddingLeft: 16,
+        fontFamily: MontserratRegular,
+    },
     footerTitle: {
         marginTop: 40,
         flexDirection: 'row',
@@ -310,5 +355,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 35,
         backgroundColor: '#eeeded'
+    },
+
+    footerButton3: {
+        width: '50%',
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        padding: 35,
+        backgroundColor: '#f31c1c'
     },
 });

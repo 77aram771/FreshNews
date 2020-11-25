@@ -49,7 +49,7 @@ class UserInfo {
                 console.log('getUserDataUpdate error', error);
                 this.errorData = error;
             });
-    }
+    };
 
     @action
     getUserDataAddAddress = async (address: any, porch: any, floor: any, intercom: any) => {
@@ -64,7 +64,6 @@ class UserInfo {
             headers: myHeaders,
             redirect: 'follow'
         };
-        console.log(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`)
         fetch(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {
@@ -149,6 +148,38 @@ class UserInfo {
                 // this.notificationsData = res
             })
             .catch(error => console.log('error', error));
+    };
+
+    @action
+    getUserAddCreditCard = async (number: number, month: number, year: number, holder: string, code: number) => {
+        console.log('number', number);
+        console.log('month', month);
+        console.log('year', year);
+        console.log('holder', holder);
+        console.log('code', code);
+        let getToken = await AsyncStorage.getItem('Token')
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        console.log(`${SERVER_BASE}/profile/cards?number=${number}&month=${month}&year=${year}&holder=${holder}&holder=${code}`)
+        // fetch(`${SERVER_BASE}/profile/cards?number=${number}&month=${month}&year=${year}&holder=${holder}&holder=${code}`, requestOptions)
+        //     .then(res => {
+        //         console.log('res, getUserAddCreditCard', res)
+        //         if (toJS(res).status === 200) {
+        //             this.getUserData()
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.log('getUserAddCreditCard error', error);
+        //         this.errorData = error;
+        //     });
     };
 }
 

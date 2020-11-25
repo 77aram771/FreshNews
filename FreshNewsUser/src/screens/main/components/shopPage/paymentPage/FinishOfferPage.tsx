@@ -156,7 +156,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                     style={{paddingLeft: 8}}
                                                     onPress={() => this.props.navigation.navigate('PurchaseHistory')}
                                                     name={'left'}
-                                                    size={size16}
+                                                    size={18}
                                                     color={'#464646'}
                                                 />
                                             }
@@ -327,7 +327,8 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                         <TouchableOpacity
                                                                             onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
                                                                                 id: this.props.navigation.state.params.id,
-                                                                                shopName: shopData.items[0].product.shop.name
+                                                                                shopName: shopData.items[0].product.shop.name,
+                                                                                finishPayment: Math.ceil(parseInt(shopData.items[0].price) + delivery)
                                                                             })}
                                                                             style={{
                                                                                 backgroundColor: '#8CC83F',

@@ -36,6 +36,7 @@ export default class PurchaseHistory extends Component<NavigationProps> {
     }
 
     renderItem(item: any) {
+        console.log('item', toJS(item));
         if (item.status === 1) {
             return (
                 <TouchableOpacity
@@ -462,7 +463,7 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             style={{paddingLeft: 8}}
                             onPress={() => this.props.navigation.navigate('MainScreen')}
                             name={'left'}
-                            size={size16}
+                            size={18}
                             color={'#464646'}
                         />
                     }

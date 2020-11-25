@@ -4,6 +4,7 @@ import {
     Text,
     View,
     Image,
+    KeyboardAvoidingView, Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
@@ -22,6 +23,7 @@ import userInfo from "../../stores/UserInfo";
 import paymentStore from "../../stores/PaymentStore";
 import shopsStore from "../../stores/ShopsStore";
 import modalsStore from "../../stores/ModalsStore";
+// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "../main/components/modals/ErrorModal";
 import {toJS} from "mobx";
@@ -203,94 +205,99 @@ class LoginScreen extends React.Component<NavigationProps> {
                         height: WINDOW_HEIGHT / 4.5,
                     }}
                 />
-                <View
-                    style={{
-                        alignItems: 'center',
-                    }}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    style={styles.container}
                 >
-                    <PhoneInput
-                        ref={this.phoneInput}
-                        defaultValue={this.state.value}
-                        defaultCode="RU"
-                        onChangeText={(text) => {
-                            this.setState({
-                                value: text
-                            })
+                    <View
+                        style={{
+                            alignItems: 'center',
                         }}
-                        onChangeFormattedText={(text) => {
-                            this.setState({
-                                formattedValue: text
-                            })
-                        }}
-                        disabled={this.state.disabled}
-                        withDarkTheme
-                        withShadow
-                        autoFocus
-                        containerStyle={this.state.numberInput ? styles.phoneInputTrue : styles.phoneInputFalse}
-                    />
-                    {
-                        this.state.isLoading
-                            ? (
-                                <View
-                                    style={{
-                                        marginTop: 20,
-                                        height: 60
-                                    }}
-                                >
-                                    <PulseIndicator
-                                        size={100}
-                                        color='#8CC83F'
-                                    />
-                                </View>
-                            )
-                            : null
-                    }
-                    {
-                        this.state.smsStatus
-                            ? (
-                                <>
-                                    <CustomInput
-                                        placeholderTextColor={'#000000'}
-                                        keyboardType={'numeric'}
-                                        maxLength={4}
-                                        textInputStyle={{textAlign: 'center', marginHorizontal: 24}}
-                                        style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
-                                        placeholder={'Код из смс'}
-                                        value={String(this.state.confirmationPin)}
-                                        onChangeText={item => this.getCodeNumber(Number(item))}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
-                                        headerStyleText={WINDOW_WIDTH / 1.6}
-                                    />
-                                    <ActionButton
-                                        style={{marginTop: 24}}
-                                        onPress={() => this.submitPin()}
-                                        text={'Авторизоваться'}
-                                        //disabled={this.state.isLoading}
-                                    />
-                                </>
-                            )
-                            : null
-                    }
-                    <ActionButton
-                        style={{marginTop: 24}}
-                        onPress={() => this.submitPhoneNumber()}
-                        text={'Отправить СМС'}
-                        disabled={this.state.isLoading}
-                    />
-                    <Text style={styles.agreements}>
-                        Нажимая кнопку «Далее» вы {'\n'} подтверждаете что соглашаетесь с{' '}
-                        {'\n'}
-                        <Text
-                            onPress={() => alert('agreements')}
-                            style={{textDecorationLine: 'underline'}}>
-                            {' '}
-                            Пользовательским соглашением
+                    >
+                        <PhoneInput
+                            ref={this.phoneInput}
+                            defaultValue={this.state.value}
+                            defaultCode="RU"
+                            onChangeText={(text) => {
+                                this.setState({
+                                    value: text
+                                })
+                            }}
+                            onChangeFormattedText={(text) => {
+                                this.setState({
+                                    formattedValue: text
+                                })
+                            }}
+                            disabled={this.state.disabled}
+                            withDarkTheme
+                            withShadow
+                            autoFocus
+                            containerStyle={this.state.numberInput ? styles.phoneInputTrue : styles.phoneInputFalse}
+                        />
+                        {
+                            this.state.isLoading
+                                ? (
+                                    <View
+                                        style={{
+                                            marginTop: 20,
+                                            height: 60
+                                        }}
+                                    >
+                                        <PulseIndicator
+                                            size={100}
+                                            color='#8CC83F'
+                                        />
+                                    </View>
+                                )
+                                : null
+                        }
+                        {
+                            this.state.smsStatus
+                                ? (
+                                    <>
+                                        <CustomInput
+                                            placeholderTextColor={'#000000'}
+                                            keyboardType={'numeric'}
+                                            maxLength={4}
+                                            textInputStyle={{textAlign: 'center', marginHorizontal: 24}}
+                                            style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
+                                            placeholder={'Код из смс'}
+                                            value={String(this.state.confirmationPin)}
+                                            onChangeText={item => this.getCodeNumber(Number(item))}
+                                            headerStyleWidth={WINDOW_WIDTH - 90}
+                                            headerStyleText={WINDOW_WIDTH / 1.6}
+                                        />
+                                        <ActionButton
+                                            style={{marginTop: 24}}
+                                            onPress={() => this.submitPin()}
+                                            text={'Авторизоваться'}
+                                            //disabled={this.state.isLoading}
+                                        />
+                                    </>
+                                )
+                                : null
+                        }
+                        <ActionButton
+                            style={{marginTop: 24}}
+                            onPress={() => this.submitPhoneNumber()}
+                            text={'Отправить СМС'}
+                            disabled={this.state.isLoading}
+                        />
+                        <Text style={styles.agreements}>
+                            Нажимая кнопку «Далее» вы {'\n'} подтверждаете что соглашаетесь с{' '}
+                            {'\n'}
+                            <Text
+                                onPress={() => alert('agreements')}
+                                style={{textDecorationLine: 'underline'}}>
+                                {' '}
+                                Пользовательским соглашением
+                            </Text>
                         </Text>
+                    </View>
+                    <Text style={styles.licenseText}>
+                        Все права защищены ООО «Свежие новости» (с) 2020
                     </Text>
-                </View>
-                <Text style={styles.licenseText}>
-                    Все права защищены ООО «Свежие новости» (с) 2020
-                </Text>
+                </KeyboardAvoidingView>
             </View>
         );
     };

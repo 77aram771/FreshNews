@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import {size16, size20, size34, WINDOW_WIDTH} from '../../../../../share/consts';
@@ -12,15 +12,20 @@ import {CheckOut} from './Checkout';
 import {NavigationProps} from '../../../../../share/interfaces';
 import basketStore from '../../../../../stores/BasketStore';
 import modalsStore from "../../../../../stores/ModalsStore";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
+import {SvgUri} from "react-native-svg";
+import _ from 'lodash';
 
 @observer
-export default class BasketPage extends Component<NavigationProps> {
+export default // @ts-ignore
+class BasketPage extends Component<NavigationProps> {
 
     state = {
         shopData: [],
-        refreshing: true
+        deliveryPrice: 90,
+        refreshing: true,
     };
 
     async componentDidMount() {
@@ -32,7 +37,25 @@ export default class BasketPage extends Component<NavigationProps> {
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo
+                shopData: cartUserInfo,
+            }, () => {
+                console.log('shopData', toJS(this.state.shopData))
+                let groups = _.groupBy(toJS(this.state.shopData), 'quantity');
+                console.log('groups', groups);
+                let result = _.map(groups, function(value, key) {
+                    console.log('value', value)
+                    console.log('key', key)
+                    return {
+                        quantity: key,
+                        price: _.reduce(value, function(total, o) {
+                            console.log('total', total)
+                            console.log('o', o)
+                            return parseInt(o.quantity) + parseInt(o.price);
+                        }, 0)
+                    };
+                });
+                console.log('result', result);
+
             })
         }, 1000)
     };
@@ -102,7 +125,7 @@ export default class BasketPage extends Component<NavigationProps> {
                                             style={{paddingLeft: 8}}
                                             onPress={() => this.props.navigation.goBack()}
                                             name={'left'}
-                                            size={size16}
+                                            size={18}
                                             color={'#464646'}
                                         />
                                     }
@@ -147,97 +170,103 @@ export default class BasketPage extends Component<NavigationProps> {
                                                     ListFooterComponent={
                                                         <>
                                                             {
-                                                                this.state.shopData.length <= 0
-                                                                    ? null
-                                                                    : <>
-                                                                        <View
-                                                                            style={{
-                                                                                flexDirection: 'row',
-                                                                                justifyContent: 'space-between',
-                                                                                paddingHorizontal: 16,
-                                                                                paddingTop: 30,
-                                                                                paddingBottom: size34 * 2,
-                                                                            }}
-                                                                        >
-                                                                            <Text
+                                                                this.state.shopData.length > 2
+                                                                    ? (
+                                                                        <>
+                                                                            <View
                                                                                 style={{
-                                                                                    fontFamily: MontserratSemiBold,
-                                                                                    fontSize: size16
+                                                                                    flexDirection: 'row',
+                                                                                    justifyContent: 'space-between',
+                                                                                    paddingHorizontal: 16,
+                                                                                    paddingTop: 30,
+                                                                                    paddingBottom: size34 * 2,
                                                                                 }}
                                                                             >
-                                                                                Доставка
-                                                                            </Text>
-                                                                            <Text
+                                                                                <Text
+                                                                                    style={{
+                                                                                        fontFamily: MontserratSemiBold,
+                                                                                        fontSize: size16
+                                                                                    }}
+                                                                                >
+                                                                                    Доставка
+                                                                                </Text>
+                                                                                <Text
+                                                                                    style={{
+                                                                                        fontFamily: MontserratRegular,
+                                                                                        fontSize: size20
+                                                                                    }}
+                                                                                >
+                                                                                    99 <Text style={{color: '#8CC83F'}}>₽</Text>
+                                                                                </Text>
+                                                                            </View>
+                                                                            <View
                                                                                 style={{
+                                                                                    flexDirection: 'row',
+                                                                                    justifyContent: 'space-between',
+                                                                                    paddingHorizontal: 16,
+                                                                                    paddingTop: 30,
+                                                                                    flex: 1,
+                                                                                }}
+                                                                            >
+                                                                                <Text style={{
                                                                                     fontFamily: MontserratRegular,
-                                                                                    fontSize: size20
-                                                                                }}
-                                                                            >
-                                                                                99 <Text style={{color: '#8CC83F'}}>₽</Text>
-                                                                            </Text>
-                                                                        </View>
-                                                                        <View
-                                                                            style={{
-                                                                                flexDirection: 'row',
-                                                                                justifyContent: 'space-between',
-                                                                                paddingHorizontal: 16,
-                                                                                paddingTop: 30,
-                                                                                flex: 1,
-                                                                            }}
-                                                                        >
-                                                                            <Text style={{
-                                                                                fontFamily: MontserratRegular,
-                                                                                fontSize: size16
-                                                                            }}>
-                                                                                Время доставки
-                                                                            </Text>
-                                                                            <Text
-                                                                                style={{
-                                                                                    fontFamily: MontserratSemiBold,
-                                                                                    fontSize: size20
+                                                                                    fontSize: size16
                                                                                 }}>
-                                                                                25-30{' '}
+                                                                                    Время доставки
+                                                                                </Text>
                                                                                 <Text
                                                                                     style={{
-                                                                                        color: '#8CC83F',
-                                                                                        fontFamily: MontserratRegular
+                                                                                        fontFamily: MontserratSemiBold,
+                                                                                        fontSize: size20
                                                                                     }}>
-                                                                                    мин
+                                                                                    25-30{' '}
+                                                                                    <Text
+                                                                                        style={{
+                                                                                            color: '#8CC83F',
+                                                                                            fontFamily: MontserratRegular
+                                                                                        }}>
+                                                                                        мин
+                                                                                    </Text>
                                                                                 </Text>
-                                                                            </Text>
-                                                                        </View>
-                                                                        <View
-                                                                            style={{
-                                                                                flexDirection: 'row',
-                                                                                justifyContent: 'space-between',
-                                                                                paddingHorizontal: 16,
-                                                                                paddingTop: 30,
-                                                                                flex: 1,
-                                                                            }}
-                                                                        >
-                                                                            <Text style={{
-                                                                                fontFamily: MontserratRegular,
-                                                                                fontSize: size16
-                                                                            }}>
-                                                                                Итого
-                                                                            </Text>
-                                                                            <Text
+                                                                            </View>
+                                                                            <View
                                                                                 style={{
-                                                                                    fontFamily: MontserratSemiBold,
-                                                                                    fontSize: size20
+                                                                                    flexDirection: 'row',
+                                                                                    justifyContent: 'space-between',
+                                                                                    paddingHorizontal: 16,
+                                                                                    paddingTop: 30,
+                                                                                    flex: 1,
                                                                                 }}
                                                                             >
-                                                                                {Math.ceil(allPrice)}
                                                                                 <Text
                                                                                     style={{
-                                                                                        color: '#8CC83F',
-                                                                                        fontFamily: MontserratRegular
-                                                                                    }}>
-                                                                                    ₽
+                                                                                        fontFamily: MontserratRegular,
+                                                                                        fontSize: size16
+                                                                                    }}
+                                                                                >
+                                                                                    Итого
                                                                                 </Text>
-                                                                            </Text>
-                                                                        </View>
-                                                                    </>
+                                                                                <Text
+                                                                                    style={{
+                                                                                        fontFamily: MontserratSemiBold,
+                                                                                        fontSize: size20
+                                                                                    }}
+                                                                                >
+                                                                                    {Math.ceil(allPrice)}
+                                                                                    <Text
+                                                                                        style={{
+                                                                                            color: '#8CC83F',
+                                                                                            fontFamily: MontserratRegular
+                                                                                        }}
+                                                                                    >
+                                                                                        ₽
+                                                                                    </Text>
+                                                                                </Text>
+                                                                            </View>
+                                                                        </>
+                                                                    )
+                                                                    : null
+
                                                             }
                                                         </>
                                                     }
@@ -248,6 +277,141 @@ export default class BasketPage extends Component<NavigationProps> {
                                                         />
                                                     }
                                                 />
+                                                {
+                                                    this.state.shopData.length > 2
+                                                        ? null
+                                                        : (
+                                                            <View
+                                                                style={{
+                                                                    width: WINDOW_WIDTH,
+                                                                    justifyContent: "center",
+                                                                    alignItems: "center",
+                                                                    backgroundColor: '#fff',
+                                                                }}
+                                                            >
+                                                                <View
+                                                                    style={{
+                                                                        justifyContent: "space-between",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "row",
+                                                                        width: WINDOW_WIDTH - 20,
+                                                                    }}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: 'red'
+                                                                        }}
+                                                                    >
+                                                                        Цена
+                                                                    </Text>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: 'red'
+                                                                        }}
+                                                                    >
+                                                                        Доставка
+                                                                    </Text>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: 'red'
+                                                                        }}
+                                                                    >
+                                                                        Итого
+                                                                    </Text>
+                                                                </View>
+                                                                <View
+                                                                    style={{
+                                                                        justifyContent: "space-between",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "column",
+                                                                        width: WINDOW_WIDTH - 20,
+                                                                        borderBottomWidth: 0.5,
+                                                                        borderColor: 'grey'
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        toJS(this.state.shopData).map((item, index) => {
+                                                                            console.log('item', item);
+                                                                            return (
+                                                                                <View
+                                                                                    key={index}
+                                                                                    style={{
+                                                                                        width: '100%',
+                                                                                        height: 40,
+                                                                                        justifyContent: "space-between",
+                                                                                        alignItems: "center",
+                                                                                        flexDirection: "row"
+                                                                                    }}
+                                                                                >
+                                                                                    <View
+                                                                                        style={{
+                                                                                            flexDirection: "row",
+                                                                                            justifyContent: "center",
+                                                                                            alignItems: "center"
+                                                                                        }}
+                                                                                    >
+                                                                                        <SvgUri
+                                                                                            width="30"
+                                                                                            height="30"
+                                                                                            uri={item.product.shop.image}
+                                                                                            style={{
+                                                                                                marginRight: 5
+                                                                                            }}
+                                                                                        />
+                                                                                        <Text>{parseInt(item.price)} р.</Text>
+                                                                                    </View>
+                                                                                    <Text>{this.state.deliveryPrice} р.</Text>
+                                                                                    <Text>{parseInt(this.state.deliveryPrice) + parseInt(item.price)} р.</Text>
+                                                                                </View>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </View>
+                                                                <View
+                                                                    style={{
+                                                                        justifyContent: "space-between",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "row",
+                                                                        width: WINDOW_WIDTH - 20,
+                                                                    }}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: '#000'
+                                                                        }}
+                                                                    >
+                                                                        4000 р.
+                                                                    </Text>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: '#000'
+                                                                        }}
+                                                                    >
+                                                                        4000 р.
+                                                                    </Text>
+                                                                    <Text
+                                                                        style={{
+                                                                            fontFamily: MontserratSemiBold,
+                                                                            fontSize: 16,
+                                                                            color: '#000'
+                                                                        }}
+                                                                    >
+                                                                        4000 р.
+                                                                    </Text>
+                                                                </View>
+                                                            </View>
+                                                        )
+                                                }
                                                 <TouchableOpacity
                                                     onPress={() => this.props.navigation.navigate('PaymentPage')}
                                                     style={{

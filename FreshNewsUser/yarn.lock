@@ -2697,11 +2697,6 @@ credit-card-type@^5.0.0:
   resolved "https://registry.yarnpkg.com/credit-card-type/-/credit-card-type-5.0.4.tgz#2dd9df280411ce2bb91ed95ac31e814605717aed"
   integrity sha1-LdnfKAQRziu5Htlawx6BRgVxeu0=
 
-creditcardutils@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/creditcardutils/-/creditcardutils-1.0.0.tgz#c94ad8e6f5ef249b0463e0e5ea8d7a7c4e9ce425"
-  integrity sha1-yUrY5vXvJJsEY+Dl6o16fE6c5CU=
-
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -5233,7 +5228,7 @@ lodash@3.10.1:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
   integrity sha1-W/Rejkm6QYnhfUgnid/RW9FAt7Y=
 
-lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.6.0:
+lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.6.0:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
@@ -6942,14 +6937,6 @@ react-native-country-picker-modal@^2.0.0:
     prop-types "15.7.2"
     react-async-hook "3.6.1"
 
-react-native-credit-card-display@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/react-native-credit-card-display/-/react-native-credit-card-display-0.3.4.tgz#24241e5cea411895dd4ad2f1a315143300c6a3e8"
-  integrity sha512-jmcOQm54+GJq/+XzscvbXYjJYlyGTiF4nVeaYcgd9f17hWWCvj1laZmrGyfm25/L23o98XLvFdidI1MbTN021w==
-  dependencies:
-    creditcardutils "^1.0.0"
-    react-native-flip-card "^3.5.6"
-
 react-native-credit-card-input-fullpage@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/react-native-credit-card-input-fullpage/-/react-native-credit-card-input-fullpage-0.2.0.tgz#81454e817d59181b2eb2a01dd7a5e41e7c40fcb1"
@@ -6992,7 +6979,7 @@ react-native-dropdown-picker@^3.7.1:
   dependencies:
     react-native-vector-icons "^7.0.0"
 
-react-native-flip-card@^3.3.0, react-native-flip-card@^3.4.1, react-native-flip-card@^3.5.6:
+react-native-flip-card@^3.3.0, react-native-flip-card@^3.4.1:
   version "3.5.6"
   resolved "https://registry.yarnpkg.com/react-native-flip-card/-/react-native-flip-card-3.5.6.tgz#de26f0285aa6f8ee10bb4b696c60c6fb43bb580f"
   integrity sha512-lqsjl4vF5DyHD7mjBJpyBoaLKVxalzoKfCosE63QF+TaCF9MKdJrxmGFQj/i64GDiMJqeS/5sNDcICUXtgFsVA==

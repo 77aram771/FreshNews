@@ -93,7 +93,7 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
                                             onPress={() => this.props.navigation.goBack()}
                                             style={{paddingLeft: 8}}
                                             name={'left'}
-                                            size={size16}
+                                            size={18}
                                             color={'#000'}
                                         />
                                     }

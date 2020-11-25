@@ -149,7 +149,7 @@ export default class MapPage extends Component<NavigationProps> {
                             style={{paddingLeft: 8}}
                             onPress={() => this.props.navigation.goBack()}
                             name={'left'}
-                            size={size16}
+                            size={18}
                             color={'#464646'}
                         />
                     }

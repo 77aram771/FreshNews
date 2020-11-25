@@ -15,6 +15,7 @@ class PaymentStore {
 
     @action
     onSelectPayment = (value: string) => {
+        console.log('value', value);
         this.isSelectedPayment = value
     };
 

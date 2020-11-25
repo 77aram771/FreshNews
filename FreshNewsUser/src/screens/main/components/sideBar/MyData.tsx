@@ -341,11 +341,18 @@ class MyData extends Component {
     handleAddCart() {
         let obj = this.state.enterCart;
         obj.id = new Date().getUTCMilliseconds();
+        let month = '';
+        let year = '';
         console.log('obj', obj);
         this.setState({
             creditCart: [...this.state.creditCart, this.state.enterCart]
-        }, () => console.log('creditCart', this.state.creditCart));
-        shopsStore.onShowAddCreditCart()
+        }, () => {
+            console.log('card', this.state.creditCart);
+            month = this.state.creditCart[0].expiry.slice(0, 2);
+            year = this.state.creditCart[0].expiry.slice(3, 5);
+            userInfo.getUserAddCreditCard(this.state.creditCart[0].number, month, year, this.state.creditCart[0].name, this.state.creditCart[0].expiry, this.state.creditCart[0].cvc);
+            shopsStore.onShowAddCreditCart();
+        });
     };
 
     handleDeleteCart(id: number) {
@@ -732,11 +739,11 @@ class MyData extends Component {
                                     fontSize: 16,
                                     color: "black",
                                 }}
-                                inputContainerStyle={{
-                                    borderWidth: 0.4,
-                                    borderStyle: "solid",
-                                    borderColor: '#000'
-                                }}
+                                // inputContainerStyle={{
+                                //     borderWidth: 0.4,
+                                //     borderStyle: "solid",
+                                //     borderColor: '#000'
+                                // }}
                                 validColor={"black"}
                                 invalidColor={"red"}
                                 placeholderColor={"darkgray"}
@@ -786,7 +793,7 @@ class MyData extends Component {
                             style={{paddingLeft: 8}}
                             onPress={() => this.props.navigation.goBack()}
                             name={'left'}
-                            size={size16}
+                            size={18}
                             color={'#464646'}
                         />
                     }
@@ -811,9 +818,18 @@ class MyData extends Component {
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
+                        borderColor: 'red',
+                        borderWidth: 1,
+                        borderStyle: "solid"
                     }}
                 >
-                    <ScrollView>
+                    <ScrollView
+                        style={{
+                            borderColor: 'red',
+                            borderWidth: 1,
+                            borderStyle: "solid"
+                        }}
+                    >
                         <Text
                             style={{
                                 color: '#BABABA',
