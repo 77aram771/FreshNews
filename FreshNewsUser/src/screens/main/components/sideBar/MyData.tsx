@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, TouchableOpacity, StyleSheet, View} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View, Switch} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {
     size12,
     size14,
-    size16,
     size20,
     size28,
     size34,
-    size44, WINDOW_HEIGHT,
+    size44,
+    WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../share/consts';
 import {CustomInput} from '../../../../share/components/CustomInput';
@@ -22,9 +22,11 @@ import modalsStore from '../../../../stores/ModalsStore';
 import shopsStore from "../../../../stores/ShopsStore";
 import Header from "../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import {AddAddressUser} from "../modals/AddAddressUser";
 // @ts-ignore
 import {CreditCardInput} from "react-native-credit-card-input";
+import {ErrorModal} from "../modals/ErrorModal";
+// @ts-ignore
+import Modals, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 @observer
 export default // @ts-ignore
@@ -34,7 +36,6 @@ class MyData extends Component {
         name: '',
         email: '',
         surname: '',
-        patronymic: '',
         phone: '',
         alertsIsOn: true,
         address: [],
@@ -51,30 +52,47 @@ class MyData extends Component {
         saveButton: false,
         creditCart: [],
         enterCart: null,
-        saveButtonCart: false
+        saveButtonCart: false,
+        errorModal: false,
+        errorData: [],
     };
 
     componentDidMount() {
         userInfo.getUserData();
         const {userData} = userInfo;
-        const {name, email, surname, patronymic, phone, addresses} = userData;
+        const {name, email, surname, phone, addresses, cards} = userData;
         this.setState({
             name: name,
             email: email,
             surname: surname,
-            patronymic: patronymic,
             phone: phone,
             address: toJS(addresses),
+            creditCart: toJS(cards),
+        }, () => {
+            console.log('creditCart', this.state.creditCart);
         })
     };
 
-    alertsToggleHandle(state: boolean) {
-        this.setState({alertsIsOn: state});
+    alertsToggleHandle() {
+        this.setState({alertsIsOn: !this.state.alertsIsOn});
     };
 
-    handleSave(name: string, email: string, surname: string, patronymic: string) {
+    handleSave(name: string, email: string, surname: string) {
         modalsStore.onShowMyDataModal()
-        userInfo.getUserDataUpdate(name, email, surname, patronymic);
+        userInfo.getUserDataUpdate(name, email, surname);
+        setTimeout(() => {
+            console.log('toJS(userInfo.errorData)', toJS(userInfo.errorData));
+            if (userInfo.errorData !== null) {
+                let errorData = {
+                    status_code: toJS(userInfo.errorData).status,
+                    message: 'Network Error',
+                };
+                this.setState({
+                    errorData: errorData,
+                    errorModal: true
+                });
+            }
+        }, 1000);
     };
 
     handleName(value: string) {
@@ -263,7 +281,8 @@ class MyData extends Component {
                 style={{
                     flexDirection: 'row',
                     justifyContent: "space-between",
-                    alignItems: "center"
+                    alignItems: "center",
+                    marginTop: 10
                 }}
                 key={item.id}
             >
@@ -339,39 +358,48 @@ class MyData extends Component {
     };
 
     handleAddCart() {
-        let obj = this.state.enterCart;
+        let obj = {
+            code: this.state.enterCart.cvc,
+            holder: this.state.enterCart.name,
+            month: this.state.enterCart.expiry.slice(0, 2),
+            number: String(this.state.enterCart.number).replace(/\s/g, ''),
+            year: this.state.enterCart.expiry.slice(3, 5),
+        }
         obj.id = new Date().getUTCMilliseconds();
-        let month = '';
-        let year = '';
         console.log('obj', obj);
         this.setState({
-            creditCart: [...this.state.creditCart, this.state.enterCart]
-        }, () => {
-            console.log('card', this.state.creditCart);
-            month = this.state.creditCart[0].expiry.slice(0, 2);
-            year = this.state.creditCart[0].expiry.slice(3, 5);
-            userInfo.getUserAddCreditCard(this.state.creditCart[0].number, month, year, this.state.creditCart[0].name, this.state.creditCart[0].expiry, this.state.creditCart[0].cvc);
-            shopsStore.onShowAddCreditCart();
-        });
+                creditCart: [...this.state.creditCart, obj]
+            },
+            () => {
+                console.log('creditCart', this.state.creditCart);
+                let lastItem = this.state.creditCart[this.state.creditCart.length - 1]
+                userInfo.getUserAddCreditCard(
+                    lastItem.number,
+                    lastItem.month,
+                    lastItem.year,
+                    lastItem.holder,
+                    lastItem.code,
+                );
+                shopsStore.onShowAddCreditCart();
+            });
     };
 
     handleDeleteCart(id: number) {
-        // userInfo.getUserDataDeleteAddress(id)
+        userInfo.getUserDataDeleteCard(id);
         let obj = this.state.creditCart.filter(item => item.id !== id)
-
         this.setState({
             creditCart: obj
         })
     };
 
     renderCartItem(item: any) {
-        console.log('item', item);
         return (
             <View
                 style={{
                     flexDirection: 'row',
                     justifyContent: "space-between",
-                    alignItems: "center"
+                    alignItems: "center",
+                    marginTop: 10
                 }}
                 key={item.id}
             >
@@ -387,7 +415,7 @@ class MyData extends Component {
                             marginBottom: 5
                         }}
                     >
-                        Имя: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.name}</Text>
+                        Имя: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.holder}</Text>
                     </Text>
                     <Text
                         style={{
@@ -405,7 +433,7 @@ class MyData extends Component {
                             marginBottom: 5
                         }}
                     >
-                        CVC: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.cvc}</Text>
+                        CVC: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.code}</Text>
                     </Text>
                     <Text
                         style={{
@@ -414,7 +442,8 @@ class MyData extends Component {
                             marginBottom: 5
                         }}
                     >
-                        Дата: <Text style={{fontFamily: MontserratRegular, fontSize: 13}}>{item.expiry}</Text>
+                        Дата: <Text
+                        style={{fontFamily: MontserratRegular, fontSize: 13}}>{`${item.month}/${item.year}`}</Text>
                     </Text>
                 </View>
                 <EvilIcons
@@ -428,6 +457,12 @@ class MyData extends Component {
         )
     };
 
+    handleCloseErrorModal = async () => {
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
     render() {
 
         const {isShowAddAddressModal, isShowAddCreditCart, onShowAddAddressModal, onShowAddCreditCart} = shopsStore;
@@ -435,7 +470,6 @@ class MyData extends Component {
         const {
             name,
             surname,
-            patronymic,
             phone,
             email,
             address,
@@ -444,7 +478,10 @@ class MyData extends Component {
             level,
             floor,
             intercom,
-            creditCart
+            creditCart,
+            saveButton,
+            saveButtonCart,
+            alertsIsOn
         } = this.state;
 
         return (
@@ -504,7 +541,7 @@ class MyData extends Component {
                                     height: 40,
                                     marginBottom: 10
                                 }}
-                                headerStyleWidth={WINDOW_WIDTH - 90}
+                                headerStyleWidth={WINDOW_WIDTH - 40}
                                 headerStyleText={WINDOW_WIDTH / 1.6}
                             />
                             <Text
@@ -552,7 +589,7 @@ class MyData extends Component {
                                             height: 40,
                                             marginBottom: 10
                                         }}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
+                                        headerStyleWidth={WINDOW_WIDTH - 40}
                                         headerStyleText={WINDOW_WIDTH / 1.6}
                                         maxLength={3}
                                     />
@@ -582,7 +619,7 @@ class MyData extends Component {
                                             height: 40,
                                             marginBottom: 10,
                                         }}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
+                                        headerStyleWidth={WINDOW_WIDTH - 40}
                                         headerStyleText={WINDOW_WIDTH / 1.6}
                                         maxLength={3}
                                     />
@@ -611,7 +648,7 @@ class MyData extends Component {
                                             height: 40,
                                             marginBottom: 10
                                         }}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
+                                        headerStyleWidth={WINDOW_WIDTH - 40}
                                         headerStyleText={WINDOW_WIDTH / 1.6}
                                         maxLength={3}
                                         keyboardType={"number-pad"}
@@ -641,7 +678,7 @@ class MyData extends Component {
                                             height: 40,
                                             marginBottom: 10
                                         }}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
+                                        headerStyleWidth={WINDOW_WIDTH - 40}
                                         headerStyleText={WINDOW_WIDTH / 1.6}
                                         maxLength={4}
                                     />
@@ -650,7 +687,7 @@ class MyData extends Component {
                             <TouchableOpacity
                                 onPress={() => this.handleAddAddress()}
                                 style={
-                                    this.state.saveButton
+                                    saveButton
                                         ? {
                                             borderRadius: 10,
                                             backgroundColor: '#8CC83F',
@@ -669,7 +706,7 @@ class MyData extends Component {
                                             paddingLeft: 25,
                                             paddingRight: 25
                                         }}
-                                disabled={!this.state.saveButton}
+                                disabled={!saveButton}
                             >
                                 <Text
                                     style={{
@@ -752,7 +789,7 @@ class MyData extends Component {
                             <TouchableOpacity
                                 onPress={() => this.handleAddCart()}
                                 style={
-                                    this.state.saveButtonCart
+                                    saveButtonCart
                                         ? {
                                             borderRadius: 10,
                                             backgroundColor: '#8CC83F',
@@ -771,7 +808,7 @@ class MyData extends Component {
                                             paddingLeft: 25,
                                             paddingRight: 25
                                         }}
-                                disabled={!this.state.saveButtonCart}
+                                disabled={!saveButtonCart}
                             >
                                 <Text
                                     style={{
@@ -786,6 +823,36 @@ class MyData extends Component {
                         </View>
                     </View>
                 </Modal>
+                <Modals
+                    visible={this.state.errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрить"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
+                >
+                    <ModalContent>
+                        <ErrorModal
+                            data={this.state.errorData}
+                            // handleOpenErrorModal={this.handleOpenErrorModal}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
+                </Modals>
                 <Header
                     style={{borderBottomWidth: 2,}}
                     headerLeft={
@@ -818,16 +885,11 @@ class MyData extends Component {
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        borderColor: 'red',
-                        borderWidth: 1,
-                        borderStyle: "solid"
                     }}
                 >
                     <ScrollView
                         style={{
-                            borderColor: 'red',
-                            borderWidth: 1,
-                            borderStyle: "solid"
+                            width: WINDOW_WIDTH - 40
                         }}
                     >
                         <Text
@@ -888,7 +950,7 @@ class MyData extends Component {
                                     marginRight: 14,
                                     height: 40
                                 }}
-                                headerStyleWidth={WINDOW_WIDTH - 90}
+                                headerStyleWidth={WINDOW_WIDTH - 40}
                                 headerStyleText={WINDOW_WIDTH / 1.6}
                             />
                             <CustomInput
@@ -907,7 +969,7 @@ class MyData extends Component {
                                     marginRight: 14,
                                     height: 40
                                 }}
-                                headerStyleWidth={WINDOW_WIDTH - 90}
+                                headerStyleWidth={WINDOW_WIDTH - 40}
                                 headerStyleText={WINDOW_WIDTH / 1.6}
                             />
                         </View>
@@ -934,7 +996,7 @@ class MyData extends Component {
                                 marginTop: 15,
                                 height: 40
                             }}
-                            headerStyleWidth={WINDOW_WIDTH - 90}
+                            headerStyleWidth={WINDOW_WIDTH - 40}
                             headerStyleText={WINDOW_WIDTH / 1.6}
                             editable={false}
                         />
@@ -961,7 +1023,7 @@ class MyData extends Component {
                                 marginTop: 15,
                                 height: 40
                             }}
-                            headerStyleWidth={WINDOW_WIDTH - 90}
+                            headerStyleWidth={WINDOW_WIDTH - 40}
                             headerStyleText={WINDOW_WIDTH / 1.6}
                         />
                         <Text
@@ -970,18 +1032,16 @@ class MyData extends Component {
                                 fontFamily: MontserratSemiBold,
                                 fontSize: size20,
                                 paddingTop: size34,
-                                paddingBottom: size34,
+                                paddingBottom: 10,
                             }}
                         >
                             Адреса
                         </Text>
-                        <View>
-                            {
-                                address.map(item => {
-                                    return this.renderAddressItem(item)
-                                })
-                            }
-                        </View>
+                        {
+                            address.map(item => {
+                                return this.renderAddressItem(item)
+                            })
+                        }
                         {
                             address.length === 5
                                 ? (
@@ -994,7 +1054,7 @@ class MyData extends Component {
                                                 fontFamily: MontserratSemiBold,
                                                 fontSize: size14,
                                                 color: '#8CC83F',
-                                                paddingTop: 24,
+                                                paddingTop: 10,
                                             }}
                                         >
                                             Добавить адрес
@@ -1008,18 +1068,16 @@ class MyData extends Component {
                                 fontFamily: MontserratSemiBold,
                                 fontSize: size20,
                                 paddingTop: size34,
-                                paddingBottom: size34,
+                                paddingBottom: 10,
                             }}
                         >
                             Кредитные карты
                         </Text>
-                        <View>
-                            {
-                                creditCart.map(item => {
-                                    return this.renderCartItem(item)
-                                })
-                            }
-                        </View>
+                        {
+                            creditCart.map(item => {
+                                return this.renderCartItem(item)
+                            })
+                        }
                         {
                             creditCart.length === 5
                                 ? (
@@ -1032,7 +1090,7 @@ class MyData extends Component {
                                                 fontFamily: MontserratSemiBold,
                                                 fontSize: size14,
                                                 color: '#8CC83F',
-                                                paddingTop: 24,
+                                                paddingTop: 10,
                                             }}
                                         >
                                             Добавить Карты
@@ -1045,7 +1103,7 @@ class MyData extends Component {
                                 flexDirection: 'row',
                                 paddingTop: size44,
                                 justifyContent: 'space-between',
-                                marginBottom: 16,
+                                marginBottom: 40,
                             }}
                         >
                             <Text
@@ -1058,15 +1116,18 @@ class MyData extends Component {
                                 Получать информацию об акциях, скидках и новых предложениях
                             </Text>
                             <View>
-                                <Toggle
-                                    isOn={this.state.alertsIsOn}
-                                    onToggle={state => this.alertsToggleHandle(state)}
+                                <Switch
+                                    trackColor={{ false: "#767577", true: "#8CC83F" }}
+                                    thumbColor={alertsIsOn ? "#f5dd4b" : "#f4f3f4"}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={() => this.alertsToggleHandle()}
+                                    value={alertsIsOn}
                                 />
                             </View>
                         </View>
                     </ScrollView>
                     <TouchableOpacity
-                        onPress={() => this.handleSave(this.state.name, this.state.email, this.state.surname, this.state.patronymic)}
+                        onPress={() => this.handleSave(name, email, surname)}
                         style={{
                             height: 50,
                             backgroundColor: '#8CC83F',
@@ -1082,5 +1143,5 @@ class MyData extends Component {
                 </View>
             </>
         );
-    }
+    };
 }

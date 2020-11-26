@@ -8,7 +8,8 @@ import {observer} from 'mobx-react';
 import basketStore from "../../../../../stores/BasketStore";
 
 @observer
-export default class BasketListItem extends Component<{
+export default // @ts-ignore
+class BasketListItem extends Component<{
     data: { id: number, name: string; price: string; productCount: number, weight: number, quantity: number };
     index: number;
     onRefresh?: any

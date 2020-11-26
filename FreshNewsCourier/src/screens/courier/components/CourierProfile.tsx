@@ -28,10 +28,12 @@ export default class CourierProfile extends React.Component<NavigationProps> {
     };
 
     logOut() {
-        AsyncStorage.removeItem('Token')
-        modalsStore.onChangeView()
-        this.props.navigation.navigate('Login')
-    }
+        AsyncStorage.removeItem('Token');
+        modalsStore.onChangeView();
+        setTimeout(() => {
+            this.props.navigation.navigate('Login');
+        }, 1000)
+    };
 
     render() {
         const {userData} = userInfo;

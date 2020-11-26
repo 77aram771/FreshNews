@@ -64,7 +64,7 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                             fontFamily: MontserratBold
                         }}
                     >
-                        Код ошибки {data.status_code}
+                        Код ошибки {data.status_code || data.status}
                     </Text>
                 </View>
                 <View
@@ -85,15 +85,39 @@ export const ErrorModal = ({data, handleCloseErrorModal}: any) => {
                     >
                         Сообшения ошибки
                     </Text>
-                    <Text
-                        style={{
-                            color: 'red',
-                            fontSize: 18,
-                            fontFamily: MontserratRegular
-                        }}
-                    >
-                        {data.message || data.errors.message[0]}
-                    </Text>
+                    {
+                        data.hasOwnProperty('message')
+                            ? <Text
+                                style={{
+                                    color: 'red',
+                                    fontSize: 18,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >{data.message}</Text>
+                            : null
+                    }
+                    {
+                        data.hasOwnProperty('data.errors.message[0]')
+                            ? <Text
+                                style={{
+                                    color: 'red',
+                                    fontSize: 18,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >{data.errors.message[0]}</Text>
+                            : null
+                    }
+                    {
+                        data.hasOwnProperty('data.statusText')
+                            ? <Text
+                                style={{
+                                    color: 'red',
+                                    fontSize: 18,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >{data.statusText}</Text>
+                            : null
+                    }
                 </View>
             </View>
         </View>

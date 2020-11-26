@@ -26,7 +26,7 @@ class UserInfo {
     };
 
     @action
-    getUserDataUpdate = async (name: string, email: string, surname: string, patronymic: string) => {
+    getUserDataUpdate = async (name: string, email: string, surname: string) => {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -39,15 +39,19 @@ class UserInfo {
             redirect: 'follow'
         };
 
-        fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&patronymic=${patronymic}`, requestOptions)
+        fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}`, requestOptions)
             .then(res => {
+                // console.log('res getUserDataUpdate', res);
                 if (toJS(res).status === 200) {
                     this.getUserData()
                 }
+                this.errorData = res;
+                console.log('errorData getUserDataUpdate then', this.errorData);
             })
             .catch(error => {
                 console.log('getUserDataUpdate error', error);
                 this.errorData = error;
+                console.log('errorData getUserDataUpdate catch', this.errorData);
             });
     };
 
@@ -152,11 +156,36 @@ class UserInfo {
 
     @action
     getUserAddCreditCard = async (number: number, month: number, year: number, holder: string, code: number) => {
-        console.log('number', number);
-        console.log('month', month);
-        console.log('year', year);
-        console.log('holder', holder);
-        console.log('code', code);
+        let getToken = await AsyncStorage.getItem('Token');
+        let str = getToken.slice(1);
+        let strTrue = str.substring(0, str.length - 1);
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${strTrue}`);
+        let num = String(number).replace(/\s/g, '');
+        console.log("num", num);
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        console.log(`${SERVER_BASE}/profile/cards?number=${num}&month=${month}&year=${year}&holder=${holder}&code=${code}`)
+        fetch(`${SERVER_BASE}/profile/cards?number=${num}&month=${month}&year=${year}&holder=${holder}&code=${code}`, requestOptions)
+            .then(res => {
+                console.log('res, getUserAddCreditCard', res);
+                if (toJS(res).status === 200) {
+                    this.getUserData()
+                }
+            })
+            .catch(error => {
+                console.log('getUserAddCreditCard error', error);
+                this.errorData = error;
+            });
+    };
+
+    @action
+    getUserDataDeleteCard = async (id: number) => {
+        console.log("id", id);
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -164,22 +193,22 @@ class UserInfo {
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
 
         let requestOptions = {
-            method: 'POST',
+            method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow'
         };
-        console.log(`${SERVER_BASE}/profile/cards?number=${number}&month=${month}&year=${year}&holder=${holder}&holder=${code}`)
-        // fetch(`${SERVER_BASE}/profile/cards?number=${number}&month=${month}&year=${year}&holder=${holder}&holder=${code}`, requestOptions)
-        //     .then(res => {
-        //         console.log('res, getUserAddCreditCard', res)
-        //         if (toJS(res).status === 200) {
-        //             this.getUserData()
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log('getUserAddCreditCard error', error);
-        //         this.errorData = error;
-        //     });
+        console.log(`${SERVER_BASE}/profile/cards/${id}`);
+        fetch(`${SERVER_BASE}/profile/cards/${id}`, requestOptions)
+            .then(res => {
+                console.log('res, getUserDataDeleteCard', res);
+                if (toJS(res).status === 200) {
+                    this.getUserData();
+                }
+            })
+            .catch(error => {
+                console.log('getUserDataDeleteCard error', error);
+                this.errorData = error;
+            });
     };
 }
 

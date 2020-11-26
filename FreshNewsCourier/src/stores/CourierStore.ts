@@ -2,6 +2,7 @@ import {action, observable, toJS} from 'mobx';
 import AsyncStorage from "@react-native-community/async-storage";
 import {SERVER_BASE} from "../share/consts";
 import axios from "axios";
+import {Platform} from "react-native";
 
 class CourierStore {
     @observable courierUserData: any = null;
@@ -55,9 +56,7 @@ class CourierStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-
         fetch(`${SERVER_BASE}/courier/orders/take/${id}`, requestOptions)
-            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
@@ -85,20 +84,39 @@ class CourierStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-
-        fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`, requestOptions)
-            .then(response => response.json())
-            .then(res => {
-                console.log('res getCourierOrderConfirmation-------------------------', res);
-                if (res.status === 200) {
-                    this.getCourierData()
-                    this.getCourierDataAll()
-                }
-            })
-            .catch((err) => {
-                console.log('getCourierOrderConfirmation error', err);
-                this.errorData = err;
-            })
+        Platform.OS === 'ios'
+            ? (
+                fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=${code}`, requestOptions)
+                    .then(res => {
+                        console.log('res getCourierOrderConfirmation-------------------------', res);
+                        if (res.status === 200) {
+                            this.getCourierData()
+                            this.getCourierDataAll()
+                        } else {
+                            this.errorData = res;
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('getCourierOrderConfirmation error', err);
+                        this.errorData = err;
+                    })
+            )
+            : (
+                fetch(`${SERVER_BASE}/courier/orders/items/${id}?code=0${code}`, requestOptions)
+                    .then(res => {
+                        console.log('res getCourierOrderConfirmation-------------------------', res);
+                        if (res.status === 200) {
+                            this.getCourierData()
+                            this.getCourierDataAll()
+                        } else {
+                            this.errorData = res;
+                        }
+                    })
+                    .catch((err) => {
+                        console.log('getCourierOrderConfirmation error', err);
+                        this.errorData = err;
+                    })
+            )
     };
 
     @action
@@ -114,13 +132,11 @@ class CourierStore {
             redirect: 'follow'
         };
         fetch(`${SERVER_BASE}/courier/orders/deliver/${id}`, requestOptions)
-            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()
                     this.getCourierDataAll()
-                }
-                else {
+                } else {
                     this.errorData = res;
                 }
             })
@@ -145,7 +161,6 @@ class CourierStore {
         };
         // console.log(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`);
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
-            .then(response => response.json())
             // .then(res => console.log('getCourierCoordinate, res', res))
             .catch((err) => {
                 // console.log('getCourierCoordinate error', err);
@@ -170,7 +185,6 @@ class CourierStore {
         };
         console.log(`${SERVER_BASE}/courier/orders/items/${id}`)
         fetch(`${SERVER_BASE}/courier/orders/items/${id}`, requestOptions)
-            .then(response => response.json())
             .then(res => {
                 if (res.status === 200) {
                     this.getCourierData()

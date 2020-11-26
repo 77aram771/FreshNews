@@ -27,6 +27,9 @@ import modalsStore from "../../stores/ModalsStore";
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "../main/components/modals/ErrorModal";
 import {toJS} from "mobx";
+import Header from "../../share/components/Header";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {LogoAndTitle} from "../../share/components/LogoAndTitle";
 
 @observer
 export default // @ts-ignore
@@ -164,9 +167,30 @@ class LoginScreen extends React.Component<NavigationProps> {
         }, () => console.log('errorModal', this.state.errorModal))
     };
 
+    handleGetBack = async () => {
+        alert('test')
+        // this.props.navigation.navigate('MainScreen');
+    }
+
     render() {
         return (
             <View style={styles.container}>
+                {/*<Header*/}
+                {/*    style={{*/}
+                {/*        width: WINDOW_WIDTH,*/}
+                {/*        height: 20,*/}
+                {/*    }}*/}
+                {/*    headerLeft={*/}
+                {/*        <AntDesign*/}
+                {/*            onPress={() => this.handleGetBack()}*/}
+                {/*            // onPress={() => alert('test')}*/}
+                {/*            style={{paddingLeft: 8}}*/}
+                {/*            name={'left'}*/}
+                {/*            size={18}*/}
+                {/*            color={'#000'}*/}
+                {/*        />*/}
+                {/*    }*/}
+                {/*/>*/}
                 <Modal
                     visible={this.state.errorModal}
                     useNativeDriver={false}
@@ -192,23 +216,22 @@ class LoginScreen extends React.Component<NavigationProps> {
                     <ModalContent>
                         <ErrorModal
                             data={this.state.errorData}
-                            // handleOpenErrorModal={this.handleOpenErrorModal}
                             handleCloseErrorModal={this.handleCloseErrorModal}
                         />
                     </ModalContent>
                 </Modal>
-                <Image
-                    resizeMode={'contain'}
-                    source={require('../../../assets/iconImages/LogoTitle.png')}
-                    style={{
-                        width: WINDOW_WIDTH,
-                        height: WINDOW_HEIGHT / 4.5,
-                    }}
-                />
                 <KeyboardAvoidingView
                     behavior={Platform.OS == "ios" ? "padding" : "height"}
                     style={styles.container}
                 >
+                    <Image
+                        resizeMode={'contain'}
+                        source={require('../../../assets/iconImages/LogoTitle.png')}
+                        style={{
+                            width: WINDOW_WIDTH,
+                            height: WINDOW_HEIGHT / 4.5,
+                        }}
+                    />
                     <View
                         style={{
                             alignItems: 'center',
@@ -229,9 +252,6 @@ class LoginScreen extends React.Component<NavigationProps> {
                                 })
                             }}
                             disabled={this.state.disabled}
-                            withDarkTheme
-                            withShadow
-                            autoFocus
                             containerStyle={this.state.numberInput ? styles.phoneInputTrue : styles.phoneInputFalse}
                         />
                         {

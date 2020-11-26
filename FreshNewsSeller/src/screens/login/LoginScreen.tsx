@@ -4,7 +4,9 @@ import {
     Text,
     View,
     Image,
+    KeyboardAvoidingView, Platform
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
 import {MontserratRegular} from '../../share/fonts';
 import {CustomInput} from '../../share/components/CustomInput';
@@ -14,17 +16,15 @@ import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
-import AsyncStorage from '@react-native-community/async-storage';
-import {toJS} from "mobx";
 import sellerStore from "../../stores/SellerStore";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
-import {ErrorModal} from "../sellers/modals/ErrorModal";
-import authStore from "../../stores/UserInfo";
+import {toJS} from "mobx";
+import { ErrorModal } from '../sellers/modals/ErrorModal';
 
 @observer
 export default // @ts-ignore
-class LoginScreen extends React.Component<any> {
+class LoginScreen extends React.Component<NavigationProps> {
 
     constructor(props: any) {
         super(props);
@@ -38,7 +38,6 @@ class LoginScreen extends React.Component<any> {
             numberInput: false,
             codeInput: false,
             smsStatus: false,
-            client: true,
             valid: false,
             showMessage: false,
             disabled: false,
@@ -65,10 +64,11 @@ class LoginScreen extends React.Component<any> {
             numberInput: false,
             codeInput: false,
             smsStatus: false,
-            client: true,
             valid: false,
             showMessage: false,
             disabled: false,
+            errorModal: false,
+            errorData: [],
         })
     };
 
@@ -128,12 +128,10 @@ class LoginScreen extends React.Component<any> {
             })
             await verify(Number(this.state.formattedValue), Number(this.state.confirmationPin))
                 .then(res => {
-                    const Token = JSON.stringify(res.data.token)
-                    AsyncStorage.setItem('Token', Token)
+                    const Token = JSON.stringify(res.data.token);
+                    AsyncStorage.setItem('Token', Token);
                     if (res.status === 200) {
                         this.props.navigation.navigate('Home');
-                        sellerStore.getUserData();
-                        authStore.getUserInfo();
                         this.setState({
                             smsStatus: false,
                             isLoading: false,
@@ -144,7 +142,6 @@ class LoginScreen extends React.Component<any> {
                     console.log(err);
                     let error = toJS(String(sellerStore.errorData));
                     let errorCode = error.substr(error.length - 3);
-                    console.log('errorCode', errorCode);
                     let errorData = {
                         status_code: errorCode,
                         message: 'Network Error',
@@ -175,7 +172,7 @@ class LoginScreen extends React.Component<any> {
             <View style={styles.container}>
                 <Modal
                     visible={this.state.errorModal}
-                    useNativeDriver={true}
+                    useNativeDriver={false}
                     footer={
                         <ModalFooter
                             style={{
@@ -198,107 +195,108 @@ class LoginScreen extends React.Component<any> {
                     <ModalContent>
                         <ErrorModal
                             data={this.state.errorData}
-                            // handleOpenErrorModal={this.handleOpenErrorModal}
                             handleCloseErrorModal={this.handleCloseErrorModal}
                         />
                     </ModalContent>
                 </Modal>
-                <Image
-                    resizeMode={'contain'}
-                    source={require('../../../assets/iconImages/LogoTitle.png')}
-                    style={{
-                        width: WINDOW_WIDTH,
-                        height: WINDOW_HEIGHT / 4.5,
-                    }}
-                />
-                <View
-                    style={{
-                        alignItems: 'center',
-                    }}
+                <KeyboardAvoidingView
+                    behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    style={styles.container}
                 >
-                    <PhoneInput
-                        ref={this.phoneInput}
-                        defaultValue={this.state.value}
-                        defaultCode="RU"
-                        onChangeText={(text) => {
-                            this.setState({
-                                value: text
-                            })
+                    <Image
+                        resizeMode={'contain'}
+                        source={require('../../../assets/iconImages/LogoTitle.png')}
+                        style={{
+                            width: WINDOW_WIDTH,
+                            height: WINDOW_HEIGHT / 4.5,
                         }}
-                        onChangeFormattedText={(text) => {
-                            this.setState({
-                                formattedValue: text
-                            })
+                    />
+                    <View
+                        style={{
+                            alignItems: 'center',
                         }}
-                        disabled={this.state.disabled}
-                        withDarkTheme
-                        withShadow
-                        autoFocus
-                        containerStyle={this.state.numberInput ? styles.phoneInputTrue : styles.phoneInputFalse}
-                    />
-                    {
-                        this.state.isLoading
-                            ? (
-                                <View
-                                    style={{
-                                        marginTop: 30,
-                                        height: 100
-                                    }}
-                                >
-                                    <PulseIndicator
-                                        size={100}
-                                        color='#8CC83F'
-                                    />
-                                </View>
-                            )
-                            : null
-                    }
-                    {
-                        this.state.smsStatus
-                            ? (
-                                <>
-                                    <CustomInput
-                                        placeholderTextColor={'#000000'}
-                                        keyboardType={'numeric'}
-                                        maxLength={4}
-                                        textInputStyle={{textAlign: 'center', marginHorizontal: 24}}
-                                        style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
-                                        placeholder={'Код из смс'}
-                                        value={String(this.state.confirmationPin)}
-                                        onChangeText={item => this.getCodeNumber(Number(item))}
-                                        headerStyleWidth={WINDOW_WIDTH - 90}
-                                        headerStyleText={WINDOW_WIDTH / 1.6}
-                                    />
-                                    <ActionButton
-                                        style={{marginTop: 24}}
-                                        onPress={() => this.submitPin()}
-                                        text={'Авторизоваться'}
-                                        //disabled={this.state.isLoading}
-                                    />
-                                </>
-                            )
-                            : null
-                    }
-                    <ActionButton
-                        style={{marginTop: 24}}
-                        onPress={() => this.submitPhoneNumber()}
-                        text={'Отправить СМС'}
-                        disabled={this.state.isLoading}
-                    />
-                    <Text style={styles.agreements}>
-                        Нажимая кнопку «Далее» вы {'\n'} подтверждаете что соглашаетесь с{' '}
-                        {'\n'}
-                        <Text
-                            onPress={() => alert('agreements')}
-                            style={{textDecorationLine: 'underline'}}>
-                            {' '}
-                            Пользовательским соглашением
+                    >
+                        <PhoneInput
+                            ref={this.phoneInput}
+                            defaultValue={this.state.value}
+                            defaultCode="RU"
+                            onChangeText={(text) => {
+                                this.setState({
+                                    value: text
+                                })
+                            }}
+                            onChangeFormattedText={(text) => {
+                                this.setState({
+                                    formattedValue: text
+                                })
+                            }}
+                            disabled={this.state.disabled}
+                            containerStyle={this.state.numberInput ? styles.phoneInputTrue : styles.phoneInputFalse}
+                        />
+                        {
+                            this.state.isLoading
+                                ? (
+                                    <View
+                                        style={{
+                                            marginTop: 20,
+                                            height: 60
+                                        }}
+                                    >
+                                        <PulseIndicator
+                                            size={100}
+                                            color='#8CC83F'
+                                        />
+                                    </View>
+                                )
+                                : null
+                        }
+                        {
+                            this.state.smsStatus
+                                ? (
+                                    <>
+                                        <CustomInput
+                                            placeholderTextColor={'#000000'}
+                                            keyboardType={'numeric'}
+                                            maxLength={4}
+                                            textInputStyle={{textAlign: 'center', marginHorizontal: 24}}
+                                            style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
+                                            placeholder={'Код из смс'}
+                                            value={String(this.state.confirmationPin)}
+                                            onChangeText={item => this.getCodeNumber(Number(item))}
+                                            headerStyleWidth={WINDOW_WIDTH - 90}
+                                            headerStyleText={WINDOW_WIDTH / 1.6}
+                                        />
+                                        <ActionButton
+                                            style={{marginTop: 24}}
+                                            onPress={() => this.submitPin()}
+                                            text={'Авторизоваться'}
+                                            //disabled={this.state.isLoading}
+                                        />
+                                    </>
+                                )
+                                : null
+                        }
+                        <ActionButton
+                            style={{marginTop: 24}}
+                            onPress={() => this.submitPhoneNumber()}
+                            text={'Отправить СМС'}
+                            disabled={this.state.isLoading}
+                        />
+                        <Text style={styles.agreements}>
+                            Нажимая кнопку «Далее» вы {'\n'} подтверждаете что соглашаетесь с{' '}
+                            {'\n'}
+                            <Text
+                                onPress={() => alert('agreements')}
+                                style={{textDecorationLine: 'underline'}}>
+                                {' '}
+                                Пользовательским соглашением
+                            </Text>
                         </Text>
+                    </View>
+                    <Text style={styles.licenseText}>
+                        Все права защищены ООО «Свежие новости» (с) 2020
                     </Text>
-                </View>
-                <Text style={styles.licenseText}>
-                    Все права защищены ООО «Свежие новости» (с) 2020
-                </Text>
+                </KeyboardAvoidingView>
             </View>
         );
     };
@@ -309,7 +307,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        // marginHorizontal: 30,
+        marginHorizontal: 30,
         backgroundColor: '#fff'
     },
     licenseText: {
@@ -327,7 +325,7 @@ const styles = StyleSheet.create({
     },
     phoneInputTrue: {
         marginTop: WINDOW_HEIGHT / 10,
-        width: WINDOW_WIDTH - 95,
+        width: WINDOW_WIDTH - 90,
         backgroundColor: '#F5F4F4',
         borderStyle: 'solid',
         borderWidth: 1,

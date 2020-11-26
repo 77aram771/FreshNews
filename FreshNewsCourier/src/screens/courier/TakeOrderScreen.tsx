@@ -58,8 +58,8 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
         })
 
         setTimeout(() => {
-            const {getCourierData, courierData} = courierStore;
-            getCourierData();
+            const {getCourierDataAll, courierData} = courierStore;
+            getCourierDataAll();
             let obj = [
                 {
                     title: 'Вы можете взять заказ',
@@ -82,8 +82,8 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
         })
 
         setTimeout(() => {
-            const {getCourierData, courierData} = courierStore;
-            getCourierData()
+            const {getCourierDataAll, courierData} = courierStore;
+            getCourierDataAll()
             let obj = [
                 {
                     title: 'Вы можете взять заказ',
@@ -95,6 +95,13 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                 refreshing: false
             })
         }, 1000)
+    };
+
+    handleCloseErrorModal = async () => {
+        // alert('test')
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
     };
 
     render() {
@@ -174,7 +181,7 @@ export default class TakeOrderScreen extends React.Component<NavigationProps> {
                                     }
                                 />
                                 {
-                                    this.state.allData !== null
+                                    courierStore.courierData !== null && courierStore.courierData.length > 0
                                         ? (
                                             <SectionList
                                                 showsVerticalScrollIndicator={false}

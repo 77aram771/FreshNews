@@ -106,15 +106,18 @@ class AssemblyPage extends Component<NavigationProps> {
         toJS(addresses).find((item: any) => {
             if (item.address === paymentStore.selectAddress) {
                 paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
-                console.log('paymentStore.Error', paymentStore.errorData);
-                if (paymentStore.errorData !== null) {
-                    this.setState({
-                        errorData: toJS(paymentStore.errorData),
-                        errorModal: true
-                    })
-                } else {
-                    this.props.navigation.navigate('CloudPayment')
-                }
+                setTimeout(() => {
+                    console.log('paymentStore.Error', paymentStore.errorData);
+                    if (paymentStore.errorData !== null) {
+                        this.setState({
+                            errorData: toJS(paymentStore.errorData),
+                            errorModal: true
+                        })
+                    } else {
+                        this.props.navigation.navigate('CloudPayment')
+                    }
+                }, 1000)
+
             } else {
                 console.log('false')
             }
@@ -160,7 +163,6 @@ class AssemblyPage extends Component<NavigationProps> {
                     <ModalContent>
                         <ErrorModal
                             data={errorData}
-                            // handleOpenErrorModal={this.handleOpenErrorModal}
                             handleCloseErrorModal={this.handleCloseErrorModal}
                         />
                     </ModalContent>

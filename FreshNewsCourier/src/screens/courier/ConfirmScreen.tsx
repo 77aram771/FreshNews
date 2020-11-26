@@ -21,6 +21,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "./modals/ErrorModal";
 import {toJS} from "mobx";
+import AsyncStorage from "@react-native-community/async-storage";
 
 @observer
 export default class ConfirmScreen extends React.Component<NavigationProps, { navigation: any }> {
@@ -37,7 +38,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, { na
                 errorModal: true
             })
         }
-    }
+    };
 
     handleCloseErrorModal = async () => {
         await this.setState({

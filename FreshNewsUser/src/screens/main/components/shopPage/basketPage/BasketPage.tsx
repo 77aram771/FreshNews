@@ -26,6 +26,8 @@ class BasketPage extends Component<NavigationProps> {
         shopData: [],
         deliveryPrice: 90,
         refreshing: true,
+        allSum: '',
+        itemQuantity: ''
     };
 
     async componentDidMount() {
@@ -39,23 +41,24 @@ class BasketPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: cartUserInfo,
             }, () => {
-                console.log('shopData', toJS(this.state.shopData))
-                let groups = _.groupBy(toJS(this.state.shopData), 'quantity');
-                console.log('groups', groups);
-                let result = _.map(groups, function(value, key) {
-                    console.log('value', value)
-                    console.log('key', key)
-                    return {
-                        quantity: key,
-                        price: _.reduce(value, function(total, o) {
-                            console.log('total', total)
-                            console.log('o', o)
-                            return parseInt(o.quantity) + parseInt(o.price);
-                        }, 0)
-                    };
-                });
-                console.log('result', result);
+                console.log('shopData', toJS(this.state.shopData));
+                this.setState({
+                    itemQuantity: this.state.shopData.length
+                })
+                const sumItems = () => {
+                    let sum = 0;
+                    toJS(this.state.shopData).forEach(function (item) {
+                        let calculation = toJS(item.price) * toJS(item.quantity);
+                        console.log('calculation', calculation);
+                        sum += calculation;
+                    })
+                    console.log('sum', sum);
+                    this.setState({
+                        allSum: sum
+                    })
+                };
 
+                sumItems();
             })
         }, 1000)
     };
@@ -170,7 +173,7 @@ class BasketPage extends Component<NavigationProps> {
                                                     ListFooterComponent={
                                                         <>
                                                             {
-                                                                this.state.shopData.length > 2
+                                                                this.state.shopData.length < 2
                                                                     ? (
                                                                         <>
                                                                             <View
@@ -278,7 +281,7 @@ class BasketPage extends Component<NavigationProps> {
                                                     }
                                                 />
                                                 {
-                                                    this.state.shopData.length > 2
+                                                    this.state.shopData.length < 2
                                                         ? null
                                                         : (
                                                             <View
@@ -364,10 +367,10 @@ class BasketPage extends Component<NavigationProps> {
                                                                                                 marginRight: 5
                                                                                             }}
                                                                                         />
-                                                                                        <Text>{parseInt(item.price)} р.</Text>
+                                                                                        <Text>{parseInt(item.price) * parseInt(item.quantity)} р.</Text>
                                                                                     </View>
                                                                                     <Text>{this.state.deliveryPrice} р.</Text>
-                                                                                    <Text>{parseInt(this.state.deliveryPrice) + parseInt(item.price)} р.</Text>
+                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (parseInt(item.price) * parseInt(item.quantity))} р.</Text>
                                                                                 </View>
                                                                             )
                                                                         })
@@ -388,7 +391,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        4000 р.
+                                                                        {`${Math.ceil(this.state.allSum)} р.`}
                                                                     </Text>
                                                                     <Text
                                                                         style={{
@@ -397,7 +400,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        4000 р.
+                                                                        {`${parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice)} р.`}
                                                                     </Text>
                                                                     <Text
                                                                         style={{
@@ -406,7 +409,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        4000 р.
+                                                                        {`${parseInt(this.state.allSum) + (parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice))}`} р.
                                                                     </Text>
                                                                 </View>
                                                             </View>

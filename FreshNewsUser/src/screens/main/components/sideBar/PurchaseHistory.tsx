@@ -15,28 +15,35 @@ import {PulseIndicator} from 'react-native-indicators';
 export default class PurchaseHistory extends Component<NavigationProps> {
 
     state = {
-        refreshing: false
+        refreshing: false,
+        allOrders: null
     }
 
     componentDidMount() {
         shopsStore.getAllOrders();
-    }
+        this.setState({
+            allOrders: shopsStore.allOrders
+        }, () => {
+            console.log('allOrders', this.state.allOrders)
+        })
+    };
 
     onRefresh() {
         this.setState({
             refreshing: true
         })
         setTimeout(() => {
-            this.setState({
-                refreshing: false
-            })
             shopsStore.getAllOrders();
-
+            this.setState({
+                refreshing: false,
+                allOrders: shopsStore.allOrders
+            }, () => {
+                console.log('allOrders', this.state.allOrders)
+            })
         }, 1000)
-    }
+    };
 
     renderItem(item: any) {
-        console.log('item', toJS(item));
         if (item.status === 1) {
             return (
                 <TouchableOpacity
@@ -103,10 +110,45 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             <Text>Собирается</Text>
                         </View>
                     </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 3) {
+        } else if (item.status === 3) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -192,10 +234,45 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                         }
 
                     </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 4) {
+        } else if (item.status === 4) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -281,10 +358,45 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                         }
 
                     </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 5) {
+        } else if (item.status === 5) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('MapPage', {
@@ -363,10 +475,45 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             </View>
                         </View>
                     </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 6) {
+        } else if (item.status === 6) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -448,10 +595,46 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             </View>
                         </View>
                     </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
                 </TouchableOpacity>
             )
         }
-    }
+    };
 
     render() {
         return (
@@ -498,7 +681,6 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             <ScrollView
                                 style={{
                                     flex: 1,
-                                    marginTop: 30
                                 }}
                                 refreshControl={
                                     <RefreshControl
@@ -512,19 +694,38 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                                         width: WINDOW_WIDTH - 40,
                                         justifyContent: "center",
                                         alignItems: "center",
-                                        alignSelf: "center"
+                                        alignSelf: "center",
+                                        paddingTop: 30,
+                                        paddingBottom: 50,
                                     }}
                                 >
-                                    {shopsStore.allOrders.map(item => (
-                                        this.renderItem(item)
-                                    ))}
+                                    {
+                                        this.state.allOrders !== null
+                                            ? (
+                                                this.state.allOrders.map(item => (
+                                                    this.renderItem(item)
+                                                ))
+                                            )
+                                            : (
+                                                <View
+                                                    style={{
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                    }}
+                                                >
+                                                    <Text>
+                                                        У вас нет заказов
+                                                    </Text>
+                                                </View>
+                                            )
+                                    }
                                 </View>
                             </ScrollView>
                         )
                 }
             </>
         )
-    }
+    };
 }
 
 const styles = StyleSheet.create({

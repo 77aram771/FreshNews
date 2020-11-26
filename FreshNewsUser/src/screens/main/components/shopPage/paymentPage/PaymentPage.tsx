@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {
+    KeyboardAvoidingView,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -352,171 +354,177 @@ class PaymentPage extends Component<NavigationProps> {
                         value={this.state.selectTime}
                         useNativeAndroidPickerStyle={false}
                     />
-                    {
-                        this.state.selectAddress
-                            ? <View/>
-                            : <>
-                                <Text
-                                    style={{
-                                        fontSize: size12,
-                                        fontFamily: MontserratRegular,
-                                        paddingTop: 36,
-                                        color: '#000000',
-                                    }}
-                                >
-                                    Адрес
-                                </Text>
-                                <CustomInput
-                                    value={address}
-                                    onChangeText={value => this.handleValidationAddress(value)}
-                                    textInputStyle={{flex: 1}}
-                                    style={{
-                                        justifyContent: 'flex-start',
-                                        marginTop: 16,
-                                        height: 40
-                                    }}
-                                />
-                                <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS == "ios" ? "padding" : "height"}
+                    >
+                        {
+                            this.state.selectAddress
+                                ? <View/>
+                                : <>
                                     <Text
                                         style={{
-                                            fontFamily: MontserratBold
+                                            fontSize: size12,
+                                            fontFamily: MontserratRegular,
+                                            paddingTop: 36,
+                                            color: '#000000',
                                         }}
                                     >
-                                        Пример: {' '}
+                                        Адрес
+                                    </Text>
+                                    <CustomInput
+                                        value={address}
+                                        onChangeText={value => this.handleValidationAddress(value)}
+                                        textInputStyle={{flex: 1}}
+                                        style={{
+                                            justifyContent: 'flex-start',
+                                            marginTop: 16,
+                                            height: 40
+                                        }}
+                                    />
+                                    <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>
                                         <Text
                                             style={{
-                                                fontFamily: MontserratSemiBold
+                                                fontFamily: MontserratBold
                                             }}
-                                        >Москва ул. Тверская 11</Text></Text>
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        paddingTop: size44,
-                                    }}
-                                >
-                                    <View>
-                                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
-                                            Подъезд{'    '}
-                                        </Text>
-                                        <CustomInput
-                                            keyboardType={'numeric'}
-                                            maxLength={2}
-                                            value={porch}
-                                            onChangeText={value => this.handleValidationPorch(value)}
-                                            textInputStyle={{
-                                                flex: 1,
-                                                textAlign: 'center',
-                                                fontFamily: MontserratRegular,
-                                                fontSize: size16,
-                                                paddingHorizontal: 6,
-                                            }}
-                                            style={{
-                                                justifyContent: 'flex-start',
-                                                marginTop: 16,
-                                                height: 40
-                                            }}
-                                        />
+                                        >
+                                            Пример: {' '}
+                                            <Text
+                                                style={{
+                                                    fontFamily: MontserratSemiBold
+                                                }}
+                                            >Москва ул. Тверская 11</Text></Text>
                                     </View>
-                                    <View>
-                                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
-                                            Этаж{'          '}
-                                        </Text>
-                                        <CustomInput
-                                            keyboardType={'numeric'}
-                                            maxLength={2}
-                                            value={level}
-                                            onChangeText={value => this.handleValidationLevel(value)}
-                                            textInputStyle={{
-                                                flex: 1,
-                                                textAlign: 'center',
-                                                fontFamily: MontserratRegular,
-                                                fontSize: size16,
-                                                paddingHorizontal: 8,
-                                            }}
-                                            style={{
-                                                justifyContent: 'flex-start',
-                                                marginTop: 16,
-                                                height: 40
-                                            }}
-                                        />
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            paddingTop: size44,
+                                        }}
+                                    >
+                                        <View>
+                                            <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
+                                                Подъезд{'    '}
+                                            </Text>
+                                            <CustomInput
+                                                keyboardType={'numeric'}
+                                                maxLength={2}
+                                                value={porch}
+                                                onChangeText={value => this.handleValidationPorch(value)}
+                                                textInputStyle={{
+                                                    flex: 1,
+                                                    textAlign: 'center',
+                                                    fontFamily: MontserratRegular,
+                                                    fontSize: size16,
+                                                    paddingHorizontal: 6,
+                                                }}
+                                                style={{
+                                                    justifyContent: 'flex-start',
+                                                    marginTop: 16,
+                                                    height: 40
+                                                }}
+                                            />
+                                        </View>
+                                        <View>
+                                            <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
+                                                Этаж{'          '}
+                                            </Text>
+                                            <CustomInput
+                                                keyboardType={'numeric'}
+                                                maxLength={2}
+                                                value={level}
+                                                onChangeText={value => this.handleValidationLevel(value)}
+                                                textInputStyle={{
+                                                    flex: 1,
+                                                    textAlign: 'center',
+                                                    fontFamily: MontserratRegular,
+                                                    fontSize: size16,
+                                                    paddingHorizontal: 8,
+                                                }}
+                                                style={{
+                                                    justifyContent: 'flex-start',
+                                                    marginTop: 16,
+                                                    height: 40
+                                                }}
+                                            />
+                                        </View>
+                                        <View>
+                                            <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
+                                                Квартира{'     '}
+                                            </Text>
+                                            <CustomInput
+                                                keyboardType={'numeric'}
+                                                maxLength={4}
+                                                value={apartment}
+                                                onChangeText={value => this.handleValidationApartment(value)}
+                                                textInputStyle={{
+                                                    flex: 1,
+                                                    textAlign: 'center',
+                                                    fontFamily: MontserratRegular,
+                                                    fontSize: size16,
+                                                    paddingHorizontal: 8,
+                                                }}
+                                                style={{
+                                                    justifyContent: 'flex-start',
+                                                    marginTop: 16,
+                                                    height: 40
+                                                }}
+                                            />
+                                        </View>
+                                        <View>
+                                            <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
+                                                Домофон{'     '}
+                                            </Text>
+                                            <CustomInput
+                                                //keyboardType={'numeric'}
+                                                maxLength={4}
+                                                value={intercom}
+                                                onChangeText={value => this.handleValidationIntercom(value)}
+                                                textInputStyle={{
+                                                    flex: 1,
+                                                    paddingHorizontal: 4,
+                                                    textAlign: 'center',
+                                                    fontFamily: MontserratRegular,
+                                                    fontSize: size16,
+                                                }}
+                                                style={{
+                                                    justifyContent: 'flex-start',
+                                                    marginTop: 16,
+                                                    height: 40
+                                                }}
+                                            />
+                                        </View>
                                     </View>
-                                    <View>
-                                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
-                                            Квартира{'     '}
-                                        </Text>
-                                        <CustomInput
-                                            keyboardType={'numeric'}
-                                            maxLength={4}
-                                            value={apartment}
-                                            onChangeText={value => this.handleValidationApartment(value)}
-                                            textInputStyle={{
-                                                flex: 1,
-                                                textAlign: 'center',
-                                                fontFamily: MontserratRegular,
-                                                fontSize: size16,
-                                                paddingHorizontal: 8,
-                                            }}
-                                            style={{
-                                                justifyContent: 'flex-start',
-                                                marginTop: 16,
-                                                height: 40
-                                            }}
-                                        />
-                                    </View>
-                                    <View>
-                                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>
-                                            Домофон{'     '}
-                                        </Text>
-                                        <CustomInput
-                                            //keyboardType={'numeric'}
-                                            maxLength={4}
-                                            value={intercom}
-                                            onChangeText={value => this.handleValidationIntercom(value)}
-                                            textInputStyle={{
-                                                flex: 1,
-                                                paddingHorizontal: 4,
-                                                textAlign: 'center',
-                                                fontFamily: MontserratRegular,
-                                                fontSize: size16,
-                                            }}
-                                            style={{
-                                                justifyContent: 'flex-start',
-                                                marginTop: 16,
-                                                height: 40
-                                            }}
-                                        />
-                                    </View>
-                                </View>
-                            </>
-                    }
-                    <Text
-                        style={{
-                            fontSize: size16,
-                            fontFamily: MontserratRegular,
-                            paddingTop: size44,
-                        }}
-                    >
-                        Сообщение для курьера
-                    </Text>
-                    <CustomInput
-                        multiline={true}
-                        numberOfLines={3}
-                        value={messageToCourier}
-                        onChangeText={value => this.handleComment(value)}
-                        textInputStyle={{
-                            flex: 1,
-                            fontFamily: MontserratRegular,
-                            fontSize: size12,
-                        }}
-                        style={{
-                            justifyContent: 'flex-start',
-                            marginTop: 16,
-                            maxHeight: WINDOW_WIDTH / 4,
-                            height: WINDOW_HEIGHT / 3
-                        }}
-                    />
+                                </>
+                        }
+                        <Text
+                            style={{
+                                fontSize: size16,
+                                fontFamily: MontserratRegular,
+                                paddingTop: size44,
+                            }}
+                        >
+                            Сообщение для курьера
+                        </Text>
+                        <CustomInput
+                            multiline={true}
+                            numberOfLines={3}
+                            value={messageToCourier}
+                            onChangeText={value => this.handleComment(value)}
+                            textInputStyle={{
+                                flex: 1,
+                                fontFamily: MontserratRegular,
+                                fontSize: size12,
+                                padding: 15,
+                                textAlign: "left",
+                            }}
+                            style={{
+                                justifyContent: 'flex-start',
+                                marginTop: 16,
+                                maxHeight: WINDOW_WIDTH / 4,
+                                height: WINDOW_HEIGHT / 3,
+                            }}
+                        />
+                    </KeyboardAvoidingView>
                 </ScrollView>
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('AssemblyPage')}

@@ -69,7 +69,11 @@ class PaymentStore {
 
         fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
-                console.log('res pay===--------', res)
+                console.log('res pay===--------', res);
+                if (res.status !== 200){
+                    this.errorData = res;
+                    console.log('this.errorData', this.errorData);
+                }
             })
             .catch((error) => {
                 console.log('error getOrder', error);

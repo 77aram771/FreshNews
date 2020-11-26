@@ -1,6 +1,7 @@
 import {action, observable} from 'mobx';
 import AsyncStorage from "@react-native-community/async-storage";
 import {SERVER_BASE} from "../share/consts";
+import {Platform} from "react-native";
 
 class SellerStore {
     @observable sellerData: any = [];
@@ -91,19 +92,38 @@ class SellerStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-        fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, requestOptions)
-            .then(response => response.json())
-            .then((res) => {
-                if (res.status_code === 200) {
-                    this.scanData = res;
-                } else {
-                    this.errorData = res;
-                }
-            })
-            .catch(error => {
-                console.log('getScan error', error);
-                this.errorData = error;
-            });
+        Platform.OS === 'ios'
+            ? (
+                fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=${code}`, requestOptions)
+                    .then(response => response.json())
+                    .then((res) => {
+                        if (res.status === 200) {
+                            this.scanData = res;
+                        } else {
+                            this.errorData = res;
+                        }
+                    })
+                    .catch(error => {
+                        console.log('getScan error', error);
+                        this.errorData = error;
+                    })
+            )
+            :
+            (
+                fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, requestOptions)
+                    .then(response => response.json())
+                    .then((res) => {
+                        if (res.status === 200) {
+                            this.scanData = res;
+                        } else {
+                            this.errorData = res;
+                        }
+                    })
+                    .catch(error => {
+                        console.log('getScan error', error);
+                        this.errorData = error;
+                    })
+            )
     };
 
     @action
@@ -124,7 +144,6 @@ class SellerStore {
             body: formData,
             redirect: 'follow'
         };
-        console.log(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`);
         fetch(`${SERVER_BASE}/seller/products/create?name=${name}&category_id=${category_id}&weight=${weight}&type=${type}&price=${price}&description=${description}`, requestOptions)
             .then(res => {
                 if (res.status === 200) {
