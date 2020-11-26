@@ -97,27 +97,20 @@ class SellerStore {
                 fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=${code}`, requestOptions)
                     .then(response => response.json())
                     .then((res) => {
-                        if (res.status === 200) {
-                            this.scanData = res;
-                        } else {
-                            this.errorData = res;
-                        }
+                        console.log('res getScan', res);
+                        this.scanData = res;
                     })
                     .catch(error => {
                         console.log('getScan error', error);
                         this.errorData = error;
                     })
             )
-            :
-            (
+            : (
                 fetch(`${SERVER_BASE}/seller/orders/item/${id}?code=0${code}`, requestOptions)
                     .then(response => response.json())
                     .then((res) => {
-                        if (res.status === 200) {
-                            this.scanData = res;
-                        } else {
-                            this.errorData = res;
-                        }
+                        console.log('res getScan', res);
+                        this.scanData = res;
                     })
                     .catch(error => {
                         console.log('getScan error', error);

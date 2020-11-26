@@ -16,7 +16,6 @@ import modalsStore from "../../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
 import {SvgUri} from "react-native-svg";
-import _ from 'lodash';
 
 @observer
 export default // @ts-ignore
@@ -84,7 +83,6 @@ class BasketPage extends Component<NavigationProps> {
         const {allPrice, productCount, cartUserInfo} = basketStore;
 
         return (
-
             <View style={styles.container}>
                 {
                     this.state.refreshing
@@ -133,9 +131,7 @@ class BasketPage extends Component<NavigationProps> {
                                         />
                                     }
                                     headerMid={
-                                        <Text style={styles.headerMiddleTitle}>
-                                            Корзина
-                                        </Text>
+                                        <Text style={styles.headerMiddleTitle}>Корзина</Text>
                                     }
                                     headerRight={
                                         cartUserInfo.length > 0
@@ -290,6 +286,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                     justifyContent: "center",
                                                                     alignItems: "center",
                                                                     backgroundColor: '#fff',
+                                                                    marginBottom: 10
                                                                 }}
                                                             >
                                                                 <View
@@ -340,7 +337,6 @@ class BasketPage extends Component<NavigationProps> {
                                                                 >
                                                                     {
                                                                         toJS(this.state.shopData).map((item, index) => {
-                                                                            console.log('item', item);
                                                                             return (
                                                                                 <View
                                                                                     key={index}
@@ -349,7 +345,8 @@ class BasketPage extends Component<NavigationProps> {
                                                                                         height: 40,
                                                                                         justifyContent: "space-between",
                                                                                         alignItems: "center",
-                                                                                        flexDirection: "row"
+                                                                                        flexDirection: "row",
+                                                                                        marginBottom: 10
                                                                                     }}
                                                                                 >
                                                                                     <View
@@ -363,9 +360,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                                             width="30"
                                                                                             height="30"
                                                                                             uri={item.product.shop.image}
-                                                                                            style={{
-                                                                                                marginRight: 5
-                                                                                            }}
+                                                                                            style={{marginRight: 5}}
                                                                                         />
                                                                                         <Text>{parseInt(item.price) * parseInt(item.quantity)} р.</Text>
                                                                                     </View>
@@ -391,7 +386,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        {`${Math.ceil(this.state.allSum)} р.`}
+                                                                        {`${Math.ceil(parseInt(this.state.allSum))} р.`}
                                                                     </Text>
                                                                     <Text
                                                                         style={{

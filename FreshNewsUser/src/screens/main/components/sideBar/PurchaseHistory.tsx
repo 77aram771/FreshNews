@@ -4,29 +4,43 @@ import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl} fr
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {size16, size20, WINDOW_WIDTH} from "../../../../share/consts";
-import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../../share/fonts";
+import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../share/fonts";
 import Header from "../../../../share/components/Header";
 import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
 import {toJS} from "mobx";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 
 @observer
-export default class PurchaseHistory extends Component<NavigationProps> {
+export default // @ts-ignore
+class PurchaseHistory extends Component<NavigationProps> {
 
     state = {
         refreshing: false,
-        allOrders: null
-    }
+        allOrders: null,
+    };
 
     componentDidMount() {
         shopsStore.getAllOrders();
+        const newFile = shopsStore.allOrders.map((item: any) => {
+            return {...item, bool: false};
+        });
         this.setState({
-            allOrders: shopsStore.allOrders
+            allOrders: newFile
         }, () => {
-            console.log('allOrders', this.state.allOrders)
+            console.log('allOrders', this.state.allOrders);
         })
     };
+
+    handleClick = (id: number) => {
+        console.log(id)
+        const newOrders = this.state.allOrders.find((item: any) => {
+            // return item.bool = !item.bool
+            return item.id === id
+        })
+        console.log('newOrders', newOrders);
+    }
 
     onRefresh() {
         this.setState({
@@ -514,13 +528,15 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                 </TouchableOpacity>
             )
         } else if (item.status === 6) {
+            // console.log('item', toJS(item));
             return (
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
-                        id: item.id,
-                        transaction: item.transaction,
-                        status: item.status
-                    })}
+                    // onPress={() => this.props.navigation.navigate('FinishOfferPage', {
+                    //     id: item.id,
+                    //     transaction: item.transaction,
+                    //     status: item.status
+                    // })}
+                    onPress={() => this.handleClick(item.id)}
                     style={{
                         width: "100%",
                         backgroundColor: '#F5F4F4',
@@ -631,6 +647,65 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                             </Text>
                         </View>
                     </View>
+                    {
+                        item.bool
+                            ? (
+                                <View
+                                    style={{
+                                        width: '100%',
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        flexDirection: "column"
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            width: '100%'
+                                        }}
+                                    >
+
+                                    </View>
+                                    <View
+                                        style={{
+                                            width: '100%',
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            flexDirection: "row"
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                flexDirection: "row",
+                                            }}
+                                        >
+                                            <Text style={{
+                                                fontFamily: MontserratMedium,
+                                                color: '#000',
+                                                fontSize: 17
+                                            }}>Итог </Text>
+                                            <Text style={{
+                                                fontFamily: MontserratSemiBold,
+                                                color: '#8CC83F',
+                                                fontSize: 17
+                                            }}> 1000
+                                                <Text style={{
+                                                    fontFamily: MontserratSemiBold,
+                                                    color: '#000',
+                                                    fontSize: 17
+                                                }}> Р.</Text>
+                                            </Text>
+                                        </View>
+                                        <View>
+                                            <Text></Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            )
+                            : null
+                    }
+
                 </TouchableOpacity>
             )
         }
@@ -702,7 +777,7 @@ export default class PurchaseHistory extends Component<NavigationProps> {
                                     {
                                         this.state.allOrders !== null
                                             ? (
-                                                this.state.allOrders.map(item => (
+                                                this.state.allOrders.map((item: any) => (
                                                     this.renderItem(item)
                                                 ))
                                             )

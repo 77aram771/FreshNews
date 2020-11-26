@@ -6,6 +6,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 // @ts-ignore
 import {observer} from 'mobx-react';
 import basketStore from "../../../../../stores/BasketStore";
+import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -42,18 +43,18 @@ class BasketListItem extends Component<{
 
     async handleDeleteItem(id: number) {
         this.props.onRefresh()
-        basketStore.getDeleteCartItem(id);
+        await basketStore.getDeleteCartItem(id);
     }
 
     render() {
-
-        const {name, price, id, weight} = this.props.data;
+        console.log('this.props.data', toJS(this.props.data));
+        const {price, id, weight, product} = this.props.data;
 
         return (
             <View style={styles.rowInfoContainer}>
-                <View style={{flexDirection: 'column', flex: 2, paddingLeft: 16}}>
+                <View style={{flexDirection: 'column', flex: 2, paddingLeft: 8}}>
                     <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
-                        {name}
+                        {product.name}
                     </Text>
                     <View style={{flexDirection: 'row', marginTop: 16}}>
                         <Text style={styles.price}>
@@ -102,11 +103,11 @@ const styles = StyleSheet.create({
     rowInfoContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingTop: 30,
         justifyContent: 'space-around',
         borderBottomWidth: 0.5,
         borderBottomColor: '#00000029',
         paddingBottom: 14,
+        paddingTop: 14,
     },
     price: {
         fontFamily: MontserratRegular,

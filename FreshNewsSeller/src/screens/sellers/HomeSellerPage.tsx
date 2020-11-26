@@ -247,7 +247,7 @@ class HomeSellerPage extends Component<any, any> {
                 })
             }
         }, 3000)
-    }
+    };
 
     handleSaveEditItem = (id: any, name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
         sellerStore.getEditItem(id, name, category_id, weight, type, price, description, image);
@@ -262,8 +262,7 @@ class HomeSellerPage extends Component<any, any> {
                 })
             }
         }, 3000)
-    }
-
+    };
 
     render() {
 

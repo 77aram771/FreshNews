@@ -67,23 +67,22 @@ class FinishPaymentPage extends Component<NavigationProps> {
             date: NewDate,
             time: NewTime
         });
-        userInfo.getUserData();
-        const {userData} = userInfo;
-        const {addresses} = userData;
-        addresses.map((item: any) => {
-            this.state.addressArray.push({
-                label: toJS(item.address),
-                value: toJS(item.address),
-            })
-        });
-        addresses.find((item: any) => {
-            if (item.address === paymentStore.selectAddress) {
-                this.setState({
-                    selectAddress: item.address
-                })
-            }
-        });
-
+        // userInfo.getUserData();
+        // const {userData} = userInfo;
+        // const {addresses} = userData;
+        // addresses.map((item: any) => {
+        //     this.state.addressArray.push({
+        //         label: toJS(item.address),
+        //         value: toJS(item.address),
+        //     })
+        // });
+        // addresses.find((item: any) => {
+        //     if (item.address === paymentStore.selectAddress) {
+        //         this.setState({
+        //             selectAddress: item.address
+        //         })
+        //     }
+        // });
         // const {orderUserTime} = paymentStore;
         // orderUserTime();
     };
@@ -315,7 +314,7 @@ class FinishPaymentPage extends Component<NavigationProps> {
         this.setState({
             cardCVC: value
         });
-    }
+    };
 
     render() {
         const placeholder = {
@@ -887,7 +886,7 @@ class FinishPaymentPage extends Component<NavigationProps> {
                 </KeyboardAvoidingView>
             </View>
         );
-    }
+    };
 }
 
 const styles = StyleSheet.create({

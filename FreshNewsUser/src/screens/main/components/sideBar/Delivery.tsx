@@ -16,7 +16,8 @@ export default class Delivery extends Component {
 
     alertsToggleHandle(state: boolean) {
         this.setState({alertsIsOn: state});
-    }
+    };
+
     render() {
         const {onCloseViewAndShowDelivery} = modalsStore;
         return (
