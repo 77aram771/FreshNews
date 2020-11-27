@@ -8,9 +8,9 @@ import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold}
 import Header from "../../../../share/components/Header";
 import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
-import {toJS} from "mobx";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
+import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -28,19 +28,21 @@ class PurchaseHistory extends Component<NavigationProps> {
         });
         this.setState({
             allOrders: newFile
-        }, () => {
-            console.log('allOrders', this.state.allOrders);
         })
     };
 
     handleClick = (id: number) => {
-        console.log(id)
-        const newOrders = this.state.allOrders.find((item: any) => {
-            // return item.bool = !item.bool
-            return item.id === id
+        console.log(id);
+        const newItemsArr = this.state.allOrders.map((item: any) => {
+            if (item.id == id) {
+                item.bool = !item.bool
+            }
+            return item;
+        });
+        this.setState({
+            allOrders: newItemsArr
         })
-        console.log('newOrders', newOrders);
-    }
+    };
 
     onRefresh() {
         this.setState({
@@ -51,11 +53,47 @@ class PurchaseHistory extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 allOrders: shopsStore.allOrders
-            }, () => {
-                console.log('allOrders', this.state.allOrders)
             })
         }, 1000)
     };
+
+    renderFinishItem(item: any) {
+        console.log('item', toJS(item));
+        return (
+            <View
+                key={item.id}
+                style={{
+                    width: '100%',
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}
+            >
+                <View
+                    style={{
+                        width: '65%',
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start"
+                    }}
+                >
+                    <Text style={{fontSize: 16, fontFamily: MontserratRegular}}>{item.product.name}</Text>
+                </View>
+                <View
+                    style={{
+                        width: '35%',
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: "row"
+                    }}
+                >
+                    <Text style={{fontSize: 14, fontFamily: MontserratRegular}}>{item.weight}<Text
+                        style={{color: '#8AC83E', fontSize: 14}}> г</Text></Text>
+                    <Text style={{fontSize: 14, fontFamily: MontserratRegular}}>{Math.ceil(parseInt(item.price))}<Text
+                        style={{color: '#8AC83E', fontSize: 14}}> Р</Text></Text>
+                </View>
+            </View>
+        )
+    }
 
     renderItem(item: any) {
         if (item.status === 1) {
@@ -510,7 +548,8 @@ class PurchaseHistory extends Component<NavigationProps> {
                             <Text
                                 style={{
                                     fontSize: 15,
-                                    fontFamily: MontserratRegular
+                                    fontFamily: MontserratRegular,
+                                    color: '#fff'
                                 }}
                             >
                                 Дата заказа
@@ -518,7 +557,8 @@ class PurchaseHistory extends Component<NavigationProps> {
                             <Text
                                 style={{
                                     fontSize: 15,
-                                    fontFamily: MontserratSemiBold
+                                    fontFamily: MontserratSemiBold,
+                                    color: '#fff'
                                 }}
                             >
                                 {item.date}
@@ -528,7 +568,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                 </TouchableOpacity>
             )
         } else if (item.status === 6) {
-            // console.log('item', toJS(item));
+            console.log('item.items', toJS(item.items[0].price));
             return (
                 <TouchableOpacity
                     // onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -546,6 +586,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                         borderRadius: 10,
                         paddingRight: 20,
                         paddingLeft: 20,
+                        paddingBottom: item.bool ? 20 : 0,
                         marginBottom: 15
                     }}
                     key={item.id}
@@ -562,7 +603,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                         <View
                             style={{
                                 justifyContent: 'center',
-                                alignItems: "center"
+                                alignItems: "center",
                             }}
                         >
                             <Text
@@ -618,6 +659,8 @@ class PurchaseHistory extends Component<NavigationProps> {
                             flexDirection: "column",
                             width: '100%',
                             height: 50,
+                            borderBottomWidth: item.bool ? 1 : 0,
+                            marginBottom: item.bool ? 10 : 0
                         }}
                     >
                         <View
@@ -660,10 +703,15 @@ class PurchaseHistory extends Component<NavigationProps> {
                                 >
                                     <View
                                         style={{
-                                            width: '100%'
+                                            width: '100%',
+                                            marginBottom: 60
                                         }}
                                     >
-
+                                        {
+                                            item.items.map((item: any) => {
+                                                return this.renderFinishItem(item)
+                                            })
+                                        }
                                     </View>
                                     <View
                                         style={{
@@ -689,7 +737,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                                                 fontFamily: MontserratSemiBold,
                                                 color: '#8CC83F',
                                                 fontSize: 17
-                                            }}> 1000
+                                            }}> {Math.ceil(item.items[0].price)}
                                                 <Text style={{
                                                     fontFamily: MontserratSemiBold,
                                                     color: '#000',
@@ -705,7 +753,6 @@ class PurchaseHistory extends Component<NavigationProps> {
                             )
                             : null
                     }
-
                 </TouchableOpacity>
             )
         }

@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#00000029',
         paddingBottom: 14,
         paddingTop: 14,
+        paddingLeft: 10,
     },
     price: {
         fontFamily: MontserratRegular,
