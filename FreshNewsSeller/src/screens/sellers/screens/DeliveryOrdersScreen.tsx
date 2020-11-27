@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {View, Text, TouchableOpacity, ScrollView} from "react-native";
+import {View, Text, TouchableOpacity, ScrollView, Platform} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
 // @ts-ignore
@@ -51,8 +51,7 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                     errorData: toJS(sellerStore.errorData),
                     errorModal: true
                 })
-            }
-            else {
+            } else {
                 this.setState({
                     mockData: [toJS(sellerStore.scanData)],
                 })
@@ -225,7 +224,11 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                                                 fontSize: 15,
                                             }}
                                         >
-                                            0{this.state.code}
+                                            {
+                                                Platform.OS === 'ios'
+                                                    ? item.code
+                                                    : `0${item.code}`
+                                            }
                                         </Text>
                                     </View>
                                 </View>
