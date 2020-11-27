@@ -114,6 +114,7 @@ const MainStack = createStackNavigator(
             screen: FinishOfferPage,
             navigationOptions: {
                 headerTitle: 'Заказ собирается',
+                gesturesEnabled: false
             },
         },
         FinishPaymentPage: {
@@ -132,12 +133,14 @@ const MainStack = createStackNavigator(
             screen: CloudPayment,
             navigationOptions: {
                 headerTitle: 'CloudPayment заставка',
+                gesturesEnabled: false,
             },
         },
         FinishPaymentScreen: {
             screen: FinishPaymentScreen,
             navigationOptions: {
                 headerTitle: 'CloudPayment заставка',
+                gesturesEnabled: false
             },
         },
     },

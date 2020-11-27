@@ -9,7 +9,7 @@ export class FinishPaymentScreen extends Component<NavigationProps> {
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.navigation.navigate('MainScreen')
+            this.props.navigation.navigate('PurchaseHistory')
         }, 3000)
     }
 
@@ -27,7 +27,7 @@ export class FinishPaymentScreen extends Component<NavigationProps> {
                             color: '#FFFFFF',
                         }}
                     >
-                        CLOUD PAYMENT Finish Payment Screen
+                        Ваш заказ оплачен
                     </Text>
                 </LinearGradient>
             </View>

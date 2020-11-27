@@ -4,7 +4,7 @@ import {NavigationProps} from "../../../../../share/interfaces";
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {size14, size16, size20, WINDOW_WIDTH} from "../../../../../share/consts";
-import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler} from "react-native";
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
 import {toJS} from "mobx";
 // @ts-ignore
@@ -33,11 +33,26 @@ class FinishOfferPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: paymentStore.order
             })
-        }, 3000)
+        }, 3000);
+
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     };
 
     async handleDeleteItem(id: number) {
         console.log('handleDeleteItem id', id)
+    };
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    };
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+    };
+
+    handleBackButtonClick() {
+        this.props.navigation.navigate('PurchaseHistory');
+        return true;
     };
 
     renderList(item: any): any {

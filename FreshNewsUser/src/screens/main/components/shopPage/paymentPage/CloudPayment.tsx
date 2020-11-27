@@ -33,7 +33,7 @@ export class CloudPayment extends Component<NavigationProps> {
                             color: '#FFFFFF',
                         }}
                     >
-                        CLOUD PAYMENT
+                        Ваш заказ собирается
                     </Text>
                 </LinearGradient>
             </View>

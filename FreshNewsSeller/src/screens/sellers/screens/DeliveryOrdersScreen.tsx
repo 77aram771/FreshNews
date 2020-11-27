@@ -60,7 +60,6 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
     };
 
     handleCloseErrorModal = async () => {
-        // alert('test')
         await this.setState({
             errorModal: false,
         }, () => console.log('errorModal', this.state.errorModal))
@@ -105,23 +104,30 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                         >
                             {item.name}
                         </Text>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate('BarcodeScanner', {
-                                id: item.id,
-                                handleScanner: this.handleScanner
-                            })}
-                        >
-                            <Text
-                                style={{
-                                    color: "#8cc83f",
-                                    fontSize: 15,
-                                    fontFamily: MontserratSemiBold,
+                        {
+                            item.code
+                                ? null
+                                : (
+                                    <TouchableOpacity
+                                        onPress={() => this.props.navigation.navigate('BarcodeScanner', {
+                                            id: item.id,
+                                            handleScanner: this.handleScanner
+                                        })}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "#8cc83f",
+                                                fontSize: 15,
+                                                fontFamily: MontserratSemiBold,
 
-                                }}
-                            >
-                                Сверить позицию
-                            </Text>
-                        </TouchableOpacity>
+                                            }}
+                                        >
+                                            Сверить позицию
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                        }
+
                     </View>
                     <View
                         style={{
@@ -224,11 +230,7 @@ export default class DeliveryOrdersScreen extends Component<any, any> {
                                                 fontSize: 15,
                                             }}
                                         >
-                                            {
-                                                Platform.OS === 'ios'
-                                                    ? item.code
-                                                    : `0${item.code}`
-                                            }
+                                            {item.code}
                                         </Text>
                                     </View>
                                 </View>
