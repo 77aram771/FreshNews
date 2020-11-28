@@ -55,13 +55,7 @@ export const MainScreen = ({navigation}) => {
         getLocationAsync();
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
-            if (getToken !== null) {
-                basketStore.getCartUserInfo()
-                userInfo.getUserData();
-                paymentStore.orderUserTime();
-                shopsStore.getAllOrders();
-                userInfo.getUserNotifications();
-            }
+
             registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
             notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
                 setNotification(notification);
@@ -69,12 +63,17 @@ export const MainScreen = ({navigation}) => {
             responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
                 userInfo.getUserNotificationsRead();
                 navigation.navigate('FinishOfferPage', {
-                    id: response.notification.request.content.data.id,
-                    // transaction: true,
-                    // status: item.status
+                    id: response.notification.request.content.data.body.id,
                 })
             });
-            await sendPushNotification(expoPushToken);
+            if (getToken !== null) {
+                basketStore.getCartUserInfo()
+                userInfo.getUserData();
+                paymentStore.orderUserTime();
+                shopsStore.getAllOrders();
+                userInfo.getUserNotifications();
+                await sendPushNotification(expoPushToken);
+            }
             return () => {
                 Notifications.removeNotificationSubscription(notificationListener);
                 Notifications.removeNotificationSubscription(responseListener);
@@ -243,25 +242,25 @@ export const MainScreen = ({navigation}) => {
             <MainHeader
                 navigation={navigation}
             />
-            {/*<View*/}
-            {/*    style={{*/}
-            {/*        flex: 1,*/}
-            {/*        alignItems: 'center',*/}
-            {/*        justifyContent: 'space-around',*/}
-            {/*    }}>*/}
-            {/*    <Text>Your expo push token: {expoPushToken}</Text>*/}
-            {/*    <View style={{alignItems: 'center', justifyContent: 'center'}}>*/}
-            {/*        <Text>Title: {notification && notification.request.content.title} </Text>*/}
-            {/*        <Text>Body: {notification && notification.request.content.body}</Text>*/}
-            {/*        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>*/}
-            {/*    </View>*/}
-            {/*    <Button*/}
-            {/*        title="Press to Send Notification"*/}
-            {/*        onPress={async () => {*/}
-            {/*            await sendPushNotification(expoPushToken);*/}
-            {/*        }}*/}
-            {/*    />*/}
-            {/*</View>*/}
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                }}>
+                <Text>Your expo push token: {expoPushToken}</Text>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <Text>Title: {notification && notification.request.content.title} </Text>
+                    <Text>Body: {notification && notification.request.content.body}</Text>
+                    <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+                </View>
+                <Button
+                    title="Press to Send Notification"
+                    onPress={async () => {
+                        await sendPushNotification(expoPushToken);
+                    }}
+                />
+            </View>
             <ShopMarket
                 sendPushNotification={sendPushNotification}
                 navigation={navigation}

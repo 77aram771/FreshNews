@@ -23,6 +23,7 @@ class FinishOfferPage extends Component<NavigationProps> {
     };
 
     async componentDidMount() {
+        console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
         const {getOrder} = paymentStore;
         getOrder(this.props.navigation.state.params.id);
         this.setState({
@@ -158,9 +159,31 @@ class FinishOfferPage extends Component<NavigationProps> {
                         : (
                             shopData === null
                                 ? (
-                                    <View>
-                                        <Text>TEST</Text>
-                                    </View>
+                                    <>
+                                        <Header
+                                            style={styles.header}
+                                            headerLeft={
+                                                <AntDesign
+                                                    style={{paddingLeft: 8}}
+                                                    onPress={() => this.props.navigation.navigate('PurchaseHistory')}
+                                                    name={'left'}
+                                                    size={18}
+                                                    color={'#464646'}
+                                                />
+                                            }
+                                            headerMid={
+                                                <Text style={styles.headerMiddleTitle}>
+                                                    Заказы в{' '}
+                                                    {/*<Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>*/}
+                                                    {/*    {shopData.items[0].product.shop.name}*/}
+                                                    {/*</Text>*/}
+                                                </Text>
+                                            }
+                                        />
+                                        <View>
+                                            <Text>TEST</Text>
+                                        </View>
+                                    </>
                                 )
                                 : (
                                     <>
