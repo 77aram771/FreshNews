@@ -67,10 +67,10 @@ export const MainScreen = ({navigation}) => {
                 })
             });
             if (getToken !== null) {
+                shopsStore.getAllOrders();
                 basketStore.getCartUserInfo()
                 userInfo.getUserData();
                 paymentStore.orderUserTime();
-                shopsStore.getAllOrders();
                 userInfo.getUserNotifications();
                 await sendPushNotification(expoPushToken);
             }
@@ -81,7 +81,7 @@ export const MainScreen = ({navigation}) => {
         })()
     }, []);
 
-    async function sendPushNotification(expoPushToken) {
+    async function sendPushNotification(expoPushToken: any) {
         let getToken = await AsyncStorage.getItem('Token');
         if (getToken !== null) {
             userInfo.getUserNotifications();
@@ -242,25 +242,25 @@ export const MainScreen = ({navigation}) => {
             <MainHeader
                 navigation={navigation}
             />
-            <View
-                style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'space-around',
-                }}>
-                <Text>Your expo push token: {expoPushToken}</Text>
-                <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                    <Text>Title: {notification && notification.request.content.title} </Text>
-                    <Text>Body: {notification && notification.request.content.body}</Text>
-                    <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-                </View>
-                <Button
-                    title="Press to Send Notification"
-                    onPress={async () => {
-                        await sendPushNotification(expoPushToken);
-                    }}
-                />
-            </View>
+            {/*<View*/}
+            {/*    style={{*/}
+            {/*        flex: 1,*/}
+            {/*        alignItems: 'center',*/}
+            {/*        justifyContent: 'space-around',*/}
+            {/*    }}>*/}
+            {/*    <Text>Your expo push token: {expoPushToken}</Text>*/}
+            {/*    <View style={{alignItems: 'center', justifyContent: 'center'}}>*/}
+            {/*        <Text>Title: {notification && notification.request.content.title} </Text>*/}
+            {/*        <Text>Body: {notification && notification.request.content.body}</Text>*/}
+            {/*        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>*/}
+            {/*    </View>*/}
+            {/*    <Button*/}
+            {/*        title="Press to Send Notification"*/}
+            {/*        onPress={async () => {*/}
+            {/*            await sendPushNotification(expoPushToken);*/}
+            {/*        }}*/}
+            {/*    />*/}
+            {/*</View>*/}
             <ShopMarket
                 sendPushNotification={sendPushNotification}
                 navigation={navigation}

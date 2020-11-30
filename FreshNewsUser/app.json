@@ -2,13 +2,13 @@
   "expo": {
     "name": "FreshNewsUser",
     "slug": "FreshNewsUser",
-    "version": "3.0.7",
+    "version": "3.1.0",
     "orientation": "portrait",
     "icon": "./assets/logo_ios.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#8CC83F"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
