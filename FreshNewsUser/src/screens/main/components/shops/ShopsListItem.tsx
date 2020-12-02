@@ -13,7 +13,7 @@ import {
     size12, size14,
     size16,
     size20,
-    WINDOW_HEIGHT,
+    WINDOW_HEIGHT, WINDOW_WIDTH,
 } from '../../../../share/consts';
 import {
     MontserratBold,
@@ -38,6 +38,9 @@ export const ShopsListItem = ({
     onPressNavigation: () => void;
     backgroundImage: string;
 }) => {
+    let formatImage = logo.substr(logo.length - 3);
+
+    console.log('formatImage', formatImage);
     return (
         <TouchableOpacity
             style={styles.container}
@@ -60,15 +63,23 @@ export const ShopsListItem = ({
                                         uri={'http://thenewcode.com/assets/svg/accessibility.svg'}
                                     />
                                 ) : (
-                                    <SvgUri
-                                        width="60"
-                                        height="60"
-                                        //uri={logo}
-                                        uri={logo}
-                                    />
+                                    formatImage === 'svg'
+                                        ? <SvgUri
+                                            width="60"
+                                            height="60"
+                                            //uri={logo}
+                                            uri={logo}
+                                        />
+                                        : <Image
+                                            resizeMode={'contain'}
+                                            source={{uri: logo}}
+                                            style={{
+                                                width: 60,
+                                                height: 60,
+                                            }}
+                                        />
                                 )
                         }
-
                     </View>
                     <View style={styles.timeContainer}>
                         <Text style={styles.time}>
@@ -121,7 +132,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     logoContainer: {
-        backgroundColor: '#FFFFFF',
+        // backgroundColor: '#FFFFFF',
         borderRadius: 10,
         marginTop: 18,
         marginLeft: 15,

@@ -2,7 +2,7 @@
   "expo": {
     "name": "FreshNewsUser",
     "slug": "FreshNewsUser",
-    "version": "3.1.0",
+    "version": "3.1.5",
     "orientation": "portrait",
     "icon": "./assets/logo_ios.png",
     "splash": {
@@ -32,6 +32,10 @@
       "useNextNotificationsApi": true,
       "package": "com.yourcompany.yourappname",
       "versionCode": 1
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#000"
     }
   }
 }

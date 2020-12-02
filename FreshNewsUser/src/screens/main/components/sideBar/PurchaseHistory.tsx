@@ -58,7 +58,6 @@ class PurchaseHistory extends Component<NavigationProps> {
     };
 
     renderFinishItem(item: any) {
-        console.log('item', toJS(item));
         return (
             <View
                 key={item.id}
@@ -568,7 +567,6 @@ class PurchaseHistory extends Component<NavigationProps> {
                 </TouchableOpacity>
             )
         } else if (item.status === 6) {
-            console.log('item.items', toJS(item.items[0].price));
             return (
                 <TouchableOpacity
                     // onPress={() => this.props.navigation.navigate('FinishOfferPage', {

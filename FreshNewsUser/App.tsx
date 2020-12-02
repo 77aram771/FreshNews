@@ -21,6 +21,7 @@ import {CloudPayment} from "./src/screens/main/components/shopPage/paymentPage/C
 import {FinishPaymentScreen} from "./src/screens/main/components/shopPage/paymentPage/FinishPaymentScreen";
 import ShopsList from "./src/screens/main/components/shops/ShopsList";
 import StocksList from './src/screens/main/components/stocks/StocksList';
+import { StatusBar } from 'expo-status-bar';
 
 console.disableYellowBox = true;
 
@@ -180,6 +181,7 @@ export default function App(navigation: NavigationProps) {
     } else {
         return (
             <>
+                <StatusBar style="dark" />
                 {
                     Platform.OS === "ios"
                         ? (

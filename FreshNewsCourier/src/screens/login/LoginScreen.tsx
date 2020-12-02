@@ -47,13 +47,13 @@ class LoginScreen extends React.Component<NavigationProps> {
         };
     };
 
-    async componentDidMount() {
-        let getToken = await AsyncStorage.getItem('Token');
-        console.log('getToken', getToken);
-        if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
-            this.props.navigation.navigate('CourierScreen');
-        }
-    }
+    // async componentDidMount() {
+    //     let getToken = await AsyncStorage.getItem('Token');
+    //     console.log('getToken', getToken);
+    //     if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
+    //         this.props.navigation.navigate('CourierScreen');
+    //     }
+    // }
 
     componentWillUnmount() {
         this.setState({
@@ -129,6 +129,7 @@ class LoginScreen extends React.Component<NavigationProps> {
             })
             await verify(Number(this.state.formattedValue), Number(this.state.confirmationPin))
                 .then(res => {
+                    console.log('res', res);
                     const Token = JSON.stringify(res.data.token);
                     AsyncStorage.setItem('Token', Token);
                     if (res.status === 200) {

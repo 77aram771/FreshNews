@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 // @ts-ignore
 import {observer} from 'mobx-react';
 import {
@@ -25,15 +25,27 @@ export default class HeaderInfo extends Component<headerInfoInterface> {
     render() {
 
         const {image, name, city, reviews_count, rating} = this.props;
-
+        let formatImage = image.substr(image.length - 3);
         return (
             <View style={styles.container}>
                 <View style={styles.infoContainer}>
-                    <SvgUri
-                        width={90}
-                        height={90}
-                        uri={image}
-                    />
+
+                    {
+                        formatImage === 'svg'
+                            ? <SvgUri
+                                width={90}
+                                height={90}
+                                uri={image}
+                            />
+                            : <Image
+                                resizeMode={'contain'}
+                                source={{uri: image}}
+                                style={{
+                                    width: 90,
+                                    height: 90,
+                                }}
+                            />
+                    }
                     <Text style={styles.shopName}>{name}</Text>
                     <Text style={styles.serviceContainer}>
                         Доставка овощей и фруктов · {`${city}`}

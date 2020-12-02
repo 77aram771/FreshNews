@@ -27,6 +27,9 @@ import {toJS} from 'mobx';
 import RNPickerSelect from 'react-native-picker-select';
 import paymentStore from "../../../../../stores/PaymentStore";
 
+// @ts-ignore
+let arr = [];
+
 @observer
 export default // @ts-ignore
 class PaymentPage extends Component<NavigationProps> {
@@ -58,12 +61,16 @@ class PaymentPage extends Component<NavigationProps> {
         userInfo.getUserData();
         const {userData} = userInfo;
         const {addresses} = userData;
-        addresses.map((item: any) => {
-            this.state.addressArray.push({
-                label: toJS(item.address),
-                value: toJS(item.address),
-            })
-        });
+        const addressMap = addresses.map((item: any) => {
+                let val = {
+                    label: toJS(item.address),
+                    value: toJS(item.address),
+                }
+                return val;
+            }
+        )
+        this.setState({ addressArray: addressMap })
+
         const {time} = paymentStore;
         for (let key in toJS(time)) {
             if (toJS(time).hasOwnProperty(key)) {
@@ -73,7 +80,6 @@ class PaymentPage extends Component<NavigationProps> {
                 }))
             }
         }
-        ;
     }
 
     handleValidationAddress(value: string) {
@@ -290,7 +296,11 @@ class PaymentPage extends Component<NavigationProps> {
             levelInput,
             apartmentInput,
             intercomInput,
-            disabledBool
+            disabledBool,
+            addressArray,
+            timeArray,
+            selectTime,
+            selectAddress
         } = this.state;
 
         return (
@@ -329,10 +339,10 @@ class PaymentPage extends Component<NavigationProps> {
                     </Text>
                     <RNPickerSelect
                         placeholder={placeholder}
-                        items={this.state.addressArray}
+                        items={addressArray}
                         onValueChange={value => this.handleSelectAddress(value)}
                         style={pickerSelectStyles}
-                        value={this.state.selectAddress}
+                        value={selectAddress}
                         useNativeAndroidPickerStyle={false}
                     />
                     <Text
@@ -348,17 +358,17 @@ class PaymentPage extends Component<NavigationProps> {
                     </Text>
                     <RNPickerSelect
                         placeholder={placeholder2}
-                        items={this.state.timeArray}
+                        items={timeArray}
                         onValueChange={value => this.handleSelectTime(value)}
                         style={pickerSelectStyles}
-                        value={this.state.selectTime}
+                        value={selectTime}
                         useNativeAndroidPickerStyle={false}
                     />
                     <KeyboardAvoidingView
                         behavior={Platform.OS == "ios" ? "padding" : "height"}
                     >
                         {
-                            this.state.selectAddress
+                            selectAddress
                                 ? <View/>
                                 : <>
                                     <Text
@@ -575,12 +585,12 @@ const pickerSelectStyles = StyleSheet.create({
     },
     inputAndroid: {
         fontSize: 16,
+        paddingVertical: 12,
         paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderWidth: 0.5,
-        borderColor: 'purple',
-        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
         color: 'black',
-        paddingRight: 30, // to ensure the text is never behind the icon
+        paddingRight: 30,  // to ensure the text is never behind the icon
     },
 });

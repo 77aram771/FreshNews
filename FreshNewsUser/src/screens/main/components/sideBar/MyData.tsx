@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, TouchableOpacity, View, Switch} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View, Switch, Platform} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {
@@ -366,12 +366,10 @@ class MyData extends Component {
             year: this.state.enterCart.expiry.slice(3, 5),
         }
         obj.id = new Date().getUTCMilliseconds();
-        console.log('obj', obj);
         this.setState({
                 creditCart: [...this.state.creditCart, obj]
             },
             () => {
-                console.log('creditCart', this.state.creditCart);
                 let lastItem = this.state.creditCart[this.state.creditCart.length - 1]
                 userInfo.getUserAddCreditCard(
                     lastItem.number,
@@ -854,7 +852,10 @@ class MyData extends Component {
                     </ModalContent>
                 </Modals>
                 <Header
-                    style={{borderBottomWidth: 2,}}
+                    style={{
+                        borderBottomWidth: 2,
+                        marginTop: Platform.OS === 'ios' ? 0 : 50
+                    }}
                     headerLeft={
                         <AntDesign
                             style={{paddingLeft: 8}}

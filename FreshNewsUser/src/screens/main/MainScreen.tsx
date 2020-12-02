@@ -52,10 +52,9 @@ export const MainScreen = ({navigation}) => {
     const responseListener = useRef();
 
     useEffect(() => {
-        getLocationAsync();
         (async () => {
+            await getLocationAsync();
             let getToken = await AsyncStorage.getItem('Token');
-
             registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
             notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
                 setNotification(notification);
@@ -67,11 +66,11 @@ export const MainScreen = ({navigation}) => {
                 })
             });
             if (getToken !== null) {
-                shopsStore.getAllOrders();
-                basketStore.getCartUserInfo()
-                userInfo.getUserData();
-                paymentStore.orderUserTime();
-                userInfo.getUserNotifications();
+                await shopsStore.getAllOrders();
+                await basketStore.getCartUserInfo()
+                await userInfo.getUserData();
+                await paymentStore.orderUserTime();
+                await userInfo.getUserNotifications();
                 await sendPushNotification(expoPushToken);
             }
             return () => {
@@ -84,9 +83,9 @@ export const MainScreen = ({navigation}) => {
     async function sendPushNotification(expoPushToken: any) {
         let getToken = await AsyncStorage.getItem('Token');
         if (getToken !== null) {
-            userInfo.getUserNotifications();
+            await userInfo.getUserNotifications();
         }
-        if(toJS(userInfo.notificationsData) !== null){
+        if (toJS(userInfo.notificationsData) !== null) {
             let lastNotification = toJS(userInfo.notificationsData[userInfo.notificationsData.length - 1]);
             setTimeout(async () => {
                 await fetch('https://exp.host/--/api/v2/push/send', {
@@ -128,7 +127,7 @@ export const MainScreen = ({navigation}) => {
         }
 
         if (Platform.OS === 'android') {
-            Notifications.setNotificationChannelAsync('default', {
+            await Notifications.setNotificationChannelAsync('default', {
                 name: 'default',
                 importance: Notifications.AndroidImportance.MAX,
                 vibrationPattern: [0, 250, 250, 250],

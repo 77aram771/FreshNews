@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    ImageBackground,
+    ImageBackground, Platform,
     RefreshControl,
     StyleSheet,
     TouchableOpacity,
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
+        marginTop: Platform.OS === 'ios' ? 0 : 40,
         marginBottom: 20
     },
     sectionHeader: {

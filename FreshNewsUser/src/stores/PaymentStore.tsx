@@ -15,7 +15,6 @@ class PaymentStore {
 
     @action
     onSelectPayment = (value: string) => {
-        console.log('value', value);
         this.isSelectedPayment = value
     };
 
@@ -64,9 +63,6 @@ class PaymentStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-
-        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`)
-
         fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
                 console.log('res pay===--------', res);
@@ -76,7 +72,7 @@ class PaymentStore {
                 }
             })
             .catch((error) => {
-                console.log('error getOrder', error);
+                console.log('error orderUserCheckout', error);
                 this.errorData = error
             })
     };
@@ -105,7 +101,6 @@ class PaymentStore {
         let str = getToken.slice(1);
         let strTrue = str.substring(0, str.length - 1);
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`);
         let requestOptions = {
             method: 'POST',
             headers: headers,

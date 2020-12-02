@@ -47,7 +47,6 @@ class BasketListItem extends Component<{
     }
 
     render() {
-        console.log('this.props.data', toJS(this.props.data));
         const {price, id, weight, product} = this.props.data;
 
         return (
@@ -58,7 +57,7 @@ class BasketListItem extends Component<{
                     </Text>
                     <View style={{flexDirection: 'row', marginTop: 16}}>
                         <Text style={styles.price}>
-                            {price} <Text style={{color: '#8CC83F'}}>₽ за</Text>
+                            {Math.ceil(parseInt(price.replace(/\s/g, '')))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
                         </Text>
                         <Text style={styles.weight}>
                             {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>

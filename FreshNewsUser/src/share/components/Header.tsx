@@ -16,7 +16,8 @@ interface HeaderProps {
 }
 
 @observer
-export default class Header extends Component<HeaderProps> {
+export default // @ts-ignore
+class Header extends Component<HeaderProps> {
     render() {
         const {
             style,

@@ -47,7 +47,8 @@ const OpenURLButton = ({ url, children }) => {
 };
 
 @observer
-export default class SideBar extends Component<NavigationProps, SideBarProps> {
+export default // @ts-ignore
+class SideBar extends Component<NavigationProps, SideBarProps> {
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token')

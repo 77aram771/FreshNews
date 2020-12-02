@@ -84,7 +84,6 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
     };
 
     handleCloseErrorModal = async () => {
-        // alert('test')
         await this.setState({
             errorModal: false,
         }, () => console.log('errorModal', this.state.errorModal))
@@ -138,7 +137,6 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
                                     <ModalContent>
                                         <ErrorModal
                                             data={this.state.errorData}
-                                            // handleOpenErrorModal={this.handleOpenErrorModal}
                                             handleCloseErrorModal={this.handleCloseErrorModal}
                                         />
                                     </ModalContent>
@@ -204,35 +202,5 @@ const styles = StyleSheet.create({
     shopsListContainer: {
         width: '100%',
         flex: 1
-    },
-    footerContainer: {
-        backgroundColor: '#F5F4F4',
-        alignItems: 'flex-start',
-        paddingLeft: 30,
-        flex: 1,
-        paddingTop: 16,
-    },
-    headerTitleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    headerTitle: {
-        color: '#FFFFFF',
-        fontSize: size16,
-        fontFamily: MontserratRegular,
-        textAlign: 'center',
-    },
-    categoriesContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        marginTop: 29,
-    },
-    categoryContainer: {
-        paddingVertical: 6,
-        paddingHorizontal: 16,
-        borderRadius: 10,
     },
 });

@@ -68,9 +68,10 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         });
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
-            getCourierData();
+            await getCourierData();
             if (courierStore.errorData !== null) {
                 this.setState({
+                    refreshing: false,
                     errorData: toJS(courierStore.errorData),
                     errorModal: true
                 })
@@ -81,7 +82,7 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                     refreshing: false,
                 }, async () => {
                     setInterval(async () => {
-                        if(getToken !== null){
+                        if (getToken !== null) {
                             if (this.state.ActiveOrder !== null) {
                                 await courierStore.getCourierCoordinate(this.state.ActiveOrder[0].id, this.state.location.latitude, this.state.location.longitude);
                             }
@@ -105,9 +106,10 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         });
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
-            getCourierData();
+            await getCourierData();
             if (courierStore.errorData !== null) {
                 this.setState({
+                    refreshing: false,
                     errorData: toJS(courierStore.errorData),
                     errorModal: true
                 })

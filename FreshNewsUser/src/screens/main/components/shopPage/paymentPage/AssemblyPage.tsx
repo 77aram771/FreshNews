@@ -93,7 +93,7 @@ class AssemblyPage extends Component<NavigationProps> {
                     }}
                 >
                     <Text style={{fontFamily: MontserratMedium, fontSize: size14}}>
-                        {Math.ceil(item.price)} <Text style={{color: '#8CC83F'}}>₽</Text>
+                        {Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * Math.ceil(parseInt(item.quantity))} <Text style={{color: '#8CC83F'}}>₽</Text>
                     </Text>
                 </View>
             </View>
@@ -276,7 +276,7 @@ class AssemblyPage extends Component<NavigationProps> {
                                 Итого
                             </Text>
                             <Text style={{fontFamily: MontserratSemiBold, fontSize: size20}}>
-                                {Math.ceil(allPrice + this.state.delivery)}
+                                {Math.ceil(parseInt(allPrice) + parseInt(this.state.delivery))}
                                 <Text style={{color: '#8CC83F', fontSize: size16}}>₽</Text>
                             </Text>
                         </View>

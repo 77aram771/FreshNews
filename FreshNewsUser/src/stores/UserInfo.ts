@@ -162,14 +162,12 @@ class UserInfo {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
         let num = String(number).replace(/\s/g, '');
-        console.log("num", num);
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
 
-        console.log(`${SERVER_BASE}/profile/cards?number=${num}&month=${month}&year=${year}&holder=${holder}&code=${code}`)
         fetch(`${SERVER_BASE}/profile/cards?number=${num}&month=${month}&year=${year}&holder=${holder}&code=${code}`, requestOptions)
             .then(res => {
                 console.log('res, getUserAddCreditCard', res);
@@ -197,10 +195,8 @@ class UserInfo {
             headers: myHeaders,
             redirect: 'follow'
         };
-        console.log(`${SERVER_BASE}/profile/cards/${id}`);
         fetch(`${SERVER_BASE}/profile/cards/${id}`, requestOptions)
             .then(res => {
-                console.log('res, getUserDataDeleteCard', res);
                 if (toJS(res).status === 200) {
                     this.getUserData();
                 }

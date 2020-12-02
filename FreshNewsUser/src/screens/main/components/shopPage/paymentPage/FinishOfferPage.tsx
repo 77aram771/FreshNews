@@ -22,25 +22,27 @@ class FinishOfferPage extends Component<NavigationProps> {
         refreshing: true
     };
 
-    async componentDidMount() {
-        console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
-        const {getOrder} = paymentStore;
-        getOrder(this.props.navigation.state.params.id);
+    componentDidMount() {
+        // console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
+        paymentStore.getOrder(this.props.navigation.state.params.id);
         this.setState({
             refreshing: true
         })
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: paymentStore.order
+                shopData: toJS(paymentStore.order)
+            }, () => {
+                console.log('paymentStore.order', toJS(paymentStore.order));
+                console.log('shopData', toJS(this.state.shopData));
             })
-        }, 3000);
-
+        }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     };
 
     async handleDeleteItem(id: number) {
-        console.log('handleDeleteItem id', id)
+        console.log('handleDeleteItem id', id);
+        alert('На данный момент не работает')
     };
 
     componentWillMount() {
@@ -57,6 +59,7 @@ class FinishOfferPage extends Component<NavigationProps> {
     };
 
     renderList(item: any): any {
+        // console.log('item', toJS(item));
         return (
             <View
                 key={item.id}
@@ -88,7 +91,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                     }}
                 >
                     <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
-                        {item.weight} <Text style={{color: '#8CC83F'}}>г</Text>
+                        {parseInt(item.weight) * item.quantity} <Text style={{color: '#8CC83F'}}>г</Text>
                     </Text>
                 </View>
                 <View
@@ -99,7 +102,8 @@ class FinishOfferPage extends Component<NavigationProps> {
                     }}
                 >
                     <Text style={{fontFamily: MontserratSemiBold, fontSize: size14}}>
-                        {Math.ceil(item.price)} <Text style={{color: '#8CC83F'}}>₽</Text>
+                        {Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * item.quantity} <Text
+                        style={{color: '#8CC83F'}}>₽</Text>
                     </Text>
                 </View>
                 {
@@ -212,7 +216,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                         >
                                             <View style={styles.table}>
                                                 {
-                                                    shopData.items.map(item => {
+                                                    shopData.items.map((item: any) => {
                                                         return this.renderList(item)
                                                     })
                                                 }
@@ -317,7 +321,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                     <Text
                                                                         style={{fontFamily: MontserratSemiBold, fontSize: size20}}
                                                                     >
-                                                                        {Math.ceil(parseInt(shopData.items[0].price) + delivery)}
+                                                                        {(Math.ceil(parseInt(shopData.items[0].price.replace(/\s/g, '') * shopData.items[0].quantity)) + delivery)}
                                                                         <Text style={{color: '#8CC83F', fontSize: size16}}> ₽</Text>
                                                                     </Text>
                                                                 </View>
@@ -366,7 +370,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                             onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
                                                                                 id: this.props.navigation.state.params.id,
                                                                                 shopName: shopData.items[0].product.shop.name,
-                                                                                finishPayment: Math.ceil(parseInt(shopData.items[0].price) + delivery)
+                                                                                finishPayment: Math.ceil(parseInt(shopData.items[0].price.replace(/\s/g, '')) + delivery)
                                                                             })}
                                                                             style={{
                                                                                 backgroundColor: '#8CC83F',

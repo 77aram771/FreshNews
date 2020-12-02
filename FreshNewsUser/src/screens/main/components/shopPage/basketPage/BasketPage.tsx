@@ -40,18 +40,15 @@ class BasketPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: cartUserInfo,
             }, () => {
-                console.log('shopData', toJS(this.state.shopData));
                 this.setState({
                     itemQuantity: this.state.shopData.length
                 })
                 const sumItems = () => {
                     let sum = 0;
                     toJS(this.state.shopData).forEach(function (item) {
-                        let calculation = toJS(item.price) * toJS(item.quantity);
-                        console.log('calculation', calculation);
+                        let calculation = toJS(Math.ceil(parseInt(item.price))) * toJS(item.quantity);
                         sum += calculation;
                     })
-                    console.log('sum', sum);
                     this.setState({
                         allSum: sum
                     })
@@ -337,6 +334,8 @@ class BasketPage extends Component<NavigationProps> {
                                                                 >
                                                                     {
                                                                         toJS(this.state.shopData).map((item, index) => {
+                                                                            let img = item.product.shop.image.substr(item.product.shop.image.length - 3);
+
                                                                             return (
                                                                                 <View
                                                                                     key={index}
@@ -356,16 +355,27 @@ class BasketPage extends Component<NavigationProps> {
                                                                                             alignItems: "center"
                                                                                         }}
                                                                                     >
-                                                                                        <SvgUri
-                                                                                            width="30"
-                                                                                            height="30"
-                                                                                            uri={item.product.shop.image}
-                                                                                            style={{marginRight: 5}}
-                                                                                        />
-                                                                                        <Text>{parseInt(item.price) * parseInt(item.quantity)} р.</Text>
+                                                                                        {
+                                                                                            img === 'svg'
+                                                                                                ? <SvgUri
+                                                                                                    width="30"
+                                                                                                    height="30"
+                                                                                                    uri={item.product.shop.image}
+                                                                                                    style={{marginRight: 5}}
+                                                                                                />
+                                                                                                : <Image
+                                                                                                    resizeMode={'contain'}
+                                                                                                    source={{uri: item.product.shop.image}}
+                                                                                                    style={{
+                                                                                                        width: 30,
+                                                                                                        height: 30,
+                                                                                                    }}
+                                                                                                />
+                                                                                        }
+                                                                                        <Text>{Math.ceil(parseInt(item.price)) * parseInt(item.quantity)} р.</Text>
                                                                                     </View>
                                                                                     <Text>{this.state.deliveryPrice} р.</Text>
-                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (parseInt(item.price) * parseInt(item.quantity))} р.</Text>
+                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (Math.ceil(parseInt(item.price)) * parseInt(item.quantity))} р.</Text>
                                                                                 </View>
                                                                             )
                                                                         })
@@ -434,7 +444,7 @@ class BasketPage extends Component<NavigationProps> {
                                         : (
                                             <View
                                                 style={{
-                                                    marginTop: 60,
+                                                    flex: 1,
                                                     justifyContent: "center",
                                                     alignItems: "center"
                                                 }}

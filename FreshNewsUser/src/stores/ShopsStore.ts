@@ -73,7 +73,6 @@ class ShopsStore {
     @action
     getShopsSections = async () => {
         this.getShopSection = [];
-        console.log(`${SERVER_BASE}/sections`);
         await axios.get(`${SERVER_BASE}/sections`)
             .then((res) => {
                 this.getShopSection = res.data;
@@ -90,7 +89,6 @@ class ShopsStore {
         this.getShopInfo = [];
         await axios.get(`${SERVER_BASE}/shop/${id}`)
             .then((res) => {
-                console.log('getShop==---==', res)
                 this.getShopInfo = res.data;
                 // if (this.getShopData.shops.data) {
                 //     this.getShopLoader = false;
