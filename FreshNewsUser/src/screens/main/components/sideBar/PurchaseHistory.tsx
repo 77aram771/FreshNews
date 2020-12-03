@@ -22,13 +22,19 @@ class PurchaseHistory extends Component<NavigationProps> {
     };
 
     componentDidMount() {
-        shopsStore.getAllOrders();
+        this.setState({
+            refreshing: true
+        })
         const newFile = shopsStore.allOrders.map((item: any) => {
             return {...item, bool: false};
         });
-        this.setState({
-            allOrders: newFile
-        })
+        setTimeout(() => {
+            shopsStore.getAllOrders();
+            this.setState({
+                refreshing: false,
+                allOrders: newFile
+            })
+        }, 1000)
     };
 
     handleClick = (id: number) => {
@@ -48,11 +54,14 @@ class PurchaseHistory extends Component<NavigationProps> {
         this.setState({
             refreshing: true
         })
+        const newFile = shopsStore.allOrders.map((item: any) => {
+            return {...item, bool: false};
+        });
         setTimeout(() => {
             shopsStore.getAllOrders();
             this.setState({
                 refreshing: false,
-                allOrders: shopsStore.allOrders
+                allOrders: newFile
             })
         }, 1000)
     };

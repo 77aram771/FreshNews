@@ -6,6 +6,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import {size14, size16, size20, WINDOW_WIDTH} from "../../../../../share/consts";
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler} from "react-native";
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
+import {NavigationEvents} from "react-navigation";
 import {toJS} from "mobx";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
@@ -26,6 +27,24 @@ class FinishOfferPage extends Component<NavigationProps> {
         // console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
         paymentStore.getOrder(this.props.navigation.state.params.id);
         this.setState({
+            refreshing: true
+        })
+        setTimeout(() => {
+            this.setState({
+                refreshing: false,
+                shopData: toJS(paymentStore.order)
+            }, () => {
+                console.log('paymentStore.order', toJS(paymentStore.order));
+                console.log('shopData', toJS(this.state.shopData));
+            })
+        }, 2000);
+        this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    };
+
+    async onRefresh() {
+        // console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
+        await paymentStore.getOrder(this.props.navigation.state.params.id);
+        await this.setState({
             refreshing: true
         })
         setTimeout(() => {
@@ -191,6 +210,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                 )
                                 : (
                                     <>
+                                        <NavigationEvents onDidFocus={() => this.onRefresh()}/>
                                         <Header
                                             style={styles.header}
                                             headerLeft={
@@ -238,7 +258,8 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                         }}
                                                     >
                                                         <Text
-                                                            style={{fontFamily: MontserratSemiBold, fontSize: size14,}}>
+                                                            style={{fontFamily: MontserratSemiBold, fontSize: size14,}}
+                                                        >
                                                             Доставка
                                                         </Text>
                                                     </View>

@@ -24,6 +24,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
+// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
@@ -39,7 +40,6 @@ export default class MapPage extends Component<NavigationProps> {
 
     constructor(props: any) {
         super(props);
-
         this.state = {
             courierCordinate: null,
             userLocation: null,
@@ -85,16 +85,15 @@ export default class MapPage extends Component<NavigationProps> {
             })();
     }
 
-    async getGeolocation(data: any = null) {
+    async getGeolocation(data: any) {
         this.setState({
             deliveryTime: data.time
-        }, () => console.log('deliveryTime', this.state.deliveryTime))
-
+        })
         const courierCordinate = {
             latitude: Number(data.courier.lat),
             longitude: Number(data.courier.lon),
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            // latitudeDelta: 0.0922,
+            // longitudeDelta: 0.0421,
         }
         setTimeout(() => {
             this.setState({
