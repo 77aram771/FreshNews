@@ -2,7 +2,7 @@ import React from 'react';
 import {
     ImageBackground, Platform,
     RefreshControl,
-    StyleSheet,
+    StyleSheet, Text,
     TouchableOpacity,
     View,
 } from 'react-native';
@@ -180,6 +180,39 @@ class ShopPage extends React.Component<NavigationProps> {
                                             refreshing={this.state.refreshing}
                                             onRefresh={this.onRefresh.bind(this)}
                                         />
+                                    }
+                                    ListFooterComponent={
+                                        <TouchableOpacity
+                                            onPress={() => alert('test')}
+                                            style={{
+                                                width: '100%',
+                                                marginTop: 20,
+                                                marginBottom: 50,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    borderRadius: 10,
+                                                    backgroundColor: '#8CC83F',
+                                                    justifyContent: 'center',
+                                                    alignItems: "center",
+                                                    padding: 15,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        color: '#fff',
+                                                        fontSize: 18,
+                                                        fontFamily: MontserratSemiBold
+                                                    }}
+                                                >
+                                                    Покозать ещё
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     }
                                 />
                                 <FooterPanel

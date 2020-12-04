@@ -1,8 +1,8 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl} from 'react-native';
+import {FlatList, StyleSheet, View, RefreshControl, TouchableOpacity, Text} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
-import {MontserratRegular} from '../../../../share/fonts';
+import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {data} from '../../../../share/info';
 import {ShopsListItem} from './ShopsListItem';
 import {size16, size20, WINDOW_WIDTH} from '../../../../share/consts';
@@ -144,6 +144,38 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
                                             refreshing={this.state.refreshing}
                                             onRefresh={this.onRefresh.bind(this)}
                                         />
+                                    }
+                                    ListFooterComponent={
+                                        <TouchableOpacity
+                                            onPress={() => alert('test')}
+                                            style={{
+                                                width: '100%',
+                                                marginBottom: 50,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    borderRadius: 10,
+                                                    backgroundColor: '#8CC83F',
+                                                    justifyContent: 'center',
+                                                    alignItems: "center",
+                                                    padding: 15,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        color: '#fff',
+                                                        fontSize: 18,
+                                                        fontFamily: MontserratSemiBold
+                                                    }}
+                                                >
+                                                    Покозать ещё
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
                                     }
                                 />
                             </>

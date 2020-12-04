@@ -142,7 +142,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
     render() {
         return (
-            <View style={styles.shopsListContainer}>
+            <View style={{ width: '100%', flex: 1}}>
                 {
                     this.state.refreshing
                         ? (
@@ -192,8 +192,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                         />
                                     </ModalContent>
                                 </Modal>
-
-
                                 <FlatList
                                     ListHeaderComponent={
                                         <>
@@ -243,6 +241,38 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                             onRefresh={this.onRefresh.bind(this)}
                                         />
                                     }
+                                    ListFooterComponent={
+                                        <TouchableOpacity
+                                            onPress={() => alert('test')}
+                                            style={{
+                                                width: '100%',
+                                                marginBottom: 50,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    width: WINDOW_WIDTH - 40,
+                                                    borderRadius: 10,
+                                                    backgroundColor: '#8CC83F',
+                                                    justifyContent: 'center',
+                                                    alignItems: "center",
+                                                    padding: 15,
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        color: '#fff',
+                                                        fontSize: 18,
+                                                        fontFamily: MontserratSemiBold
+                                                    }}
+                                                >
+                                                    Покозать ещё
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    }
                                 />
                             </>
                         )
@@ -251,10 +281,3 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    shopsListContainer: {
-        width: '100%',
-        flex: 1
-    },
-});

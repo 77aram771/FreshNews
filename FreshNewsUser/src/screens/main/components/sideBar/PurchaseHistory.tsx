@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {NavigationProps} from "../../../../share/interfaces";
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl} from "react-native";
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, FlatList} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {size16, size20, WINDOW_WIDTH} from "../../../../share/consts";
@@ -796,9 +796,6 @@ class PurchaseHistory extends Component<NavigationProps> {
                                                 }}> Р.</Text>
                                             </Text>
                                         </View>
-                                        {/*<View>*/}
-                                        {/*    <Text></Text>*/}
-                                        {/*</View>*/}
                                     </View>
                                 </View>
                             )
@@ -865,8 +862,9 @@ class PurchaseHistory extends Component<NavigationProps> {
                                 <View
                                     style={{
                                         width: WINDOW_WIDTH - 40,
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                        flex: 1,
+                                        // justifyContent: "center",
+                                        // alignItems: "center",
                                         alignSelf: "center",
                                         paddingTop: 30,
                                         paddingBottom: 50,
@@ -875,9 +873,55 @@ class PurchaseHistory extends Component<NavigationProps> {
                                     {
                                         this.state.allOrders !== null
                                             ? (
-                                                this.state.allOrders.map((item: any) => (
-                                                    this.renderItem(item)
-                                                ))
+                                                <FlatList
+                                                    scrollEnabled={true}
+                                                    keyExtractor={item => item.id.toString()}
+                                                    showsVerticalScrollIndicator={true}
+                                                    data={this.state.allOrders}
+                                                    renderItem={({item}) => {
+                                                        return (
+                                                            this.renderItem(item)
+                                                        )
+                                                    }}
+                                                    refreshControl={
+                                                        <RefreshControl
+                                                            refreshing={this.state.refreshing}
+                                                            onRefresh={this.onRefresh.bind(this)}
+                                                        />
+                                                    }
+                                                    ListFooterComponent={
+                                                        <TouchableOpacity
+                                                            onPress={() => alert('test')}
+                                                            style={{
+                                                                width: '100%',
+                                                                marginBottom: 50,
+                                                                justifyContent: "center",
+                                                                alignItems: "center"
+                                                            }}
+                                                        >
+                                                            <View
+                                                                style={{
+                                                                    width: WINDOW_WIDTH - 40,
+                                                                    borderRadius: 10,
+                                                                    backgroundColor: '#8CC83F',
+                                                                    justifyContent: 'center',
+                                                                    alignItems: "center",
+                                                                    padding: 15,
+                                                                }}
+                                                            >
+                                                                <Text
+                                                                    style={{
+                                                                        color: '#fff',
+                                                                        fontSize: 18,
+                                                                        fontFamily: MontserratSemiBold
+                                                                    }}
+                                                                >
+                                                                    Покозать ещё
+                                                                </Text>
+                                                            </View>
+                                                        </TouchableOpacity>
+                                                    }
+                                                />
                                             )
                                             : (
                                                 <View
