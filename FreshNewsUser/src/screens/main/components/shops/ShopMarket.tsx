@@ -1,10 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl} from 'react-native';
+import {FlatList, StyleSheet, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
-import {MontserratRegular} from '../../../../share/fonts';
-import {size16} from '../../../../share/consts';
-import {NavigationProps} from '../../../../share/interfaces';
+import {MontserratSemiBold} from '../../../../share/fonts';
+import {WINDOW_WIDTH} from '../../../../share/consts';
 import {HeaderText} from '../HeaderText';
 import {StocksListItem} from '../stocks/StocksListItem';
 import HeaderContent from '../headerContent/HeaderContent';
@@ -16,6 +15,7 @@ import {ErrorModal} from "../modals/ErrorModal";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import userInfo from '../../../../stores/UserInfo';
+import { AntDesign } from '@expo/vector-icons';
 
 interface ShopMarketInterface {
     getGeocodeAsync: any,
@@ -24,21 +24,29 @@ interface ShopMarketInterface {
 }
 
 @observer
-export default class ShopMarket extends React.Component<ShopMarketInterface, NavigationProps> {
+export default // @ts-ignore
+class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
-    state = {
-        refreshing: true,
-        promo: null,
-        sections: null,
-        errorModal: false,
-        errorData: [],
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            refreshing: true,
+            promo: null,
+            sections: null,
+            errorModal: false,
+            errorData: [],
+            items: []
+        }
     }
+
 
     async componentDidMount() {
         this.setState({
-            refreshing: true
+            refreshing: true,
+            items: []
         });
-        shopsStore.getShopsSections();
+        await shopsStore.getShopsSections();
         setTimeout(() => {
             this.setState({
                 refreshing: false,
@@ -57,26 +65,69 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
                     errorModal: true
                 })
             }
+            setTimeout(() => {
+                console.log('shopsStore.allOrders', toJS(shopsStore.allOrders));
+                toJS(shopsStore.allOrders).map((item: any) => {
+                    if (item.status === 5) {
+                        this.setState({
+                            items: [...this.state.items, item]
+                        }, () => {
+                            console.log('this.state.items', this.state.items);
+                        })
+                    }
+                })
+            }, 1000)
         }, 1000);
     };
 
-    onRefresh() {
-        userInfo.getUserNotifications();
-        this.props.sendPushNotification();
+    async onRefresh() {
         this.setState({
-            shopData: toJS(shopsStore.getShopData)
-        })
+            refreshing: true,
+            items: []
+        });
+        await shopsStore.getShopsSections();
+        setTimeout(() => {
+            this.setState({
+                refreshing: false,
+                promo: toJS(shopsStore.getShopSection.promocodes),
+                sections: toJS(shopsStore.getShopSection.sections)
+            });
+            if (shopsStore.errorData !== null) {
+                let error = toJS(String(shopsStore.errorData));
+                let errorCode = error.substr(error.length - 3);
+                let errorData = {
+                    status_code: errorCode,
+                    message: 'Network Error',
+                };
+                this.setState({
+                    errorData,
+                    errorModal: true
+                })
+            }
+            setTimeout(() => {
+                console.log('shopsStore.allOrders', toJS(shopsStore.allOrders));
+                toJS(shopsStore.allOrders).map((item: any) => {
+                    if (item.status === 5) {
+                        this.setState({
+                            items: [...this.state.items, item]
+                        }, () => {
+                            console.log('this.state.items', this.state.items);
+                        })
+                    }
+                })
+            }, 1000)
+        }, 1000);
     };
 
-    handleNavigation(id: number, name: string) {
-        shopsStore.getShops(id)
+    async handleNavigation(id: number, name: string) {
+        await shopsStore.getShops(id)
         this.props.navigation.navigate('ShopsList', {
             shopName: name
         })
     };
 
-    handleNavigationShares(id: number, discount: number, code: number) {
-        shopsStore.getPromoCode(id)
+    async handleNavigationShares(id: number, discount: number, code: number) {
+        await shopsStore.getPromoCode(id)
         this.props.navigation.navigate('StocksList', {
             shopDiscount: discount,
             shopCode: code
@@ -141,12 +192,15 @@ export default class ShopMarket extends React.Component<ShopMarketInterface, Nav
                                         />
                                     </ModalContent>
                                 </Modal>
+
+
                                 <FlatList
                                     ListHeaderComponent={
                                         <>
                                             <HeaderContent
                                                 navigation={this.props.navigation}
                                                 getGeocodeAsync={() => this.props.getGeocodeAsync()}
+                                                items={this.state.items}
                                             />
                                             <HeaderText title={'Акции'}/>
                                             <FlatList

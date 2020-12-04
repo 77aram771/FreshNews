@@ -48,7 +48,6 @@ class BasketListItem extends Component<{
 
     render() {
         const {price, id, weight, product} = this.props.data;
-
         return (
             <View style={styles.rowInfoContainer}>
                 <View style={{flexDirection: 'column', flex: 2, paddingLeft: 8}}>
@@ -57,7 +56,7 @@ class BasketListItem extends Component<{
                     </Text>
                     <View style={{flexDirection: 'row', marginTop: 16}}>
                         <Text style={styles.price}>
-                            {Math.ceil(parseInt(price.replace(/\s/g, '')))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
+                            {Math.ceil(parseInt(product.price.replace(/\s/g, '')))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
                         </Text>
                         <Text style={styles.weight}>
                             {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
@@ -89,7 +88,7 @@ class BasketListItem extends Component<{
                 </View>
                 <View style={{flex: 1, alignItems: 'center'}}>
                     <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
-                        {Math.ceil(Number(price.replace(/\s/g, '')) * this.state.itemQuantity)} <Text
+                        {Math.ceil(parseInt(product.price.replace(/\s/g, '')) * this.state.itemQuantity)} <Text
                         style={{color: '#8CC83F'}}> ₽</Text>
                     </Text>
                 </View>

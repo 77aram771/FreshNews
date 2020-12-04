@@ -20,12 +20,13 @@ class FinishOfferPage extends Component<NavigationProps> {
         delivery: 90,
         disabledBool: true,
         shopData: null,
-        refreshing: true
+        refreshing: true,
+        sumPrice: ''
     };
 
-    componentDidMount() {
-        // console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
-        paymentStore.getOrder(this.props.navigation.state.params.id);
+    async componentDidMount() {
+        console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
+        await paymentStore.getOrder(this.props.navigation.state.params.id);
         this.setState({
             refreshing: true
         })
@@ -34,8 +35,13 @@ class FinishOfferPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: toJS(paymentStore.order)
             }, () => {
-                console.log('paymentStore.order', toJS(paymentStore.order));
-                console.log('shopData', toJS(this.state.shopData));
+                console.log('shopData', this.state.shopData);
+                let allSum = this.state.shopData.items.reduce((a, v) => a = a + Math.ceil(parseInt(v.price.replace(/\s/g, ''))), 0)
+                console.log('allSum', allSum);
+                this.setState({
+                    sumPrice: allSum
+                })
+
             })
         }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -52,8 +58,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: toJS(paymentStore.order)
             }, () => {
-                console.log('paymentStore.order', toJS(paymentStore.order));
-                console.log('shopData', toJS(this.state.shopData));
+                console.log('shopData', this.state.shopData)
             })
         }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -78,7 +83,6 @@ class FinishOfferPage extends Component<NavigationProps> {
     };
 
     renderList(item: any): any {
-        // console.log('item', toJS(item));
         return (
             <View
                 key={item.id}
@@ -102,29 +106,64 @@ class FinishOfferPage extends Component<NavigationProps> {
                         {item.product.name}
                     </Text>
                 </View>
-                <View
-                    style={{
-                        width: '25%',
-                        alignItems: "flex-end",
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
-                        {parseInt(item.weight) * item.quantity} <Text style={{color: '#8CC83F'}}>г</Text>
-                    </Text>
-                </View>
-                <View
-                    style={{
-                        width: '25%',
-                        alignItems: "flex-end",
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Text style={{fontFamily: MontserratSemiBold, fontSize: size14}}>
-                        {Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * item.quantity} <Text
-                        style={{color: '#8CC83F'}}>₽</Text>
-                    </Text>
-                </View>
+                {
+                    this.props.navigation.state.params.transaction !== null
+                        ? (
+                            <>
+                                <View
+                                    style={{
+                                        width: '25%',
+                                        alignItems: "flex-end",
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
+                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>г</Text>
+                                    </Text>
+                                </View>
+                                <View
+                                    style={{
+                                        width: '25%',
+                                        alignItems: "flex-end",
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text style={{fontFamily: MontserratSemiBold, fontSize: size14}}>
+                                        {Math.ceil(parseInt(item.price.replace(/\s/g, '')))} <Text
+                                        style={{color: '#8CC83F'}}>₽</Text>
+                                    </Text>
+                                </View>
+                            </>
+                        )
+                        : (
+                            <>
+                                <View
+                                    style={{
+                                        width: '25%',
+                                        alignItems: "flex-end",
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
+                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>г</Text>
+                                    </Text>
+                                </View>
+                                <View
+                                    style={{
+                                        width: '25%',
+                                        alignItems: "flex-end",
+                                        justifyContent: 'center'
+                                    }}
+                                >
+                                    <Text style={{fontFamily: MontserratSemiBold, fontSize: size14}}>
+                                        {Math.ceil(parseInt(item.price.replace(/\s/g, '')))} <Text
+                                        style={{color: '#8CC83F'}}>₽</Text>
+                                    </Text>
+                                </View>
+                            </>
+                        )
+                }
+
                 {
                     this.props.navigation.state.params.status === 6
                         ? <View/>
@@ -157,7 +196,7 @@ class FinishOfferPage extends Component<NavigationProps> {
 
     render() {
 
-        const {shopData, delivery, refreshing} = this.state;
+        const {shopData, delivery, refreshing, sumPrice} = this.state;
 
         return (
             <>
@@ -234,6 +273,134 @@ class FinishOfferPage extends Component<NavigationProps> {
                                         <ScrollView
                                             style={{flex: 1}}
                                         >
+                                            <View
+                                                style={{
+                                                    width: '100%',
+                                                    height: 50,
+                                                    backgroundColor: '#F5F4F4',
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                <View
+                                                    style={{
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        alignContent: 'center',
+                                                        alignSelf: 'center',
+                                                        // borderStyle: 'solid',
+                                                        // borderWidth: 1,
+                                                        // borderColor: 'red',
+                                                        width: WINDOW_WIDTH - 40,
+                                                        flexDirection: 'row'
+
+                                                    }}
+                                                >
+                                                    <View
+                                                        style={{
+                                                            justifyContent: 'center',
+                                                            alignItems: "center"
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{
+                                                                fontSize: 16,
+                                                                fontFamily: MontserratRegular,
+                                                                color: '#000'
+                                                            }}
+                                                        >
+                                                            Заказ {' '}
+                                                            <Text
+                                                                style={{
+                                                                    fontWeight: "bold",
+                                                                    fontSize: 16,
+                                                                    fontFamily: MontserratBold,
+                                                                    color: '#000'
+                                                                }}
+                                                            >
+                                                                {shopData.id}
+                                                            </Text>
+                                                        </Text>
+                                                    </View>
+                                                    {
+                                                        this.props.navigation.state.params.statusText === 'Собирается'
+                                                            ? (
+                                                                <View
+                                                                    style={{
+                                                                        flexDirection: "row",
+                                                                        justifyContent: 'center',
+                                                                        alignItems: "center",
+                                                                        backgroundColor: '#2abfc4',
+                                                                        borderRadius: 10,
+                                                                        padding: 10
+                                                                    }}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 13,
+                                                                            color: '#fff',
+                                                                            fontFamily: MontserratSemiBold
+                                                                        }}
+                                                                    >
+                                                                        Собирается
+                                                                    </Text>
+                                                                </View>
+                                                            )
+                                                            : null
+                                                    }
+                                                    {
+                                                        this.props.navigation.state.params.statusText === 'Ожидает оплаты'
+                                                            ? (
+                                                                <View
+                                                                    style={{
+                                                                        flexDirection: "row",
+                                                                        justifyContent: 'center',
+                                                                        alignItems: "center",
+                                                                        backgroundColor: '#eecd4e',
+                                                                        borderRadius: 10,
+                                                                        padding: 10
+                                                                    }}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 13,
+                                                                            color: '#fff',
+                                                                            fontFamily: MontserratSemiBold
+                                                                        }}
+                                                                    >
+                                                                        Ожидает оплаты
+                                                                    </Text>
+                                                                </View>
+                                                            )
+                                                            : null
+                                                    }
+                                                    {
+                                                        this.props.navigation.state.params.statusText === 'Курер спешит к вам'
+                                                            ? (
+                                                                <View
+                                                                    style={{
+                                                                        flexDirection: "row",
+                                                                        justifyContent: 'center',
+                                                                        alignItems: "center",
+                                                                        backgroundColor: '#8CC83F',
+                                                                        borderRadius: 10,
+                                                                        padding: 10
+                                                                    }}
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            fontSize: 13,
+                                                                            color: '#fff',
+                                                                            fontFamily: MontserratSemiBold
+                                                                        }}
+                                                                    >
+                                                                        Курер спешит к вам
+                                                                    </Text>
+                                                                </View>
+                                                            )
+                                                            : null
+                                                    }
+                                                </View>
+                                            </View>
                                             <View style={styles.table}>
                                                 {
                                                     shopData.items.map((item: any) => {
@@ -342,7 +509,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                     <Text
                                                                         style={{fontFamily: MontserratSemiBold, fontSize: size20}}
                                                                     >
-                                                                        {(Math.ceil(parseInt(shopData.items[0].price.replace(/\s/g, '') * shopData.items[0].quantity)) + delivery)}
+                                                                        {sumPrice + delivery}
                                                                         <Text style={{color: '#8CC83F', fontSize: size16}}> ₽</Text>
                                                                     </Text>
                                                                 </View>

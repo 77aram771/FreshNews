@@ -91,7 +91,7 @@ export default class OldOrdersScreen extends Component<any, any> {
                                     fontSize: 17
                                 }}
                             >
-                                КГ
+                                Г
                             </Text>
                         </Text>
                         <Text

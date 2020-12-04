@@ -87,6 +87,26 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
                 paddingBottom: 35
             }}
         >
+            <View
+                style={{
+                    marginBottom: 10
+                }}
+            >
+                <Text
+                    style={{
+                        fontFamily: MontserratRegular,
+                        fontSize: 17,
+                    }}
+                >
+                    Заказ {' '}
+                    <Text
+                        style={{
+                            fontFamily: MontserratSemiBold,
+                            fontSize: 19,
+                        }}
+                    >{item.id}</Text>
+                </Text>
+            </View>
             <Text style={{fontSize: size20}}>
                 <Text style={{fontFamily: MontserratRegular}}>Из</Text>{' '}
                 <Text style={{fontFamily: MontserratBold, color: '#8CC83F'}}>

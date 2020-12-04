@@ -39,8 +39,6 @@ export const ShopsListItem = ({
     backgroundImage: string;
 }) => {
     let formatImage = logo.substr(logo.length - 3);
-
-    console.log('formatImage', formatImage);
     return (
         <TouchableOpacity
             style={styles.container}

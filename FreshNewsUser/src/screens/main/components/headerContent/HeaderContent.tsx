@@ -7,25 +7,27 @@ import {
 import {
     StyleSheet,
     View,
-    Linking,
     Text,
     ImageBackground,
     TouchableOpacity,
     Animated,
 } from 'react-native';
 import {imagesPaths} from '../../../../share/info';
-import {MontserratRegular} from '../../../../share/fonts';
+import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {NavigationProps} from '../../../../share/interfaces';
 import {observer} from 'mobx-react';
 import shopsStore from '../../../../stores/ShopsStore';
+import {AntDesign} from "@expo/vector-icons";
 
 interface HeaderContentInterface {
     getGeocodeAsync: any,
     navigation: any,
+    items: any
 }
 
 @observer
-export default class HeaderContent extends React.Component<HeaderContentInterface, NavigationProps> {
+export default // @ts-ignore
+class HeaderContent extends React.Component<HeaderContentInterface, NavigationProps> {
 
     render() {
 
@@ -49,6 +51,67 @@ export default class HeaderContent extends React.Component<HeaderContentInterfac
                             opacity: viewOpacity,
                         }}
                     >
+                        {
+                            this.props.items.map((item: any) => {
+                                console.log('item', item);
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => this.props.navigation.navigate('MapPage', {
+                                            order_id: item.id
+                                        })}
+                                        key={item.id}
+                                        style={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            flexDirection: 'row',
+                                            width: '100%',
+                                            paddingTop: 15,
+                                            paddingBottom: 15,
+                                            backgroundColor: '#8CC83F',
+                                            borderWidth: 1,
+                                            borderColor: '#fff',
+                                            borderStyle: 'solid'
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                width: WINDOW_WIDTH - 40,
+                                                justifyContent: 'space-around',
+                                                alignItems: "center",
+                                                flexDirection: 'row',
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    fontSize: 14,
+                                                    fontFamily: MontserratSemiBold
+                                                }}
+                                            >
+                                                Готовется заказ {item.id}
+                                            </Text>
+                                            <Text
+                                                style={{
+                                                    color: '#fff',
+                                                    fontSize: 15,
+                                                    fontFamily: MontserratSemiBold
+                                                }}
+                                            >
+                                                {item.delivery_time} мин.
+                                            </Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                alignItems: "center",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            <AntDesign name="right" size={18} color="#fff" />
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
                         <ImageBackground
                             style={{
                                 width: WINDOW_WIDTH,

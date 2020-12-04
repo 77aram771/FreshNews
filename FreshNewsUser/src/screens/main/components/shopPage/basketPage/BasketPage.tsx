@@ -25,13 +25,12 @@ class BasketPage extends Component<NavigationProps> {
         shopData: [],
         deliveryPrice: 90,
         refreshing: true,
-        allSum: '',
         itemQuantity: ''
     };
 
     async componentDidMount() {
         const {getCartUserInfo, cartUserInfo} = basketStore;
-        getCartUserInfo()
+        await getCartUserInfo()
         this.setState({
             refreshing: true
         });
@@ -43,32 +42,24 @@ class BasketPage extends Component<NavigationProps> {
                 this.setState({
                     itemQuantity: this.state.shopData.length
                 })
-                const sumItems = () => {
-                    let sum = 0;
-                    toJS(this.state.shopData).forEach(function (item) {
-                        let calculation = toJS(Math.ceil(parseInt(item.price))) * toJS(item.quantity);
-                        sum += calculation;
-                    })
-                    this.setState({
-                        allSum: sum
-                    })
-                };
-
-                sumItems();
             })
         }, 1000)
     };
 
-    onRefresh() {
+    async onRefresh() {
+        const {getCartUserInfo, cartUserInfo} = basketStore;
+        await getCartUserInfo()
         this.setState({
             refreshing: true
-        })
+        });
         setTimeout(() => {
-            const {getCartUserInfo, cartUserInfo} = basketStore;
-            getCartUserInfo()
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo
+                shopData: cartUserInfo,
+            }, () => {
+                this.setState({
+                    itemQuantity: this.state.shopData.length
+                })
             })
         }, 2000)
     };
@@ -248,7 +239,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                                         fontSize: size20
                                                                                     }}
                                                                                 >
-                                                                                    {Math.ceil(allPrice)}
+                                                                                    {Math.ceil(allPrice) + this.state.deliveryPrice}
                                                                                     <Text
                                                                                         style={{
                                                                                             color: '#8CC83F',
@@ -335,7 +326,6 @@ class BasketPage extends Component<NavigationProps> {
                                                                     {
                                                                         toJS(this.state.shopData).map((item, index) => {
                                                                             let img = item.product.shop.image.substr(item.product.shop.image.length - 3);
-
                                                                             return (
                                                                                 <View
                                                                                     key={index}
@@ -372,10 +362,10 @@ class BasketPage extends Component<NavigationProps> {
                                                                                                     }}
                                                                                                 />
                                                                                         }
-                                                                                        <Text>{Math.ceil(parseInt(item.price)) * parseInt(item.quantity)} р.</Text>
+                                                                                        <Text>{Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * parseInt(item.quantity)} р.</Text>
                                                                                     </View>
                                                                                     <Text>{this.state.deliveryPrice} р.</Text>
-                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (Math.ceil(parseInt(item.price)) * parseInt(item.quantity))} р.</Text>
+                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * parseInt(item.quantity))} р.</Text>
                                                                                 </View>
                                                                             )
                                                                         })
@@ -396,7 +386,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        {`${Math.ceil(parseInt(this.state.allSum))} р.`}
+                                                                        {`${Math.ceil(parseInt(basketStore.allPrice))} р.`}
                                                                     </Text>
                                                                     <Text
                                                                         style={{
@@ -414,7 +404,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        {`${parseInt(this.state.allSum) + (parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice))}`} р.
+                                                                        {`${parseInt(basketStore.allPrice) + (parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice))}`} р.
                                                                     </Text>
                                                                 </View>
                                                             </View>

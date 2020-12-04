@@ -17,7 +17,8 @@ import {
     size16,
     size20,
     size34,
-    size44, WINDOW_HEIGHT,
+    size44,
+    WINDOW_HEIGHT,
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
@@ -511,6 +512,7 @@ class PaymentPage extends Component<NavigationProps> {
                                 fontSize: size16,
                                 fontFamily: MontserratRegular,
                                 paddingTop: size44,
+                                paddingBottom: 20
                             }}
                         >
                             Сообщение для курьера
@@ -524,12 +526,11 @@ class PaymentPage extends Component<NavigationProps> {
                                 flex: 1,
                                 fontFamily: MontserratRegular,
                                 fontSize: size12,
-                                padding: 15,
+                                padding: 20,
                                 textAlign: "left",
                             }}
                             style={{
                                 justifyContent: 'flex-start',
-                                marginTop: 16,
                                 maxHeight: WINDOW_WIDTH / 4,
                                 height: WINDOW_HEIGHT / 3,
                             }}

@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, View, Button, Platform} from 'react-native';
-import {GOOGLE_MAPS_APIKEY, HEADER_HEIGHT} from '../../share/consts';
+import {Text, View, Platform} from 'react-native';
+import {GOOGLE_MAPS_APIKEY, WINDOW_WIDTH} from '../../share/consts';
 import MainHeader from '../../share/components/MainHeader';
 import basketStore from '../../stores/BasketStore';
 import userInfo from '../../stores/UserInfo';
@@ -13,18 +13,18 @@ import * as Notifications from 'expo-notifications';
 import Geocoder from 'react-native-geocoding';
 import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
-import modalsStore from "../../stores/ModalsStore";
-import CourierInformation from './components/sideBar/CourierInformation';
-import LegalEntities from "./components/sideBar/LegalEntities";
-import Delivery from "./components/sideBar/Delivery";
-import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
-import Feedback from "./components/sideBar/Feedback";
-import TermsOfUse from './components/sideBar/TermsOfUse';
-import Modal from 'react-native-modal';
+// import modalsStore from "../../stores/ModalsStore";
+// import CourierInformation from './components/sideBar/CourierInformation';
+// import LegalEntities from "./components/sideBar/LegalEntities";
+// import Delivery from "./components/sideBar/Delivery";
+// import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
+// import Feedback from "./components/sideBar/Feedback";
+// import TermsOfUse from './components/sideBar/TermsOfUse';
+// import Modal from 'react-native-modal';
 import {toJS} from "mobx";
+import {MontserratSemiBold} from "../../share/fonts";
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
-
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -32,7 +32,6 @@ Notifications.setNotificationHandler({
         shouldSetBadge: true,
     }),
 });
-
 Notifications.requestPermissionsAsync({
     ios: {
         allowAlert: true,
@@ -42,10 +41,9 @@ Notifications.requestPermissionsAsync({
     },
 });
 
-export const MainScreen = ({navigation}) => {
+export const MainScreen = ({navigation}: any) => {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [location, setLocation] = useState('');
-    const [geocode, setGeocode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
@@ -125,7 +123,6 @@ export const MainScreen = ({navigation}) => {
         } else {
             alert('Must use physical device for Push Notifications');
         }
-
         if (Platform.OS === 'android') {
             await Notifications.setNotificationChannelAsync('default', {
                 name: 'default',
@@ -134,7 +131,6 @@ export const MainScreen = ({navigation}) => {
                 lightColor: '#FF231F7C',
             });
         }
-
         return token;
     }
 
@@ -165,94 +161,17 @@ export const MainScreen = ({navigation}) => {
                 alignItems: 'center'
             }}
         >
-            <View style={{height: HEADER_HEIGHT}}/>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowCourierInformation}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowCourierInformation}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowCourierInformation}
-            >
-                <CourierInformation/>
-            </Modal>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowLegalEntities}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowLegalEntities}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowLegalEntities}
-            >
-                <LegalEntities/>
-            </Modal>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowDelivery}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowDelivery}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowDelivery}
-            >
-                <Delivery/>
-            </Modal>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowQuestionsAndAnswers}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowQuestionsAndAnswers}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowQuestionsAndAnswers}
-            >
-                <QuestionsAndAnswers/>
-            </Modal>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowFeedback}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowFeedback}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowFeedback}
-            >
-                <Feedback/>
-            </Modal>
-            <Modal
-                animationInTiming={400}
-                animationOutTiming={400}
-                onBackButtonPress={modalsStore.onShowTermsOfUse}
-                hideModalContentWhileAnimating={true}
-                backdropOpacity={0}
-                onBackdropPress={modalsStore.onShowTermsOfUse}
-                style={{margin: 0}}
-                isVisible={modalsStore.isShowTermsOfUse}
-            >
-                <TermsOfUse/>
-            </Modal>
             <MainHeader
                 navigation={navigation}
             />
             {/*<View*/}
             {/*    style={{*/}
-            {/*        flex: 1,*/}
             {/*        alignItems: 'center',*/}
-            {/*        justifyContent: 'space-around',*/}
-            {/*    }}>*/}
+            {/*        justifyContent: 'center',*/}
+            {/*        height: 60,*/}
+            {/*    }}*/}
+            {/*>*/}
             {/*    <Text>Your expo push token: {expoPushToken}</Text>*/}
-            {/*    <View style={{alignItems: 'center', justifyContent: 'center'}}>*/}
-            {/*        <Text>Title: {notification && notification.request.content.title} </Text>*/}
-            {/*        <Text>Body: {notification && notification.request.content.body}</Text>*/}
-            {/*        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>*/}
-            {/*    </View>*/}
             {/*    <Button*/}
             {/*        title="Press to Send Notification"*/}
             {/*        onPress={async () => {*/}

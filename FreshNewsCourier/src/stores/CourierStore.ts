@@ -141,7 +141,6 @@ class CourierStore {
                 }
             })
             .catch((err) => {
-                console.log('---------------------------------------------------');
                 this.errorData = err;
                 console.log('getCourierDataFinish error', err);
             })

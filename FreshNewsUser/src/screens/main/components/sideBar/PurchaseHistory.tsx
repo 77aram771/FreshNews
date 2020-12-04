@@ -10,7 +10,6 @@ import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
-import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -21,15 +20,33 @@ class PurchaseHistory extends Component<NavigationProps> {
         allOrders: null,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             refreshing: true
         })
-        const newFile = shopsStore.allOrders.map((item: any) => {
-            return {...item, bool: false};
-        });
+        await shopsStore.getAllOrders();
+
         setTimeout(() => {
-            shopsStore.getAllOrders();
+            const newFile = shopsStore.allOrders.map((item: any) => {
+                return {...item, bool: false};
+            });
+            this.setState({
+                refreshing: false,
+                allOrders: newFile
+            })
+        }, 1000)
+    };
+
+    async onRefresh() {
+        this.setState({
+            refreshing: true
+        })
+        await shopsStore.getAllOrders();
+
+        setTimeout(() => {
+            const newFile = shopsStore.allOrders.map((item: any) => {
+                return {...item, bool: false};
+            });
             this.setState({
                 refreshing: false,
                 allOrders: newFile
@@ -38,7 +55,6 @@ class PurchaseHistory extends Component<NavigationProps> {
     };
 
     handleClick = (id: number) => {
-        console.log(id);
         const newItemsArr = this.state.allOrders.map((item: any) => {
             if (item.id == id) {
                 item.bool = !item.bool
@@ -48,22 +64,6 @@ class PurchaseHistory extends Component<NavigationProps> {
         this.setState({
             allOrders: newItemsArr
         })
-    };
-
-    onRefresh() {
-        this.setState({
-            refreshing: true
-        })
-        const newFile = shopsStore.allOrders.map((item: any) => {
-            return {...item, bool: false};
-        });
-        setTimeout(() => {
-            shopsStore.getAllOrders();
-            this.setState({
-                refreshing: false,
-                allOrders: newFile
-            })
-        }, 1000)
     };
 
     renderFinishItem(item: any) {
@@ -101,7 +101,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                 </View>
             </View>
         )
-    }
+    };
 
     renderItem(item: any) {
         if (item.status === 1) {
@@ -110,7 +110,8 @@ class PurchaseHistory extends Component<NavigationProps> {
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
                         id: item.id,
                         transaction: true,
-                        status: item.status
+                        status: item.status,
+                        statusText: 'Собирается'
                     })}
                     style={{
                         width: "100%",
@@ -164,10 +165,21 @@ class PurchaseHistory extends Component<NavigationProps> {
                             style={{
                                 flexDirection: "row",
                                 justifyContent: 'center',
-                                alignItems: "center"
+                                alignItems: "center",
+                                backgroundColor: '#2abfc4',
+                                borderRadius: 10,
+                                padding: 10
                             }}
                         >
-                            <Text>Собирается</Text>
+                            <Text
+                                style={{
+                                    fontSize: 13,
+                                    color: '#fff',
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                Собирается
+                            </Text>
                         </View>
                     </View>
                     <View
@@ -208,12 +220,149 @@ class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 3) {
+        }
+        else if (item.status === 3) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
                         id: item.id,
                         transaction: item.transaction,
+                        statusText: 'Ожидает оплаты'
+                    })}
+                    style={{
+                        width: "100%",
+                        backgroundColor: '#F5F4F4',
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flexDirection: "column",
+                        borderRadius: 10,
+                        paddingRight: 20,
+                        paddingLeft: 20,
+                        marginBottom: 15
+                    }}
+                    key={item.id}
+                >
+                    <View
+                        style={{
+                            width: "100%",
+                            height: 50,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: "center"
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: MontserratRegular,
+                                    color: '#000'
+                                }}
+                            >
+                                Заказ {' '}
+                                <Text
+                                    style={{
+                                        fontWeight: "bold",
+                                        fontSize: 16,
+                                        fontFamily: MontserratBold,
+                                        color: '#000'
+                                    }}
+                                >
+                                    {item.id}
+                                </Text>
+                            </Text>
+                        </View>
+                        {
+                            item.transaction === null
+                                ? (
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: 'center',
+                                            alignItems: "center",
+                                            backgroundColor: '#eecd4e',
+                                            borderRadius: 10,
+                                            padding: 10
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 13,
+                                                color: '#fff',
+                                                fontFamily: MontserratSemiBold
+                                            }}
+                                        >
+                                            Ожидает оплаты
+                                        </Text>
+                                    </View>
+                                )
+                                : (
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            justifyContent: 'center',
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <Text>
+                                            Оплачино
+                                        </Text>
+                                    </View>
+                                )
+                        }
+
+                    </View>
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            width: '100%',
+                            height: 50,
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginBottom: 5,
+                                flexDirection: 'row',
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                width: '100%'
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratRegular
+                                }}
+                            >
+                                Дата заказа
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 15,
+                                    fontFamily: MontserratSemiBold
+                                }}
+                            >
+                                {item.date}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+        else if (item.status === 4) {
+            return (
+                <TouchableOpacity
+                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
+                        id: item.id,
+                        transaction: item.transaction,
+                        statusText: 'Курер спешит к вам'
                     })}
                     style={{
                         width: "100%",
@@ -283,140 +432,24 @@ class PurchaseHistory extends Component<NavigationProps> {
                                         style={{
                                             flexDirection: "row",
                                             justifyContent: 'center',
-                                            alignItems: "center"
+                                            alignItems: "center",
+                                            backgroundColor: '#8CC83F',
+                                            borderRadius: 10,
+                                            padding: 10
                                         }}
                                     >
-                                        <Text>
-                                            Оплачино
+                                        <Text
+                                            style={{
+                                                fontSize: 13,
+                                                color: '#fff',
+                                                fontFamily: MontserratSemiBold
+                                            }}
+                                        >
+                                            Курер спешит к вам
                                         </Text>
                                     </View>
                                 )
                         }
-
-                    </View>
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "column",
-                            width: '100%',
-                            height: 50,
-                        }}
-                    >
-                        <View
-                            style={{
-                                marginBottom: 5,
-                                flexDirection: 'row',
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                width: '100%'
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                    fontFamily: MontserratRegular
-                                }}
-                            >
-                                Дата заказа
-                            </Text>
-                            <Text
-                                style={{
-                                    fontSize: 15,
-                                    fontFamily: MontserratSemiBold
-                                }}
-                            >
-                                {item.date}
-                            </Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-            )
-        } else if (item.status === 4) {
-            return (
-                <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
-                        id: item.id,
-                        transaction: item.transaction,
-                    })}
-                    style={{
-                        width: "100%",
-                        backgroundColor: '#F5F4F4',
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column",
-                        borderRadius: 10,
-                        paddingRight: 20,
-                        paddingLeft: 20,
-                        marginBottom: 15
-                    }}
-                    key={item.id}
-                >
-                    <View
-                        style={{
-                            width: "100%",
-                            height: 50,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <View
-                            style={{
-                                justifyContent: 'center',
-                                alignItems: "center"
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontFamily: MontserratRegular,
-                                    color: '#000'
-                                }}
-                            >
-                                Заказ {' '}
-                                <Text
-                                    style={{
-                                        fontWeight: "bold",
-                                        fontSize: 16,
-                                        fontFamily: MontserratBold,
-                                        color: '#000'
-                                    }}
-                                >
-                                    {item.id}
-                                </Text>
-                            </Text>
-                        </View>
-                        {
-                            item.transaction === null
-                                ? (
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            justifyContent: 'center',
-                                            alignItems: "center"
-                                        }}
-                                    >
-                                        <Text>
-                                            Ожидает оплаты
-                                        </Text>
-                                    </View>
-                                )
-                                : (
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            justifyContent: 'center',
-                                            alignItems: "center"
-                                        }}
-                                    >
-                                        <Text>
-                                            Оплачино
-                                        </Text>
-                                    </View>
-                                )
-                        }
-
                     </View>
                     <View
                         style={{
@@ -640,7 +673,18 @@ class PurchaseHistory extends Component<NavigationProps> {
                                 alignItems: "center"
                             }}
                         >
-                            <Text style={{marginRight: 10}}>Подробнее</Text>
+                            {
+                                item.bool
+                                    ? <Text style={{
+                                        marginRight: 10,
+                                        fontFamily: MontserratSemiBold,
+                                        color: '#939292'
+                                    }}>Скрит</Text>
+                                    : <Text style={{
+                                        marginRight: 10,
+                                        fontFamily: MontserratSemiBold
+                                    }}>Подробнее</Text>
+                            }
                             <View
                                 style={{
                                     backgroundColor: '#8CC83F',
@@ -752,9 +796,9 @@ class PurchaseHistory extends Component<NavigationProps> {
                                                 }}> Р.</Text>
                                             </Text>
                                         </View>
-                                        <View>
-                                            <Text></Text>
-                                        </View>
+                                        {/*<View>*/}
+                                        {/*    <Text></Text>*/}
+                                        {/*</View>*/}
                                     </View>
                                 </View>
                             )

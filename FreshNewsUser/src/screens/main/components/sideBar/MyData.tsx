@@ -77,9 +77,9 @@ class MyData extends Component {
         this.setState({alertsIsOn: !this.state.alertsIsOn});
     };
 
-    handleSave(name: string, email: string, surname: string) {
+    async handleSave(name: string, email: string, surname: string) {
         modalsStore.onShowMyDataModal()
-        userInfo.getUserDataUpdate(name, email, surname);
+        await userInfo.getUserDataUpdate(name, email, surname);
         setTimeout(() => {
             console.log('toJS(userInfo.errorData)', toJS(userInfo.errorData));
             if (userInfo.errorData !== null) {
@@ -1118,7 +1118,7 @@ class MyData extends Component {
                             </Text>
                             <View>
                                 <Switch
-                                    trackColor={{ false: "#767577", true: "#8CC83F" }}
+                                    trackColor={{false: "#767577", true: "#8CC83F"}}
                                     thumbColor={alertsIsOn ? "#f5dd4b" : "#f4f3f4"}
                                     ios_backgroundColor="#3e3e3e"
                                     onValueChange={() => this.alertsToggleHandle()}

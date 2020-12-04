@@ -48,14 +48,14 @@ class Header extends Component<HeaderProps> {
                 <View
                     style={{
                         marginTop: marginTopHeader,
-                        height: HEADER_HEIGHT * 1.5,
+                        height: 80,
                         backgroundColor:
                             style !== undefined && style !== 'undefined'
                                 ? style.backgroundColor !== undefined && style.backgroundColor !== 'undefined'
                                 ? style.backgroundColor
                                 : 'white'
                                 : 'white',
-                        paddingTop: size34 * 2,
+                        // paddingTop: size34 * 2,
                         justifyContent: "space-between",
                         alignItems: 'center',
                         width: '100%',

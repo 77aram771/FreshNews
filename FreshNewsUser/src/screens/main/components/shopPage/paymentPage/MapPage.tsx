@@ -15,7 +15,7 @@ import {
     WINDOW_WIDTH,
 } from '../../../../../share/consts';
 import MapView, {Marker} from 'react-native-maps';
-import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
+import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import Modal from 'react-native-modal';
 import ReviewModal from './ReviewModal';
 import {NavigationProps} from '../../../../../share/interfaces';
@@ -26,7 +26,6 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
-import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
 import Pusher from 'pusher-js/react-native';
 import {MapStyle} from "../../../../../share/MapStyle";
@@ -49,69 +48,64 @@ export default class MapPage extends Component<NavigationProps> {
         this.mapView = null;
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         Pusher.logToConsole = true;
         this.pusher = new Pusher(pusher_app_key, {
             cluster: pusher_app_cluster,
             encrypted: true,
         });
+        let {status} = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            this.setState({
+                errorText: 'Permission to access location was denied'
+            })
+            await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+                accuracy: Location.Accuracy.Balanced,
+            });
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        const userCoordinate = {
+            longitude: location.coords.longitude,
+            latitude: location.coords.latitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }
+        this.setState({
+            userLocation: userCoordinate
+        });
         this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
         this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
             this.getGeolocation(data)
         });
-        (async () => {
-                let {status} = await Location.requestPermissionsAsync();
-                if (status !== 'granted') {
-                    this.setState({
-                        errorText: 'Permission to access location was denied'
-                    })
-                    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-                        accuracy: Location.Accuracy.Balanced,
-                    });
-                }
-                let location = await Location.getCurrentPositionAsync({});
-                const userCoordinate = {
-                    longitude: location.coords.longitude,
-                    latitude: location.coords.latitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                }
-
-                setTimeout(() => {
-                    this.setState({
-                        userLocation: userCoordinate
-                    }, () => console.log('userLocation', this.state.userLocation));
-                }, 1000)
-            })();
     }
 
     async getGeolocation(data: any) {
-        this.setState({
-            deliveryTime: data.time
-        })
         const courierCordinate = {
             latitude: Number(data.courier.lat),
             longitude: Number(data.courier.lon),
-            // latitudeDelta: 0.0922,
-            // longitudeDelta: 0.0421,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
         }
         setTimeout(() => {
             this.setState({
                 courierCordinate: courierCordinate
-            }, () => {
-                console.log('userLocation', this.state.userLocation);
-                console.log('courierCordinate', this.state.courierCordinate);
             });
         }, 1000)
     };
 
     onReady = (result: any) => {
+        console.log(`Distance: ${result.distance} km`)
+        console.log(`Duration: ${result.duration} min.`)
+        console.log(`result: ${result}`)
+        this.setState({
+            deliveryTime: Math.ceil(result.duration)
+        })
         this.mapView.fitToCoordinates(result.coordinates, {
             edgePadding: {
-                right: (WINDOW_WIDTH / 10),
-                bottom: (WINDOW_HEIGHT / 10),
-                left: (WINDOW_WIDTH / 10),
-                top: (WINDOW_HEIGHT / 10),
+                right: (WINDOW_WIDTH / 20),
+                bottom: (WINDOW_HEIGHT / 20),
+                left: (WINDOW_WIDTH / 20),
+                top: (WINDOW_HEIGHT / 20),
             },
         });
     }
@@ -155,15 +149,61 @@ export default class MapPage extends Component<NavigationProps> {
                     headerMid={<LogoAndTitle/>}
                     headerRight={<View/>}
                 />
+                <View
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        backgroundColor: '#F5F4F4',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <View
+                        style={{
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            alignContent: 'center',
+                            alignSelf: 'center',
+                            width: WINDOW_WIDTH - 40,
+                            flexDirection: 'row'
+
+                        }}
+                    >
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: "center"
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontFamily: MontserratRegular,
+                                    color: '#000'
+                                }}
+                            >
+                                Заказ {' '}
+                                <Text
+                                    style={{
+                                        fontWeight: "bold",
+                                        fontSize: 16,
+                                        fontFamily: MontserratBold,
+                                        color: '#000'
+                                    }}
+                                >
+                                    {this.props.navigation.state.params.order_id}
+                                </Text>
+                            </Text>
+                        </View>
+                    </View>
+                </View>
                 {
                     this.state.courierCordinate !== null
                         ? (
                             <>
                                 <MapView
-                                    region={this.state.courierCordinate}
+                                    // region={this.state.userLocation}
                                     style={{flex: 2, width: WINDOW_WIDTH}}
                                     ref={c => this.mapView = c}
-                                    // showsUserLocation={true}
                                     followUserLocation={true}
                                     zoomEnabled={true}
                                     pitchEnabled={true}
@@ -172,23 +212,35 @@ export default class MapPage extends Component<NavigationProps> {
                                     showsTraffic={true}
                                     showsIndoors={true}
                                     customMapStyle={MapStyle}
+                                    provider={MapView.PROVIDER_GOOGLE}
+                                    // minZoomLevel={9}  // default => 0
+                                    maxZoomLevel={17} // default => 20
                                 >
                                     <Marker
                                         coordinate={this.state.userLocation}
+                                        // style={{
+                                        //     width: 20,
+                                        //     height: 20
+                                        // }}
                                         image={require('../../../../../../assets/iconImages/location-user-icon.psd')}
                                     />
                                     <Marker
                                         coordinate={this.state.courierCordinate}
-                                        image={require('../../../../../../assets/iconImages/delivery-icon.png')}
+                                        // style={{
+                                        //     width: 20,
+                                        //     height: 20
+                                        // }}
+                                        image={require('../../../../../../assets/iconImages/mapIcon.jpg')}
                                     />
                                     <MapViewDirections
                                         origin={this.state.userLocation}
                                         destination={this.state.courierCordinate}
-                                        mode='DRIVING'
+                                        // mode='DRIVING'
                                         apikey={GOOGLE_MAPS_APIKEY}
                                         language='ru'
                                         strokeWidth={4}
-                                        strokeColor="red"
+                                        strokeColor='#8CC83F'
+                                        optimizeWaypoints={true}
                                         onStart={(params) => {
                                             console.log('params', params)
                                         }}
@@ -222,20 +274,23 @@ export default class MapPage extends Component<NavigationProps> {
                         )
                         : (
                             <>
-                                <MapView
-                                    region={this.state.userLocation}
-                                    style={{flex: 2, width: WINDOW_WIDTH}}
-                                    ref={c => this.mapView = c}
-                                    showsUserLocation={true}
-                                    followUserLocation={true}
-                                    zoomEnabled={true}
-                                    pitchEnabled={true}
-                                    showsCompass={true}
-                                    showsBuildings={true}
-                                    showsTraffic={true}
-                                    showsIndoors={true}
-                                    customMapStyle={MapStyle}
-                                />
+                                {/*<MapView*/}
+                                {/*    region={this.state.userLocation}*/}
+                                {/*    style={{flex: 2, width: WINDOW_WIDTH}}*/}
+                                {/*    ref={c => this.mapView = c}*/}
+                                {/*    showsUserLocation={true}*/}
+                                {/*    followUserLocation={true}*/}
+                                {/*    zoomEnabled={true}*/}
+                                {/*    // minZoomLevel={2}  // default => 0*/}
+                                {/*    // maxZoomLevel={15} // default => 20*/}
+                                {/*    pitchEnabled={true}*/}
+                                {/*    showsCompass={true}*/}
+                                {/*    showsBuildings={true}*/}
+                                {/*    showsTraffic={true}*/}
+                                {/*    showsIndoors={true}*/}
+                                {/*    customMapStyle={MapStyle}*/}
+                                {/*    provider={MapView.PROVIDER_GOOGLE}*/}
+                                {/*/>*/}
                                 <View
                                     style={{
                                         flex: 1,
@@ -243,12 +298,14 @@ export default class MapPage extends Component<NavigationProps> {
                                         alignItems: 'center',
                                         alignContent: 'center',
                                         alignSelf: 'center',
+                                        flexDirection: 'column'
                                     }}
                                 >
                                     <PulseIndicator
                                         size={100}
                                         color='#8CC83F'
                                     />
+                                    <Text style={{fontFamily: MontserratSemiBold, fontSize: 16}}> Поиск курера </Text>
                                 </View>
                                 <View
                                     style={styles.textContainer}
@@ -268,20 +325,6 @@ export default class MapPage extends Component<NavigationProps> {
         );
     }
 };
-
-TaskManager.defineTask(LOCATION_TASK_NAME, ({data, error}) => {
-    // console.log('data', data)
-    if (error) {
-        // Error occurred - check `error.message` for more details.
-        return;
-    }
-    if (data) {
-        const {locations} = data;
-        // console.log('locations', locations)
-        // console.log('locations data', data)
-        // do something with the locations captured in the background
-    }
-});
 
 const styles = StyleSheet.create({
     container: {flex: 1, backgroundColor: '#FFFFFF', alignItems: 'center'},

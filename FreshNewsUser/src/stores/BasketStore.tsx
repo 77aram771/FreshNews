@@ -21,16 +21,17 @@ class BasketStore {
             .then((res) => {
                 let allPriceArray: any = [];
                 this.cartUserInfo = res.data;
-
+                console.log('cartUserInfo', toJS(this.cartUserInfo));
                 this.cartUserInfo.reduce((sum: number, item: any) => {
-                        return allPriceArray.push(Number(item.price.replace(/\s/g, '')) * toJS(item).quantity)
+                        console.log('parseInt(item.product.price.replace(/\\s/g, \'\')', parseInt(item.product.price.replace(/\s/g, '')))
+                        console.log('toJS(item).quantity', toJS(item).quantity)
+                        return allPriceArray.push(parseInt(item.product.price.replace(/\s/g, '')) * toJS(item).quantity)
                     }, 0
                 );
-
                 let AllSum = allPriceArray.reduce(function (accumulator: number, currentValue: number) {
                     return accumulator + currentValue;
                 }, 0);
-
+                console.log('AllSum', AllSum);
                 this.allPrice = AllSum;
             })
             .catch((error) => {

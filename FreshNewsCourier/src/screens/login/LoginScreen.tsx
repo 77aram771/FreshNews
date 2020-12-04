@@ -47,13 +47,12 @@ class LoginScreen extends React.Component<NavigationProps> {
         };
     };
 
-    // async componentDidMount() {
-    //     let getToken = await AsyncStorage.getItem('Token');
-    //     console.log('getToken', getToken);
-    //     if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
-    //         this.props.navigation.navigate('CourierScreen');
-    //     }
-    // }
+    async componentDidMount() {
+        let getToken = await AsyncStorage.getItem('Token');
+        if (getToken !== undefined && getToken !== 'undefined' && getToken !== null && getToken !== 'null') {
+            this.props.navigation.navigate('CourierScreen');
+        }
+    }
 
     componentWillUnmount() {
         this.setState({

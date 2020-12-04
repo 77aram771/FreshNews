@@ -8,17 +8,19 @@ import {observer} from 'mobx-react';
 import {size34, WINDOW_WIDTH} from '../consts';
 import modalsStore from "../../stores/ModalsStore";
 
-interface MineHeaderProps {
+interface MainHeaderProps {
     navigation?: object;
 }
 
 @observer
-export default class MainHeader extends React.Component<MineHeaderProps> {
+export default // @ts-ignore
+class MainHeader extends React.Component<MainHeaderProps> {
 
     render() {
         const {navigation} = this.props;
 
         const {onChangeView, isShowSideBar} = modalsStore;
+
         return (
             <View
                 style={{

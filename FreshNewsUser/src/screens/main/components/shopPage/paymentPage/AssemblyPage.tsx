@@ -93,7 +93,7 @@ class AssemblyPage extends Component<NavigationProps> {
                     }}
                 >
                     <Text style={{fontFamily: MontserratMedium, fontSize: size14}}>
-                        {Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * Math.ceil(parseInt(item.quantity))} <Text style={{color: '#8CC83F'}}>₽</Text>
+                        {Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * Math.ceil(parseInt(item.quantity))} <Text style={{color: '#8CC83F'}}>₽</Text>
                     </Text>
                 </View>
             </View>

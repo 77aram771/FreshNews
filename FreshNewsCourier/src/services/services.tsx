@@ -12,7 +12,6 @@ export const request = (phoneNumber: Number) => {
 
 
 export const verify = (requestId: Number, code: Number) => {
-    console.log('Number', requestId)
     return axios.post(`${SERVER_BASE}/login?phone=${requestId}&code=${code}`)
 };
 

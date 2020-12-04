@@ -52,7 +52,6 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token');
-        console.log('getToken--------------------------', getToken);
         let {status} = await Location.requestPermissionsAsync();
         if (status !== 'granted') {
             this.setState({
@@ -142,8 +141,8 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
         return true;
     };
 
-    handleScanner(id: any, code: any) {
-        courierStore.getCourierOrderConfirmation(id, code)
+    async handleScanner(id: any, code: any) {
+        await courierStore.getCourierOrderConfirmation(id, code)
     };
 
     handleCloseErrorModal = async () => {
