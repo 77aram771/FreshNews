@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
+import {FlatList, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
 import {MontserratSemiBold} from '../../../../share/fonts';
@@ -14,8 +14,7 @@ import {ShopMarketItem} from "./ShopMarketItem";
 import {ErrorModal} from "../modals/ErrorModal";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
-import userInfo from '../../../../stores/UserInfo';
-import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from "@react-native-community/async-storage";
 
 interface ShopMarketInterface {
     getGeocodeAsync: any,
@@ -42,6 +41,8 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
 
     async componentDidMount() {
+        let getToken = await AsyncStorage.getItem('Token')
+
         this.setState({
             refreshing: true,
             items: []
@@ -65,8 +66,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                     errorModal: true
                 })
             }
-            setTimeout(() => {
-                console.log('shopsStore.allOrders', toJS(shopsStore.allOrders));
+            if (getToken !== null) {
                 toJS(shopsStore.allOrders).map((item: any) => {
                     if (item.status === 5) {
                         this.setState({
@@ -76,11 +76,12 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                         })
                     }
                 })
-            }, 1000)
+            }
         }, 1000);
     };
 
     async onRefresh() {
+        let getToken = await AsyncStorage.getItem('Token');
         this.setState({
             refreshing: true,
             items: []
@@ -104,8 +105,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                     errorModal: true
                 })
             }
-            setTimeout(() => {
-                console.log('shopsStore.allOrders', toJS(shopsStore.allOrders));
+            if (getToken !== null) {
                 toJS(shopsStore.allOrders).map((item: any) => {
                     if (item.status === 5) {
                         this.setState({
@@ -115,7 +115,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                         })
                     }
                 })
-            }, 1000)
+            }
         }, 1000);
     };
 
@@ -142,7 +142,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
     render() {
         return (
-            <View style={{ width: '100%', flex: 1}}>
+            <View style={{width: '100%', flex: 1}}>
                 {
                     this.state.refreshing
                         ? (

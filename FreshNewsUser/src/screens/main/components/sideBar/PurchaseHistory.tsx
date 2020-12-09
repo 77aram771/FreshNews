@@ -10,6 +10,7 @@ import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
 // @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
+import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -33,6 +34,8 @@ class PurchaseHistory extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 allOrders: newFile
+            }, () => {
+                console.log('newFile', newFile);
             })
         }, 1000)
     };
@@ -104,6 +107,7 @@ class PurchaseHistory extends Component<NavigationProps> {
     };
 
     renderItem(item: any) {
+        console.log('item', toJS(item.items));
         if (item.status === 1) {
             return (
                 <TouchableOpacity

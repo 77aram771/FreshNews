@@ -158,7 +158,8 @@ export const MainScreen = ({navigation}: any) => {
         <View
             style={{
                 flex: 1,
-                alignItems: 'center'
+                alignItems: 'center',
+                marginTop: Platform.OS === 'ios' ? 0 : 20
             }}
         >
             <MainHeader

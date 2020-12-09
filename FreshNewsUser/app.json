@@ -6,9 +6,8 @@
     "orientation": "portrait",
     "icon": "./assets/logo_ios.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#8CC83F"
+      "image": "./assets/splash.gif",
+      "resizeMode": "contain"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
