@@ -68,9 +68,9 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                             paddingTop: 15,
                                             paddingBottom: 15,
                                             backgroundColor: '#8CC83F',
-                                            borderWidth: 1,
-                                            borderColor: '#fff',
-                                            borderStyle: 'solid'
+                                            // borderWidth: 1,
+                                            // borderColor: '#fff',
+                                            // borderStyle: 'solid'
                                         }}
                                     >
                                         <View

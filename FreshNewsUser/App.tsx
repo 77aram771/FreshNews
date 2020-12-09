@@ -23,6 +23,7 @@ import StocksList from './src/screens/main/components/stocks/StocksList';
 import {StatusBar} from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import {Asset} from 'expo-asset';
+import {WINDOW_HEIGHT, WINDOW_WIDTH} from './src/share/consts';
 
 console.disableYellowBox = true;
 
@@ -176,8 +177,31 @@ const AppContainer = createAppContainer(RootStack);
 export default function App() {
 
     let [fontsLoaded] = useFonts(customFonts);
-    let [isReady, useIsReady] = useState(false);
+    let [isReady, useIsReady] = useState(true);
 
+    useEffect(() => {
+        (async () => {
+            await SplashScreen.preventAutoHideAsync();
+            setTimeout(() => {
+                useIsReady(false)
+            }, 10000)
+        })()
+    }, []);
+
+    if (isReady) {
+        return (
+            <View style={{flex: 1}}>
+                <Image
+                    source={require('./assets/splash.gif')}
+                    style={{
+                        width: WINDOW_WIDTH,
+                        height: WINDOW_HEIGHT,
+                    }}
+                    resizeMode={'center'}
+                />
+            </View>
+        );
+    }
     if (!fontsLoaded) {
         return <AppLoading/>;
     } else {
@@ -209,3 +233,4 @@ export default function App() {
         );
     }
 }
+
