@@ -1,35 +1,16 @@
 import React, {Component} from 'react';
-import {
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {CustomInput} from '../../../../../share/components/CustomInput';
-import {
-    size12,
-    size16,
-    size20,
-    size34,
-    size44,
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH,
-} from '../../../../../share/consts';
+import {size12, size16, size20, size34, size44, WINDOW_HEIGHT, WINDOW_WIDTH,} from '../../../../../share/consts';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from 'mobx';
 import RNPickerSelect from 'react-native-picker-select';
 import paymentStore from "../../../../../stores/PaymentStore";
-
-// @ts-ignore
-let arr = [];
 
 @observer
 export default // @ts-ignore
@@ -57,20 +38,19 @@ class PaymentPage extends Component<NavigationProps> {
         };
     };
 
-    componentDidMount() {
-        paymentStore.orderUserTime();
-        userInfo.getUserData();
+    async componentDidMount() {
+        await paymentStore.orderUserTime();
+        await userInfo.getUserData();
         const {userData} = userInfo;
         const {addresses} = userData;
         const addressMap = addresses.map((item: any) => {
-                let val = {
+            return {
                     label: toJS(item.address),
                     value: toJS(item.address),
-                }
-                return val;
+                };
             }
         )
-        this.setState({ addressArray: addressMap })
+        this.setState({addressArray: addressMap})
 
         const {time} = paymentStore;
         for (let key in toJS(time)) {
@@ -231,7 +211,7 @@ class PaymentPage extends Component<NavigationProps> {
         paymentStore.handleComment(value);
     };
 
-    handleSelectAddress(value: string) {
+    async handleSelectAddress(value: string) {
         if (value) {
             this.setState({
                 selectAddress: value,
@@ -249,7 +229,7 @@ class PaymentPage extends Component<NavigationProps> {
                 selectAddress: '',
             })
         }
-        paymentStore.getSelectAddress(value);
+        await paymentStore.getSelectAddress(value);
     };
 
     handleSelectTime(value: any) {
@@ -271,6 +251,20 @@ class PaymentPage extends Component<NavigationProps> {
             })
         }
         paymentStore.getSelectTime(value);
+    };
+
+    handleClick() {
+        let addressObj = {
+            address: this.state.address,
+            porch: this.state.porch,
+            level: this.state.level,
+            apartment: this.state.apartment,
+            intercom: this.state.intercom,
+            messageToCourier: this.state.messageToCourier,
+        }
+        this.props.navigation.navigate('AssemblyPage', {
+            navAddress: addressObj
+        });
     }
 
     render() {
@@ -538,7 +532,7 @@ class PaymentPage extends Component<NavigationProps> {
                     </KeyboardAvoidingView>
                 </ScrollView>
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('AssemblyPage')}
+                    onPress={() => this.handleClick()}
                     disabled={disabledBool}
                     style={{
                         backgroundColor: disabledBool ? 'grey' : '#8CC83F',

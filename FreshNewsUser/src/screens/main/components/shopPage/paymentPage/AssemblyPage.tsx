@@ -52,6 +52,11 @@ class AssemblyPage extends Component<NavigationProps> {
         this.setState({
             shopData: cartUserInfo
         });
+        if (this.props.navigation.state.params.navAddress.address.length > 0) {
+            console.log('this.props.navigation.state.params.navAddress if', this.props.navigation.state.params.navAddress.address.length);
+        } else {
+            console.log('this.props.navigation.state.params.navAddress else', this.props.navigation.state.params.navAddress.address.length);
+        }
     };
 
     renderList(item: any): any {
@@ -93,7 +98,8 @@ class AssemblyPage extends Component<NavigationProps> {
                     }}
                 >
                     <Text style={{fontFamily: MontserratMedium, fontSize: size14}}>
-                        {Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * Math.ceil(parseInt(item.quantity))} <Text style={{color: '#8CC83F'}}>₽</Text>
+                        {Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * Math.ceil(parseInt(item.quantity))}
+                        <Text style={{color: '#8CC83F'}}>₽</Text>
                     </Text>
                 </View>
             </View>
@@ -101,28 +107,81 @@ class AssemblyPage extends Component<NavigationProps> {
     };
 
     handlePayment() {
+
         const {userData} = userInfo;
         const {addresses} = userData;
-        toJS(addresses).find((item: any) => {
-            if (item.address === paymentStore.selectAddress) {
-                paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
-                setTimeout(() => {
-                    console.log('paymentStore.Error', paymentStore.errorData);
-                    if (paymentStore.errorData !== null) {
-                        this.setState({
-                            errorData: toJS(paymentStore.errorData),
-                            errorModal: true
-                        })
-                    } else {
-                        this.props.navigation.navigate('CloudPayment')
-                    }
-                }, 1000)
+        const {address, porch, level, intercom} = this.props.navigation.state.params.navAddress;
+        if (this.props.navigation.state.params.navAddress.address.length > 0) {
+            paymentStore.orderUserCheckout(address, porch, level, intercom, '', this.state.date, paymentStore.selectTime);
+            setTimeout(() => {
+                console.log('paymentStore.Error', paymentStore.errorData);
+                if (paymentStore.errorData !== null) {
+                    this.setState({
+                        errorData: toJS(paymentStore.errorData),
+                        errorModal: true
+                    })
+                } else {
+                    this.props.navigation.navigate('CloudPayment')
+                }
+            }, 1000)
+        }
+        else {
+            toJS(addresses).find((item: any) => {
+                    if (item.address === paymentStore.selectAddress) {
+                        paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
+                        setTimeout(() => {
+                            console.log('paymentStore.Error', paymentStore.errorData);
+                            if (paymentStore.errorData !== null) {
+                                this.setState({
+                                    errorData: toJS(paymentStore.errorData),
+                                    errorModal: true
+                                })
+                            } else {
+                                this.props.navigation.navigate('CloudPayment')
+                            }
+                        }, 1000)
 
-            } else {
-                console.log('false')
-            }
-        });
-    };
+                    }
+                }
+            );
+        }
+    }
+
+// async handlePayment() {
+//     const {userData} = userInfo;
+//     const {addresses} = userData;
+//     const {address, apartment, intercom, level, messageToCourier, porch} = this.props.navigation.state.params.navAddress
+//     toJS(addresses).find((item: any) => {
+//         if (item.address === paymentStore.selectAddress) {
+//             paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
+//             setTimeout(() => {
+//                 console.log('paymentStore.Error', paymentStore.errorData);
+//                 if (paymentStore.errorData !== null) {
+//                     this.setState({
+//                         errorData: toJS(paymentStore.errorData),
+//                         errorModal: true
+//                     })
+//                 } else {
+//                     this.props.navigation.navigate('CloudPayment')
+//                 }
+//             }, 1000)
+//         } else {
+//             console.log('false')
+//             paymentStore.orderUserCheckout(address, item.porch, level, intercom, messageToCourier, this.state.date, paymentStore.selectTime);
+//             setTimeout(() => {
+//                 console.log('paymentStore.Error', paymentStore.errorData);
+//                 if (paymentStore.errorData !== null) {
+//                     this.setState({
+//                         errorData: toJS(paymentStore.errorData),
+//                         errorModal: true
+//                     })
+//                 } else {
+//                     this.props.navigation.navigate('CloudPayment')
+//                 }
+//             }, 1000)
+//         }
+//     });
+// };
 
     handleCloseErrorModal = async () => {
         await this.setState({
@@ -219,7 +278,8 @@ class AssemblyPage extends Component<NavigationProps> {
                                 }}
                             >
                                 <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
-                                    {this.state.delivery} <Text style={{color: '#8CC83F', fontSize: size14}}>₽</Text>
+                                    {this.state.delivery} <Text
+                                    style={{color: '#8CC83F', fontSize: size14}}>₽</Text>
                                 </Text>
                             </View>
                         </View>
@@ -497,36 +557,38 @@ class AssemblyPage extends Component<NavigationProps> {
 
             </>
         )
-    };
+    }
+    ;
 }
 
-const styles = StyleSheet.create({
-    headers: {
-        width: WINDOW_WIDTH,
-        paddingTop: size20,
-        backgroundColor: '#8CC83F',
-    },
-    headerMiddleTitle: {
-        fontFamily: MontserratRegular,
-        fontSize: size18,
-        color: '#fff',
-    },
-    table: {
-        marginTop: 30,
-        justifyContent: "center",
-        alignItems: "flex-start",
-        alignContent: 'center',
-        alignSelf: 'center',
-        width: WINDOW_WIDTH - 40,
-    },
-    delivery: {
-        marginTop: 20,
-        marginBottom: 50,
-        justifyContent: "center",
-        alignItems: "flex-start",
-        alignContent: 'center',
-        alignSelf: 'center',
-        width: WINDOW_WIDTH - 40,
-        flexDirection: "column"
-    },
-});
+const
+    styles = StyleSheet.create({
+        headers: {
+            width: WINDOW_WIDTH,
+            paddingTop: size20,
+            backgroundColor: '#8CC83F',
+        },
+        headerMiddleTitle: {
+            fontFamily: MontserratRegular,
+            fontSize: size18,
+            color: '#fff',
+        },
+        table: {
+            marginTop: 30,
+            justifyContent: "center",
+            alignItems: "flex-start",
+            alignContent: 'center',
+            alignSelf: 'center',
+            width: WINDOW_WIDTH - 40,
+        },
+        delivery: {
+            marginTop: 20,
+            marginBottom: 50,
+            justifyContent: "center",
+            alignItems: "flex-start",
+            alignContent: 'center',
+            alignSelf: 'center',
+            width: WINDOW_WIDTH - 40,
+            flexDirection: "column"
+        },
+    });

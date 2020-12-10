@@ -14,7 +14,8 @@ export class CloudPayment extends Component<NavigationProps> {
         getAllOrders();
         setTimeout(() => {
             this.props.navigation.navigate('FinishOfferPage', {
-                id: toJS(allOrders)[0].id + 1
+                id: toJS(allOrders)[0].id + 1,
+                statusText: 'Собирается'
             })
         }, 3000)
     }

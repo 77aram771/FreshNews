@@ -104,7 +104,6 @@ export const MainScreen = ({navigation}: any) => {
             }, 3000);
         }
     }
-
     async function registerForPushNotificationsAsync() {
         let token;
         if (Constants.isDevice) {

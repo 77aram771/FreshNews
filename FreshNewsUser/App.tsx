@@ -184,7 +184,7 @@ export default function App() {
             await SplashScreen.preventAutoHideAsync();
             setTimeout(() => {
                 useIsReady(false)
-            }, 10000)
+            }, 5000)
         })()
     }, []);
 

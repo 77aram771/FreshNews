@@ -63,10 +63,12 @@ class PaymentStore {
             headers: myHeaders,
             redirect: 'follow'
         };
+        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`);
         fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
                 console.log('res pay===--------', res);
-                if (res.status !== 200){
+                console.log('res pay===-------- status', res.status);
+                if (res.status !== 200) {
                     this.errorData = res;
                     console.log('this.errorData', this.errorData);
                 }
@@ -93,7 +95,7 @@ class PaymentStore {
         if (payment === 'cardToCourier') {
             pay = 2
         } else if (payment === 'cash') {
-            pay= 3
+            pay = 3
         } else if (payment === 'online') {
             pay = 1
         }

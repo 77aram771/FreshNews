@@ -2,7 +2,7 @@
   "expo": {
     "name": "FreshNewsUser",
     "slug": "FreshNewsUser",
-    "version": "3.2.3",
+    "version": "3.2.5",
     "orientation": "portrait",
     "icon": "./assets/logo_ios.png",
     "updates": {
