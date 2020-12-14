@@ -37,6 +37,8 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
                 this.setState({
                     refreshing: false,
                     shopData: toJS(shopsStore.getShopsItem)
+                }, () => {
+                    console.log('shopData', this.state.shopData);
                 })
             }
             else {

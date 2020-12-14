@@ -111,6 +111,7 @@ class AssemblyPage extends Component<NavigationProps> {
         const {userData} = userInfo;
         const {addresses} = userData;
         const {address, porch, level, intercom} = this.props.navigation.state.params.navAddress;
+
         if (this.props.navigation.state.params.navAddress.address.length > 0) {
             paymentStore.orderUserCheckout(address, porch, level, intercom, '', this.state.date, paymentStore.selectTime);
             setTimeout(() => {

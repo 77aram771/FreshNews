@@ -28,6 +28,7 @@ import {toJS} from "mobx";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Fontisto';
 import {TextInput} from 'react-native-gesture-handler';
+import basketStore from "../../../../../stores/BasketStore";
 
 let moment = require('moment');
 
@@ -61,6 +62,7 @@ class FinishPaymentPage extends Component<NavigationProps> {
     };
 
     componentDidMount() {
+        basketStore.getCartUserInfo()
         const NewDate = moment().format('YYYY-MM-DD');
         const NewTime = moment().format('HH:mm');
         this.setState({

@@ -26,7 +26,6 @@ interface ShopMarketInterface {
 export default // @ts-ignore
 class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
-
     constructor(props: any) {
         super(props);
         this.state = {
@@ -38,7 +37,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
             items: []
         }
     }
-
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token');
@@ -141,7 +139,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
     render() {
         return (
-            <View style={{width: '100%', flex: 1}}>
+            <View style={{flex: 1, width: '100%'}}>
                 {
                     this.state.refreshing
                         ? (

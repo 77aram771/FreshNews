@@ -23,14 +23,14 @@ class BasketListItem extends Component<{
         this.setState({
             itemQuantity: this.props.data.quantity
         })
-    }
+    };
 
     async countUpFunction(id: number) {
         this.setState({itemQuantity: ++this.props.data.quantity});
         setTimeout(() => {
             basketStore.getUpdateCartItem(id, this.state.itemQuantity)
         }, 1000)
-    }
+    };
 
     async countDownFunction(id: number) {
         this.state.itemQuantity !== 1
@@ -39,15 +39,17 @@ class BasketListItem extends Component<{
         setTimeout(() => {
             basketStore.getUpdateCartItem(id, this.state.itemQuantity)
         }, 1000)
-    }
+    };
 
     async handleDeleteItem(id: number) {
-        this.props.onRefresh()
         await basketStore.getDeleteCartItem(id);
+        setTimeout(() => {
+            this.props.onRefresh();
+        }, 500)
     }
 
     render() {
-        const {price, id, weight, product} = this.props.data;
+        const {id, weight, product} = this.props.data;
         return (
             <View style={styles.rowInfoContainer}>
                 <View style={{flexDirection: 'column', flex: 2, paddingLeft: 8}}>

@@ -4,10 +4,12 @@ import {size20} from '../../../../../share/consts';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
+import basketStore from "../../../../../stores/BasketStore";
 
 export class FinishPaymentScreen extends Component<NavigationProps> {
 
     componentDidMount() {
+        basketStore.getCartUserInfo()
         setTimeout(() => {
             this.props.navigation.navigate('PurchaseHistory')
         }, 3000)
