@@ -2,17 +2,14 @@ import axios from 'axios'
 
 import {SERVER_BASE} from "../share/consts";
 
-/**
- * Returns {requestId} to store and use in the "verify" request
- */
-
 export const request = (phoneNumber: Number) => {
-    return axios.post(`${SERVER_BASE}/auth?phone=${phoneNumber}`)
+    return axios.post(`${SERVER_BASE}/auth?phone=+${phoneNumber}`)
 };
 
 
 export const verify = (requestId: Number, code: Number) => {
-    return axios.post(`${SERVER_BASE}/login?phone=${requestId}&code=${code}`)
+    console.log(`${SERVER_BASE}/login?phone=+${requestId}&code=${code}`)
+    return axios.post(`${SERVER_BASE}/login?phone=+${requestId}&code=${code}`)
 };
 
 

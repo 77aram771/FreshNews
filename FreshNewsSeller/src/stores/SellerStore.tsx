@@ -141,6 +141,7 @@ class SellerStore {
             .then(res => {
                 if (res.status === 200) {
                     console.log('result getAddItem status 200', res)
+                    this.getUserData()
                 } else {
                     console.log('result getAddItem', res);
                     this.errorData = res;

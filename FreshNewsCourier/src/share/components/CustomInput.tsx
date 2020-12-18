@@ -107,6 +107,8 @@ export const CustomInput = ({
                 onChangeText={item => onChangeText(item)}
                 style={[styles.textInput, textInputStyle]}
                 onSubmitEditing={onChangeView}
+                returnKeyType="done"
+                returnKeyLabel='done'
             />
         </View>
     );

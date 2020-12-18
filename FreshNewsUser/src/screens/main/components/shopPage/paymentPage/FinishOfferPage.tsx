@@ -8,7 +8,6 @@ import {ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler} from 
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
 import {NavigationEvents} from "react-navigation";
 import {toJS} from "mobx";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import paymentStore from "../../../../../stores/PaymentStore";
 

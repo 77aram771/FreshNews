@@ -53,7 +53,7 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                     >
                         {
                             this.props.items.map((item: any) => {
-                                console.log('item', item);
+                                console.log('item ---', item);
                                 return (
                                     <TouchableOpacity
                                         onPress={() => this.props.navigation.navigate('MapPage', {

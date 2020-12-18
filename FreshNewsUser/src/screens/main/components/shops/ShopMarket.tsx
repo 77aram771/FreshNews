@@ -8,11 +8,9 @@ import {HeaderText} from '../HeaderText';
 import {StocksListItem} from '../stocks/StocksListItem';
 import HeaderContent from '../headerContent/HeaderContent';
 import shopsStore from "../../../../stores/ShopsStore";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {ShopMarketItem} from "./ShopMarketItem";
 import {ErrorModal} from "../modals/ErrorModal";
-// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -39,7 +37,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
     }
 
     async componentDidMount() {
-        let getToken = await AsyncStorage.getItem('Token');
+        let getToken = AsyncStorage.getItem('Token');
         this.setState({
             refreshing: true,
             items: []
@@ -78,7 +76,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
     };
 
     async onRefresh() {
-        let getToken = await AsyncStorage.getItem('Token');
+        let getToken = AsyncStorage.getItem('Token');
         this.setState({
             refreshing: true,
             items: []
@@ -205,6 +203,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                                 horizontal={true}
                                                 data={this.state.promo}
                                                 renderItem={({item}) => {
+                                                    console.log('item ----', item);
                                                     return (
                                                         <StocksListItem
                                                             keyIndex={item}
@@ -215,7 +214,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                                     );
                                                 }}
                                             />
-                                            <HeaderText title={'Ринки'}/>
+                                            <HeaderText title={'Рынки'}/>
                                         </>
                                     }
                                     scrollEnabled={true}
@@ -265,7 +264,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                                         fontFamily: MontserratSemiBold
                                                     }}
                                                 >
-                                                    Покозать ещё
+                                                    Показать ещё
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>

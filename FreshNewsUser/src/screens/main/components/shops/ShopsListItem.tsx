@@ -8,12 +8,11 @@ import {
 } from 'react-native';
 import React from 'react';
 import {SvgUri} from 'react-native-svg';
-
 import {
     size12, size14,
     size16,
     size20,
-    WINDOW_HEIGHT, WINDOW_WIDTH,
+    WINDOW_HEIGHT
 } from '../../../../share/consts';
 import {
     MontserratBold,
@@ -29,6 +28,7 @@ export const ShopsListItem = ({
                                   reviews,
                                   onPressNavigation,
                                   backgroundImage,
+                                  categories,
                               }: {
     logo: string;
     time: string;
@@ -37,6 +37,7 @@ export const ShopsListItem = ({
     reviews: string;
     onPressNavigation: () => void;
     backgroundImage: string;
+    categories: object
 }) => {
     let formatImage = logo.substr(logo.length - 3);
     return (
@@ -80,15 +81,11 @@ export const ShopsListItem = ({
                         }
                     </View>
                     <View style={styles.timeContainer}>
-                        <Text style={styles.time}>
-                            {
-                                time === undefined && time === 'undefined'
-                                    ? time
-                                    : 0
-                            }
-                            {'  '}
-                            <Text style={styles.minutes}>мин.</Text>
-                        </Text>
+                        {
+                            time !== null && time !== undefined
+                                ? <Text style={styles.time}> {time} <Text style={styles.minutes}>мин.</Text></Text>
+                                : null
+                        }
                     </View>
                 </View>
             </ImageBackground>
@@ -100,16 +97,21 @@ export const ShopsListItem = ({
                 <Text style={styles.rating}>{rating}</Text>
             </View>
             <View style={styles.categoryReviewsContainer}>
-                {/*{*/}
-                {/*    category1 === undefined && category1 === 'undefined' && category2 === undefined && category2 === 'undefined'*/}
-                {/*        ? (*/}
-                {/*            <Text style={styles.category}>{`Нет категории`}</Text>*/}
-                {/*        )*/}
-                {/*        : (*/}
-                {/*            <Text style={styles.category}>{`${category1.name}, ${category2.name} `}</Text>*/}
-                {/*        )*/}
-                {/*}*/}
-                <Text style={styles.reviews}>{reviews}</Text>
+                {
+                    categories === undefined || categories === null
+                        ? (
+                            <Text style={styles.category}>{`Нет категории`}</Text>
+                        )
+                        : (
+                            categories.map((item: any, index: any) => {
+                                    return (
+                                        <Text key={index} style={styles.category}>{`${item.name},  `  }</Text>
+                                    )
+                                }
+                            )
+                        )
+                }
+                {/*<Text style={styles.reviews}>{reviews}</Text>*/}
             </View>
         </TouchableOpacity>
     );
@@ -176,10 +178,11 @@ const styles = StyleSheet.create({
         fontFamily: MontserratBold,
     },
     categoryReviewsContainer: {
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         paddingTop: 16,
-        marginHorizontal: 20,
+        marginHorizontal: 5,
     },
     category: {
         color: '#000000',

@@ -21,6 +21,13 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "./modals/ErrorModal";
 import {toJS} from "mobx";
+// @ts-ignore
+import call from 'react-native-phone-call'
+
+const args = {
+    number: '+79296014443', // String value with the number to call
+    prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
+}
 
 @observer
 export default class ConfirmScreen extends React.Component<NavigationProps, { navigation: any }> {
@@ -158,7 +165,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, { na
                             alignItems: 'center',
                             marginTop: size16,
                         }}
-                        onPress={() => alert('Связаться с менеджером')}
+                        onPress={() => call(args).catch(console.error)}
                         text={'Связаться с менеджером'}
                         textStyle={{
                             color: '#000000',

@@ -11,6 +11,7 @@ import {
 import {MontserratBold, MontserratRegular} from '../../../../share/fonts';
 import ShopRating from './ShopRating';
 import {SvgUri} from "react-native-svg";
+import shopsStore from "../../../../stores/ShopsStore";
 
 interface headerInfoInterface {
     image: string,
@@ -22,10 +23,15 @@ interface headerInfoInterface {
 
 @observer
 export default class HeaderInfo extends Component<headerInfoInterface> {
+
     render() {
 
         const {image, name, city, reviews_count, rating} = this.props;
+
+        console.log('this.props', this.props);
+
         let formatImage = image.substr(image.length - 3);
+
         return (
             <View style={styles.container}>
                 <View style={styles.infoContainer}>
@@ -52,7 +58,7 @@ export default class HeaderInfo extends Component<headerInfoInterface> {
                     </Text>
                     <ShopRating review={false} rating={rating}/>
                     <Text style={styles.reviews}>{reviews_count} отзыва</Text>
-                    <Text onPress={() => alert('подробности')} style={styles.moreDetails}>
+                    <Text onPress={() => shopsStore.onShowShopInformationModal()} style={styles.moreDetails}>
                         Подробнее
                     </Text>
                 </View>

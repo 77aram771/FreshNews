@@ -16,10 +16,12 @@ class ShopsStore {
     @observable getShopsItem: any = [];
     @observable getShopShares: any = [];
     @observable isShowShopInformation: boolean = false;
+    @observable isShowShopInformationModal: boolean = false;
     @observable isShowAddAddressModal: boolean = false;
     @observable isShowAddCreditCart: boolean = false;
     @observable getShopItemInfo: any = [];
     @observable allOrders: any = [];
+    @observable userAddress: any = '';
     @observable errorData: any = null;
 
     @action
@@ -59,10 +61,10 @@ class ShopsStore {
     @action
     getShopsHome = async () => {
         this.getShopData = [];
-        await axios.get(`${SERVER_BASE}/home?search`)
+        await axios.get(`${SERVER_BASE}/home?address`)
             .then((res) => {
+                console.log('res home?address', res)
                 this.getShopData = res.data;
-
             })
             .catch((error) => {
                 console.log('error getShopsHome', error);
@@ -104,7 +106,8 @@ class ShopsStore {
     getShops = async (id: number) => {
         this.getShopLoader = true;
         this.getShopInfo = [];
-        await axios.get(`${SERVER_BASE}/shops/${id}`)
+        console.log(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
+        await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
             .then((res) => {
                 this.getShopsItem = res.data;
             })
@@ -118,7 +121,8 @@ class ShopsStore {
     getPromoCode = async (id: number) => {
         this.getShopLoader = true;
         this.getShopShares = [];
-        await axios.get(`${SERVER_BASE}/promocode/${id}`)
+        console.log(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`);
+        await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
             .then((res) => {
                 this.getShopShares = res.data;
             })
@@ -138,6 +142,11 @@ class ShopsStore {
     @action
     onShowShopInformation = () => {
         this.isShowShopInformation = !this.isShowShopInformation;
+    };
+
+    @action
+    onShowShopInformationModal = () => {
+        this.isShowShopInformationModal = !this.isShowShopInformationModal;
     };
 
     @action
@@ -165,6 +174,12 @@ class ShopsStore {
                 console.log('error getPromoCode', error);
                 this.errorData = error
             })
+    }
+
+    @action
+    getAddressUser = async (address: any) => {
+        this.userAddress = address;
+        console.log('userAddress', address)
     }
 }
 

@@ -158,9 +158,8 @@ class CourierStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-        // console.log(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`);
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
-            .then(res => console.log('getCourierCoordinate, res', res))
+            .then(res => console.log(res))
             .catch((err) => {
                 console.log('getCourierCoordinate error', err);
                 this.errorData = err;

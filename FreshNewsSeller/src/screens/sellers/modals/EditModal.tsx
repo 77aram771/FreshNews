@@ -3,44 +3,12 @@ import {View, Text, TouchableOpacity, Image, ScrollView, TextInput, Platform, Ke
 import {size34, WINDOW_HEIGHT, WINDOW_WIDTH} from "../../../share/consts";
 import Feather from "react-native-vector-icons/Feather";
 import {MontserratRegular} from "../../../share/fonts";
-import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 
 export const EditModal = ({data, handleCloseEditModal, handleSaveEditItem}: any) => {
-    const placeholderWeight = {
-        label: String(data.weight),
-        value: null,
-        color: '#9EA0A4',
-    };
-    const weightItems = [
-        {
-            label: '10',
-            value: '10',
-        },
-        {
-            label: '50',
-            value: '50',
-        },
-        {
-            label: '100',
-            value: '100',
-        },
-        {
-            label: '200',
-            value: '200',
-        },
-        {
-            label: '500',
-            value: '500',
-        },
-        {
-            label: '1000',
-            value: '1000',
-        },
-    ];
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [weight, setWeight] = useState('');
+    const [weight, setWeight] = useState(1000);
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
 
@@ -322,32 +290,20 @@ export const EditModal = ({data, handleCloseEditModal, handleSaveEditItem}: any)
                                 justifyContent: "center"
                             }}
                         >
-                            <RNPickerSelect
-                                placeholder={placeholderWeight}
-                                items={weightItems}
-                                onValueChange={value => Weight(value)}
+                            <TextInput
                                 style={{
-                                    inputIOS: {
-                                        fontSize: 16,
-                                        width: WINDOW_WIDTH / 1.22,
-                                        height: 40,
-                                        borderColor: 'gray',
-                                        borderWidth: 2,
-                                        color: 'black',
-                                        paddingLeft: 10
-                                    },
-                                    inputAndroid: {
-                                        fontSize: 16,
-                                        width: WINDOW_WIDTH / 1.22,
-                                        height: 40,
-                                        borderColor: 'gray',
-                                        borderWidth: 2,
-                                        color: 'black',
-                                        paddingLeft: 10
-                                    },
+                                    width: WINDOW_WIDTH / 1.22,
+                                    height: 40,
+                                    borderColor: 'gray',
+                                    borderWidth: 2,
+                                    paddingLeft: 10,
+                                    backgroundColor: 'grey'
                                 }}
-                                value={weight}
-                                useNativeAndroidPickerStyle={false}
+                                // onChangeText={text => Price(text)}
+                                value={"1000 г."}
+                                placeholder={'Цена товара'}
+                                keyboardType={"number-pad"}
+                                editable={false}
                             />
                         </View>
                     </View>

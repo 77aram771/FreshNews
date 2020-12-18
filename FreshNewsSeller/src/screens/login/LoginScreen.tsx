@@ -20,7 +20,7 @@ import sellerStore from "../../stores/SellerStore";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {toJS} from "mobx";
-import { ErrorModal } from '../sellers/modals/ErrorModal';
+import {ErrorModal} from '../sellers/modals/ErrorModal';
 
 @observer
 export default // @ts-ignore
@@ -92,10 +92,9 @@ class LoginScreen extends React.Component<NavigationProps> {
                     })
                 })
                 .catch(err => {
-                    console.log(err);
-                    let error = toJS(String(sellerStore.errorData));
+                    console.log('err', err);
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
-                    console.log('errorCode', errorCode);
                     let errorData = {
                         status_code: errorCode,
                         message: 'Network Error',
@@ -139,8 +138,8 @@ class LoginScreen extends React.Component<NavigationProps> {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
-                    let error = toJS(String(sellerStore.errorData));
+                    console.log('err', err);
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
                     let errorData = {
                         status_code: errorCode,

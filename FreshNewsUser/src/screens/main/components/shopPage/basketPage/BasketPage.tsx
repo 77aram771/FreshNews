@@ -12,7 +12,6 @@ import {CheckOut} from './Checkout';
 import {NavigationProps} from '../../../../../share/interfaces';
 import basketStore from '../../../../../stores/BasketStore';
 import modalsStore from "../../../../../stores/ModalsStore";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
 import {SvgUri} from "react-native-svg";

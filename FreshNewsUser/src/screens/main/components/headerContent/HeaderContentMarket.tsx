@@ -47,7 +47,7 @@ export default class HeaderContentMarket extends React.Component<HeaderContentIn
                 >
                     <View style={{marginBottom: 30}}>
                         <Text style={styles.headerTitle}>
-                            Ринок
+                            Рынок
                         </Text>
                         <Text style={styles.headerName}>
                             {`<< ${this.props.name} >>`}

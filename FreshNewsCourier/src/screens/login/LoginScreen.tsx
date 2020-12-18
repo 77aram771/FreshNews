@@ -92,8 +92,8 @@ class LoginScreen extends React.Component<NavigationProps> {
                     })
                 })
                 .catch(err => {
-                    console.log(err);
-                    let error = toJS(String(courierStore.errorData));
+                    console.log('err----------', err);
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
                     console.log('errorCode', errorCode);
                     let errorData = {
@@ -140,8 +140,8 @@ class LoginScreen extends React.Component<NavigationProps> {
                     }
                 })
                 .catch(err => {
-                    console.log(err);
-                    let error = toJS(String(courierStore.errorData));
+                    console.log('err', err);
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
                     let errorData = {
                         status_code: errorCode,

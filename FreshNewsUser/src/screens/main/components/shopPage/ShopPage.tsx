@@ -15,7 +15,6 @@ import HeaderInfo from './HeaderInfo';
 import {ShopListItem} from './ShopListItem';
 import {FooterPanel} from './FooterPanel';
 import {
-    HEADER_HEIGHT, size16,
     size20,
     WINDOW_WIDTH,
 } from '../../../../share/consts';
@@ -23,12 +22,13 @@ import Modal from 'react-native-modal';
 import ProductPage from './productPage/ProductPage';
 import {toJS} from "mobx";
 import shopsStore from '../../../../stores/ShopsStore';
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import Header from "../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
 import basketStore from "../../../../stores/BasketStore";
+import AsyncStorage from "@react-native-community/async-storage";
+import {ModalDescription} from "./modal/ModalDescription";
 
 @observer
 export default // @ts-ignore
@@ -43,10 +43,14 @@ class ShopPage extends React.Component<NavigationProps> {
         // this.setState({
         //     refreshing: true
         // })
-        setTimeout(() => {
+        setTimeout(async () => {
             const {getShopInfo} = shopsStore;
-            const {getCartUserInfo} = basketStore;
-            getCartUserInfo();
+            let getToken = await AsyncStorage.getItem('Token');
+            console.log('getToken', getToken);
+            if (getToken !== null) {
+                const {getCartUserInfo} = basketStore;
+                await getCartUserInfo();
+            }
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
@@ -65,10 +69,13 @@ class ShopPage extends React.Component<NavigationProps> {
         // this.setState({
         //     refreshing: true
         // })
-        setTimeout(() => {
+        setTimeout(async () => {
             const {getShopInfo} = shopsStore;
-            const {getCartUserInfo} = basketStore;
-            getCartUserInfo();
+            let getToken = await AsyncStorage.getItem('Token');
+            if (getToken !== null) {
+                const {getCartUserInfo} = basketStore;
+                await getCartUserInfo();
+            }
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
@@ -85,8 +92,7 @@ class ShopPage extends React.Component<NavigationProps> {
 
     render() {
 
-        const {getShopInfo, isShowShopInformation, onShowShopInformation, getShopItem} = shopsStore;
-
+        const {getShopInfo, isShowShopInformation, isShowShopInformationModal, onShowShopInformation, onShowShopInformationModal, getShopItem} = shopsStore;
         const {background_image} = toJS(getShopInfo);
 
         return (
@@ -126,10 +132,20 @@ class ShopPage extends React.Component<NavigationProps> {
                                         navigation={this.props.navigation}
                                     />
                                 </Modal>
+                                <Modal
+                                    animationInTiming={400}
+                                    animationOutTiming={400}
+                                    onBackButtonPress={onShowShopInformationModal}
+                                    hideModalContentWhileAnimating={true}
+                                    backdropOpacity={0}
+                                    onBackdropPress={onShowShopInformationModal}
+                                    style={{margin: 0}}
+                                    isVisible={isShowShopInformationModal}
+                                >
+                                    <ModalDescription/>
+                                </Modal>
                                 <Header
-                                    style={{
-                                        width: WINDOW_WIDTH,
-                                    }}
+                                    style={{width: WINDOW_WIDTH}}
                                     headerLeft={
                                         <AntDesign
                                             onPress={() => this.props.navigation.goBack()}
@@ -209,7 +225,7 @@ class ShopPage extends React.Component<NavigationProps> {
                                                         fontFamily: MontserratSemiBold
                                                     }}
                                                 >
-                                                    Покозать ещё
+                                                    Показать ещё
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>

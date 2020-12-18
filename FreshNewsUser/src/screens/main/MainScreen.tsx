@@ -1,28 +1,19 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {Text, View, Platform} from 'react-native';
-import {GOOGLE_MAPS_APIKEY, WINDOW_WIDTH} from '../../share/consts';
+import {View, Platform} from 'react-native';
+import {GOOGLE_MAPS_APIKEY} from '../../share/consts';
 import MainHeader from '../../share/components/MainHeader';
 import basketStore from '../../stores/BasketStore';
 import userInfo from '../../stores/UserInfo';
 import shopsStore from '../../stores/ShopsStore';
 import paymentStore from "../../stores/PaymentStore";
-import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import Geocoder from 'react-native-geocoding';
 import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
-// import modalsStore from "../../stores/ModalsStore";
-// import CourierInformation from './components/sideBar/CourierInformation';
-// import LegalEntities from "./components/sideBar/LegalEntities";
-// import Delivery from "./components/sideBar/Delivery";
-// import QuestionsAndAnswers from "./components/sideBar/QuestionsAndAnswers";
-// import Feedback from "./components/sideBar/Feedback";
-// import TermsOfUse from './components/sideBar/TermsOfUse';
-// import Modal from 'react-native-modal';
+import * as Location from 'expo-location';
 import {toJS} from "mobx";
-import {MontserratSemiBold} from "../../share/fonts";
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 Notifications.setNotificationHandler({
@@ -51,8 +42,20 @@ export const MainScreen = ({navigation}: any) => {
 
     useEffect(() => {
         (async () => {
-            await getLocationAsync();
             let getToken = await AsyncStorage.getItem('Token');
+            const {status} = await Permissions.askAsync(Permissions.LOCATION);
+            if (status !== 'granted') {
+                setErrorMessage('Permission to access location was denied');
+            }
+            let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
+            const {latitude, longitude} = location.coords;
+            Geocoder.from(latitude, longitude)
+                .then((json: any) => {
+                    let addressComponent = json.results[5].formatted_address;
+                    // console.log('json', addressComponent);
+                    shopsStore.getAddressUser(addressComponent);
+                })
+                .catch((error: any) => console.warn(error));
             registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
             notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
                 setNotification(notification);
@@ -104,6 +107,7 @@ export const MainScreen = ({navigation}: any) => {
             }, 3000);
         }
     }
+
     async function registerForPushNotificationsAsync() {
         let token;
         if (Constants.isDevice) {
@@ -133,21 +137,18 @@ export const MainScreen = ({navigation}: any) => {
         return token;
     }
 
-    const getLocationAsync = async () => {
+    const getGeocodeAsync = async () => {
         const {status} = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
             setErrorMessage('Permission to access location was denied');
         }
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
         const {latitude, longitude} = location.coords;
-        setLocation({latitude, longitude})
-    };
-
-    const getGeocodeAsync = async () => {
-        Geocoder.from(location.latitude, location.longitude)
+        Geocoder.from(latitude, longitude)
             .then((json: any) => {
                 let addressComponent = json.results[5].formatted_address;
                 // console.log('json', addressComponent);
+                shopsStore.getAddressUser(addressComponent);
                 shopsStore.getUserAddress(addressComponent);
             })
             .catch((error: any) => console.warn(error));

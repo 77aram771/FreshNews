@@ -181,27 +181,31 @@ export default function App() {
 
     useEffect(() => {
         (async () => {
-            await SplashScreen.preventAutoHideAsync();
+            // await SplashScreen.preventAutoHideAsync();
             setTimeout(() => {
                 useIsReady(false)
             }, 5000)
         })()
     }, []);
 
-    if (isReady) {
-        return (
-            <View style={{flex: 1}}>
-                <Image
-                    source={require('./assets/splash.gif')}
-                    style={{
-                        width: WINDOW_WIDTH,
-                        height: WINDOW_HEIGHT,
-                    }}
-                    resizeMode={'center'}
-                />
-            </View>
-        );
+    if (Platform.OS === 'ios'){
+        if (isReady) {
+            return (
+                <View style={{flex: 1}}>
+                    <Image
+                        source={require('./assets/splash.gif')}
+                        style={{
+                            width: WINDOW_WIDTH,
+                            height: WINDOW_HEIGHT,
+                        }}
+                        resizeMode={'cover'}
+                    />
+                </View>
+            );
+        }
+
     }
+
     if (!fontsLoaded) {
         return <AppLoading/>;
     } else {

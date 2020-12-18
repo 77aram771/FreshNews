@@ -4,7 +4,7 @@ import {BarCodeScanner} from 'expo-barcode-scanner';
 import {WINDOW_WIDTH} from "../../share/consts";
 import {MontserratBold} from "../../share/fonts";
 
-export default function BarcodeScanner({navigation}) {
+export default function BarcodeScanner({navigation}: any) {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 

@@ -8,7 +8,6 @@ import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold}
 import Header from "../../../../share/components/Header";
 import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
 
@@ -107,7 +106,7 @@ class PurchaseHistory extends Component<NavigationProps> {
     };
 
     renderItem(item: any) {
-        console.log('item', toJS(item.items));
+        console.log('item ------', toJS(item.items));
         if (item.status === 1) {
             return (
                 <TouchableOpacity
@@ -920,7 +919,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                                                                         fontFamily: MontserratSemiBold
                                                                     }}
                                                                 >
-                                                                    Покозать ещё
+                                                                    Показать ещё
                                                                 </Text>
                                                             </View>
                                                         </TouchableOpacity>

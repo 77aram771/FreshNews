@@ -20,7 +20,13 @@ import {ClientAddress} from './ClientAddress';
 import {ActionButton} from '../../../share/components/ActionButton';
 import {PhoneComponent} from './PhoneComponent';
 import {showLocation} from "react-native-map-link";
+// @ts-ignore
+import call from 'react-native-phone-call'
 
+const args = {
+    number: '+79296014443', // String value with the number to call
+    prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
+}
 interface IProps {
     shopName: string;
     shopAddress: string;
@@ -36,6 +42,7 @@ interface IProps {
 }
 
 export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: any, bool: boolean }) => {
+
     const openMapUser = (address: any) => {
         showLocation({
             latitude: 38.8976763,
@@ -281,7 +288,7 @@ export const ListItemOrders = ({item, onPress, bool}: { item: IProps, onPress: a
                     alignItems: 'center',
                     marginTop: size16,
                 }}
-                onPress={() => alert('Связаться с менеджером')}
+                onPress={() => call(args).catch(console.error)}
                 text={'Связаться с менеджером'}
                 textStyle={{
                     color: '#000000',

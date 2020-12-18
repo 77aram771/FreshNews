@@ -15,7 +15,6 @@ import {ActionButton} from '../../share/components/ActionButton';
 import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import authStore from "../../stores/AuthStore";
 import basketStore from "../../stores/BasketStore";
@@ -29,7 +28,6 @@ import {ErrorModal} from "../main/components/modals/ErrorModal";
 import {toJS} from "mobx";
 import Header from "../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import {LogoAndTitle} from "../../share/components/LogoAndTitle";
 
 @observer
 export default // @ts-ignore
@@ -75,6 +73,7 @@ class LoginScreen extends React.Component<NavigationProps> {
             })
             request(Number(this.state.formattedValue))
                 .then(res => {
+                    console.log('res request', res)
                     if (res.status === 200) {
                         this.setState({
                             smsStatus: true
@@ -87,7 +86,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                 })
                 .catch(err => {
                     console.log(err);
-                    let error = toJS(String(shopsStore.errorData));
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
                     console.log('errorCode', errorCode);
                     let errorData = {
@@ -140,7 +139,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                 })
                 .catch(err => {
                     console.log(err);
-                    let error = toJS(String(shopsStore.errorData));
+                    let error = toJS(String(err));
                     let errorCode = error.substr(error.length - 3);
                     let errorData = {
                         status_code: errorCode,

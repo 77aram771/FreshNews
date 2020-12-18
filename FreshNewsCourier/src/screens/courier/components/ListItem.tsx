@@ -21,6 +21,13 @@ import {size14} from "../../../share/consts";
 import {MontserratMedium} from "../../../share/fonts";
 import {showLocation} from 'react-native-map-link'
 import courierStore from "../../../stores/CourierStore";
+// @ts-ignore
+import call from 'react-native-phone-call'
+
+const args = {
+    number: '+79296014443', // String value with the number to call
+    prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
+}
 
 interface IProps {
     shopName: string;
@@ -394,14 +401,13 @@ export const ListItem = (
                 }
                 <ActionButton
                     style={{
-                        // paddingVertical: 16,
                         backgroundColor: '#F5F4F4',
                         borderRadius: 10,
                         width: WINDOW_WIDTH * 0.9,
                         alignItems: 'center',
                         marginTop: size16,
                     }}
-                    onPress={() => alert('Связаться с менеджером')}
+                    onPress={() => call(args).catch(console.error)}
                     text={'Связаться с менеджером'}
                     textStyle={{
                         color: '#000000',

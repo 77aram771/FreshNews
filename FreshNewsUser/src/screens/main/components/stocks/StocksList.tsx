@@ -2,8 +2,7 @@ import React from 'react';
 import {FlatList, StyleSheet, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
-import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
-import {data} from '../../../../share/info';
+import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {size16, size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {NavigationProps} from '../../../../share/interfaces';
 import {HeaderText} from '../HeaderText';
@@ -23,6 +22,7 @@ interface ShopsListInterface {
 @observer
 export default class StocksList extends React.Component<ShopsListInterface, NavigationProps> {
 
+    // @ts-ignore
     state = {
         shopData: [],
         refreshing: true,
@@ -33,12 +33,16 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
             refreshing: true
         })
         setTimeout(() => {
-            if (toJS(shopsStore.getShopShares).shops.length > 0) {
-                this.setState({
-                    refreshing: false,
-                    shopData: toJS(shopsStore.getShopShares)
-                })
-            }
+            // if (toJS(shopsStore.getShopShares).shops.length > 0) {
+            //     this.setState({
+            //         refreshing: false,
+            //         shopData: toJS(shopsStore.getShopShares)
+            //     })
+            // }
+            this.setState({
+                refreshing: false,
+                shopData: toJS(shopsStore.getShopShares)
+            })
         }, 1000)
     };
 
@@ -54,8 +58,8 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
         }, 1000)
     };
 
-    handleNavigation(id: number) {
-        shopsStore.getShop(id)
+    async handleNavigation(id: number) {
+        await shopsStore.getShop(id)
         this.props.navigation.navigate('ShopPage')
     };
 
@@ -124,19 +128,23 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
                                     scrollEnabled={true}
                                     keyExtractor={item => item.id.toString()}
                                     showsVerticalScrollIndicator={true}
-                                    data={this.state.shopData.length === 0 ? data : this.state.shopData.shops}
-                                    renderItem={({item, index}) => (
-                                        <ShopsListItem
-                                            key={index}
-                                            logo={item.image}
-                                            time={item.time}
-                                            name={item.name}
-                                            rating={item.rating}
-                                            reviews={item.reviews_count}
-                                            backgroundImage={item.background_image}
-                                            onPressNavigation={() => this.handleNavigation(item.id)}
-                                        />
-                                    )}
+                                    data={this.state.shopData.shops}
+                                    renderItem={({item, index}) => {
+                                        console.log('item --', item);
+                                        return (
+                                            <ShopsListItem
+                                                key={index}
+                                                logo={item.image}
+                                                time={item.time}
+                                                name={item.name}
+                                                rating={item.rating}
+                                                categories={item.categories}
+                                                reviews={item.reviews_count}
+                                                backgroundImage={item.background_image}
+                                                onPressNavigation={() => this.handleNavigation(item.id)}
+                                            />
+                                        )
+                                    }}
                                     refreshControl={
                                         <RefreshControl
                                             refreshing={this.state.refreshing}
@@ -170,7 +178,7 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
                                                         fontFamily: MontserratSemiBold
                                                     }}
                                                 >
-                                                    Покозать ещё
+                                                    Показать ещё
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>

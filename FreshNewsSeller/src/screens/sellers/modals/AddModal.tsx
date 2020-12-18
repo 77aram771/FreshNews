@@ -1,74 +1,84 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, ScrollView, TextInput, Platform, KeyboardAvoidingView} from "react-native";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    ScrollView,
+    TextInput,
+    Platform,
+    Button
+} from "react-native";
 import {size34, WINDOW_HEIGHT, WINDOW_WIDTH} from "../../../share/consts";
 import Feather from "react-native-vector-icons/Feather";
 import {MontserratRegular} from "../../../share/fonts";
-import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
-import sellerStore from "../../../stores/SellerStore";
+import * as ImageManipulator from 'expo-image-manipulator';
+import { Asset } from 'expo-asset';
 
 export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
-    const placeholderWeight = {
-        label: 'Вес',
-        value: null,
-        color: '#9EA0A4',
-    };
-    const weightItems = [
-        {
-            label: '10',
-            value: '10',
-        },
-        {
-            label: '50',
-            value: '50',
-        },
-        {
-            label: '100',
-            value: '100',
-        },
-        {
-            label: '200',
-            value: '200',
-        },
-        {
-            label: '500',
-            value: '500',
-        },
-        {
-            label: '1000',
-            value: '1000',
-        },
-    ];
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [weight, setWeight] = useState('');
+    const [weight, setWeight] = useState(1000);
     const [description, setDescription] = useState('');
+    // const [image, setImage] = useState(null);
+    const [ready, setReady] = useState(false);
     const [image, setImage] = useState(null);
 
     useEffect(() => {
+        // (async () => {
+        //     if (Platform.OS !== 'web') {
+        //         const {status} = await ImagePicker.requestCameraRollPermissionsAsync();
+        //         if (status !== 'granted') {
+        //             alert('Sorry, we need camera roll permissions to make this work!');
+        //         }
+        //     }
+        // })();
         (async () => {
-            if (Platform.OS !== 'web') {
-                const {status} = await ImagePicker.requestCameraRollPermissionsAsync();
-                if (status !== 'granted') {
-                    alert('Sorry, we need camera roll permissions to make this work!');
-                }
-            }
+            const image = Asset.fromModule(require('../../../../assets/favicon.png'));
+            await image.downloadAsync();
+            setImage(image);
+            setReady(true);
         })();
     }, []);
+
+    const _rotate90andFlip = async () => {
+        const manipResult = await ImageManipulator.manipulateAsync(
+            image.localUri || image.uri,
+            [{ rotate: 90 }, { flip: ImageManipulator.FlipType.Vertical }],
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        );
+        setImage(manipResult);
+    };
+
+    const _renderImage = () => {
+        return (
+            <View
+                style={{
+                    marginVertical: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                <Image
+                    source={{ uri: image.localUri || image.uri }}
+                    style={{ width: 300, height: 300, resizeMode: 'contain' }}
+                />
+            </View>
+        );
+    };
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
         });
 
-        console.log('result', result);
+        console.log(result);
 
         if (!result.cancelled) {
             setImage(result.uri);
-            console.log('image', image);
         }
     };
 
@@ -176,6 +186,10 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                             Изменитъ картину
                         </Text>
                     </TouchableOpacity>
+                    <View style={{ flex: 1, justifyContent: 'center' }}>
+                        {ready && image && _renderImage()}
+                        <Button title="Rotate and Flip" onPress={_rotate90andFlip} />
+                    </View>
                 </View>
             </View>
             <ScrollView
@@ -227,7 +241,8 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                                     width: WINDOW_WIDTH / 1.22,
                                     height: 40,
                                     borderColor: 'gray',
-                                    borderWidth: 2
+                                    borderWidth: 2,
+                                    paddingLeft: 10
                                 }}
                                 onChangeText={text => Name(text)}
                                 value={name}
@@ -271,7 +286,8 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                                     width: WINDOW_WIDTH / 1.22,
                                     height: 40,
                                     borderColor: 'gray',
-                                    borderWidth: 2
+                                    borderWidth: 2,
+                                    paddingLeft: 10
                                 }}
                                 onChangeText={text => Price(text)}
                                 value={String(price)}
@@ -311,30 +327,20 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                                 justifyContent: "center"
                             }}
                         >
-                            <RNPickerSelect
-                                placeholder={placeholderWeight}
-                                items={weightItems}
-                                onValueChange={value => Weight(value)}
+                            <TextInput
                                 style={{
-                                    inputIOS: {
-                                        fontSize: 16,
-                                        width: WINDOW_WIDTH / 1.22,
-                                        height: 40,
-                                        borderColor: 'gray',
-                                        borderWidth: 2,
-                                        color: 'black',
-                                    },
-                                    inputAndroid: {
-                                        fontSize: 16,
-                                        width: WINDOW_WIDTH / 1.22,
-                                        height: 40,
-                                        borderColor: 'gray',
-                                        borderWidth: 2,
-                                        color: 'black',
-                                    },
+                                    width: WINDOW_WIDTH / 1.22,
+                                    height: 40,
+                                    borderColor: 'gray',
+                                    borderWidth: 2,
+                                    paddingLeft: 10,
+                                    backgroundColor: 'grey'
                                 }}
-                                value={weight}
-                                useNativeAndroidPickerStyle={false}
+                                // onChangeText={text => Price(text)}
+                                value={"1000 г."}
+                                placeholder={'Цена товара'}
+                                keyboardType={"number-pad"}
+                                editable={false}
                             />
                         </View>
                     </View>
@@ -376,6 +382,7 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                                     borderColor: 'gray',
                                     borderWidth: 2,
                                     width: WINDOW_WIDTH / 1.22,
+                                    paddingLeft: 10
                                 }}
                                 underlineColorAndroid="transparent"
                                 placeholder="Описание"

@@ -234,8 +234,8 @@ class HomeSellerPage extends Component<any, any> {
         return true;
     };
 
-    handleSaveAddItem = (name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
-        sellerStore.getAddItem(name, 1, weight, 'piece', price, description, image);
+    handleSaveAddItem = async (name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
+        await sellerStore.getAddItem(name, 1, weight, 'piece', price, description, image);
         setTimeout(() => {
             this.handleCloseAddModal();
             if (sellerStore.errorData !== null) {

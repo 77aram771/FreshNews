@@ -24,7 +24,6 @@ import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import * as Location from 'expo-location';
 import Pusher from 'pusher-js/react-native';
