@@ -80,13 +80,15 @@ export const ShopsListItem = ({
                                 )
                         }
                     </View>
-                    <View style={styles.timeContainer}>
-                        {
-                            time !== null && time !== undefined
-                                ? <Text style={styles.time}> {time} <Text style={styles.minutes}>мин.</Text></Text>
-                                : null
-                        }
-                    </View>
+                    {
+                        time !== null && time !== undefined
+                            ? (
+                                <View style={styles.timeContainer}>
+                                    <Text style={styles.time}> {time} <Text style={styles.minutes}>мин.</Text></Text>
+                                </View>
+                            )
+                            : null
+                    }
                 </View>
             </ImageBackground>
             <View style={styles.authorRatingContainer}>
@@ -105,7 +107,7 @@ export const ShopsListItem = ({
                         : (
                             categories.map((item: any, index: any) => {
                                     return (
-                                        <Text key={index} style={styles.category}>{`${item.name},  `  }</Text>
+                                        <Text key={index} style={styles.category}>{`${item.name},  `}</Text>
                                     )
                                 }
                             )

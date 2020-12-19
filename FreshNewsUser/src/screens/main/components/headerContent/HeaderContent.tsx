@@ -53,7 +53,6 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                     >
                         {
                             this.props.items.map((item: any) => {
-                                console.log('item ---', item);
                                 return (
                                     <TouchableOpacity
                                         onPress={() => this.props.navigation.navigate('MapPage', {
@@ -68,9 +67,6 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                             paddingTop: 15,
                                             paddingBottom: 15,
                                             backgroundColor: '#8CC83F',
-                                            // borderWidth: 1,
-                                            // borderColor: '#fff',
-                                            // borderStyle: 'solid'
                                         }}
                                     >
                                         <View
@@ -132,15 +128,12 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                     Москва
                                 </Text>
                                 <CustomInput
-                                    editable={true}
+                                    // editable={true}
                                     placeholder={'Куда доставляем?'}
                                     placeholderTextColor={'#7C7878'}
                                     leftIcon={true}
                                     style={{marginBottom: size18, marginTop: 46,}}
-                                    textInputStyle={{
-                                        textAlign: 'center',
-                                        paddingLeft: 0,
-                                    }}
+                                    textInputStyle={{textAlign: 'center', paddingLeft: 0}}
                                     getGeocodeAsync={() => this.props.getGeocodeAsync()}
                                     value={clientAddress}
                                     onChangeText={text => {onChangeClientAddress(text)}}

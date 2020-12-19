@@ -136,7 +136,6 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
                                     showsVerticalScrollIndicator={true}
                                     data={this.state.shopData.shops}
                                     renderItem={({item, index}) => {
-                                        console.log('item -----', item);
                                         return (
                                             <ShopsListItem
                                                 key={index}

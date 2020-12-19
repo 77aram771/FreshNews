@@ -21,58 +21,24 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
     const [price, setPrice] = useState('');
     const [weight, setWeight] = useState(1000);
     const [description, setDescription] = useState('');
-    // const [image, setImage] = useState(null);
-    const [ready, setReady] = useState(false);
     const [image, setImage] = useState(null);
 
     useEffect(() => {
-        // (async () => {
-        //     if (Platform.OS !== 'web') {
-        //         const {status} = await ImagePicker.requestCameraRollPermissionsAsync();
-        //         if (status !== 'granted') {
-        //             alert('Sorry, we need camera roll permissions to make this work!');
-        //         }
-        //     }
-        // })();
         (async () => {
-            const image = Asset.fromModule(require('../../../../assets/favicon.png'));
-            await image.downloadAsync();
-            setImage(image);
-            setReady(true);
+            if (Platform.OS !== 'web') {
+                const {status} = await ImagePicker.requestCameraRollPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
         })();
     }, []);
-
-    const _rotate90andFlip = async () => {
-        const manipResult = await ImageManipulator.manipulateAsync(
-            image.localUri || image.uri,
-            [{ rotate: 90 }, { flip: ImageManipulator.FlipType.Vertical }],
-            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
-        );
-        setImage(manipResult);
-    };
-
-    const _renderImage = () => {
-        return (
-            <View
-                style={{
-                    marginVertical: 20,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                <Image
-                    source={{ uri: image.localUri || image.uri }}
-                    style={{ width: 300, height: 300, resizeMode: 'contain' }}
-                />
-            </View>
-        );
-    };
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1,
         });
 
         console.log(result);
@@ -186,10 +152,6 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                             Изменитъ картину
                         </Text>
                     </TouchableOpacity>
-                    <View style={{ flex: 1, justifyContent: 'center' }}>
-                        {ready && image && _renderImage()}
-                        <Button title="Rotate and Flip" onPress={_rotate90andFlip} />
-                    </View>
                 </View>
             </View>
             <ScrollView

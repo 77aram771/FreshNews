@@ -11,6 +11,7 @@ import shopsStore from "../../../../stores/ShopsStore";
 import {PulseIndicator} from 'react-native-indicators';
 import {ShopMarketItem} from "./ShopMarketItem";
 import {ErrorModal} from "../modals/ErrorModal";
+// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import AsyncStorage from "@react-native-community/async-storage";
 
@@ -195,6 +196,26 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                                 getGeocodeAsync={() => this.props.getGeocodeAsync()}
                                                 items={this.state.items}
                                             />
+                                            {
+                                                shopsStore.loader
+                                                    ? (
+                                                        <View
+                                                            style={{
+                                                                flex: 1,
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center',
+                                                                alignContent: 'center',
+                                                                alignSelf: 'center',
+                                                            }}
+                                                        >
+                                                            <PulseIndicator
+                                                                size={100}
+                                                                color='#8CC83F'
+                                                            />
+                                                        </View>
+                                                    )
+                                                    : null
+                                            }
                                             <HeaderText title={'Акции'}/>
                                             <FlatList
                                                 style={{paddingTop: 25}}
@@ -203,7 +224,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                                 horizontal={true}
                                                 data={this.state.promo}
                                                 renderItem={({item}) => {
-                                                    console.log('item ----', item);
                                                     return (
                                                         <StocksListItem
                                                             keyIndex={item}

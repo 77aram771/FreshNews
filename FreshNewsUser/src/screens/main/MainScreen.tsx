@@ -48,6 +48,7 @@ export const MainScreen = ({navigation}: any) => {
                 setErrorMessage('Permission to access location was denied');
             }
             let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
+            console.log('Location', Location);
             const {latitude, longitude} = location.coords;
             Geocoder.from(latitude, longitude)
                 .then((json: any) => {

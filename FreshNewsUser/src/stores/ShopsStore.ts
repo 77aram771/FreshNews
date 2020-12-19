@@ -9,7 +9,6 @@ class ShopsStore {
     @observable clientAddress: string = '';
     @observable animatedValue = new Animated.Value(0);
     @observable isShowBackgroundInput: boolean = false;
-    @observable getShopLoader: boolean = false;
     @observable getShopData: any = [];
     @observable getShopSection: any = [];
     @observable getShopInfo: any = [];
@@ -21,8 +20,9 @@ class ShopsStore {
     @observable isShowAddCreditCart: boolean = false;
     @observable getShopItemInfo: any = [];
     @observable allOrders: any = [];
-    @observable userAddress: any = '';
+    @observable userAddress: string = '';
     @observable errorData: any = null;
+    @observable loader: any = false;
 
     @action
     selectCategory = (index: number) => {
@@ -30,13 +30,39 @@ class ShopsStore {
     };
 
     @action
-    onChangeClientAddress = (item: string) => {
-        this.clientAddress = item;
+    onChangeClientAddress = (address: string) => {
+        this.userAddress = '';
+        this.loader = true;
+        console.log('this.loader', this.loader);
+        this.clientAddress = address;
+        console.log('this.clientAddress', this.clientAddress);
+        if (this.clientAddress.length >= 3) {
+            setTimeout(() => {
+                console.log('this.loader', this.loader);
+                this.loader = false;
+                // this.getShops(1)
+            }, 3000)
+        } else {
+            this.loader = false;
+        }
     };
 
     @action
     getUserAddress = async (address: any) => {
-        this.clientAddress = address
+        this.userAddress = '';
+        this.loader = true;
+        console.log('this.loader', this.loader);
+        this.clientAddress = address;
+        console.log('this.clientAddress', this.clientAddress);
+        if (this.clientAddress.length >= 3) {
+            setTimeout(() => {
+                console.log('this.loader', this.loader);
+                this.loader = false;
+                // this.getShops(1)
+            }, 3000)
+        } else {
+            this.loader = false;
+        }
     };
 
     @action
@@ -87,14 +113,10 @@ class ShopsStore {
 
     @action
     getShop = async (id: number) => {
-        this.getShopLoader = true;
         this.getShopInfo = [];
         await axios.get(`${SERVER_BASE}/shop/${id}`)
             .then((res) => {
                 this.getShopInfo = res.data;
-                // if (this.getShopData.shops.data) {
-                //     this.getShopLoader = false;
-                // }
             })
             .catch((error) => {
                 console.log('error getShop', error);
@@ -104,38 +126,86 @@ class ShopsStore {
 
     @action
     getShops = async (id: number) => {
-        this.getShopLoader = true;
         this.getShopInfo = [];
-        console.log(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
-        await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
-            .then((res) => {
-                this.getShopsItem = res.data;
-            })
-            .catch((error) => {
-                console.log('error getShops', error);
-                this.errorData = error
-            })
+        if (this.clientAddress.length > 0) {
+            console.log(` clientAddress==>>   ${SERVER_BASE}/shops/${id}?address=${this.clientAddress}`)
+            await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.clientAddress}`)
+                .then((res) => {
+                    console.log('res.data this.clientAddress.length > 0', res.data);
+                    this.getShopsItem = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getShops', error);
+                    this.errorData = error
+                })
+        } else if (this.userAddress.length > 0) {
+            console.log(` userAddress==>>   ${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
+            await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
+                .then((res) => {
+                    console.log('res.data this.userAddress.length > 0', res.data);
+                    this.getShopsItem = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getShops', error);
+                    this.errorData = error
+                })
+        } else {
+            console.log(` not address ==>>   ${SERVER_BASE}/shops/${id}?address=${this.userAddress}`);
+            await axios.get(`${SERVER_BASE}/shops/${id}`)
+                .then((res) => {
+                    console.log('res.data not address ==>>', res.data);
+                    this.getShopsItem = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getShops', error);
+                    this.errorData = error
+                })
+        }
     }
 
     @action
     getPromoCode = async (id: number) => {
-        this.getShopLoader = true;
         this.getShopShares = [];
-        console.log(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`);
-        await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
-            .then((res) => {
-                this.getShopShares = res.data;
-            })
-            .catch((error) => {
-                console.log('error getPromoCode', error);
-                this.errorData = error
-            })
+        if (this.clientAddress.length > 0) {
+            console.log(` clientAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
+            await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
+                .then((res) => {
+                    console.log('res.data this.clientAddress.length > 0', res.data);
+                    this.getShopShares = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getPromoCode', error);
+                    this.errorData = error
+                })
+        } else if (this.userAddress.length > 0) {
+            console.log(` userAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
+            await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
+                .then((res) => {
+                    console.log('res.data this.userAddress.length > 0', res.data);
+                    this.getShopShares = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getPromoCode', error);
+                    this.errorData = error
+                })
+        } else {
+            console.log(` not address ==>>   ${SERVER_BASE}/promocode/${id}`)
+            await axios.get(`${SERVER_BASE}/promocode/${id}`)
+                .then((res) => {
+                    console.log('res.data not address ==>>', res.data);
+                    this.getShopShares = res.data;
+                })
+                .catch((error) => {
+                    console.log('error getPromoCode', error);
+                    this.errorData = error
+                })
+        }
     }
 
     @action
     getShopItem = (id: number) => {
         this.getShopItemInfo = [];
-        this.getShopItemInfo = toJS(this.getShopInfo).products.find(item => item.id === id)
+        this.getShopItemInfo = toJS(this.getShopInfo).products.find((item: any) => item.id === id)
         this.isShowShopInformation = !this.isShowShopInformation;
     }
 
@@ -162,10 +232,10 @@ class ShopsStore {
     @action
     getAllOrders = async () => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-
         axios.get(`${SERVER_BASE}/orders`, {headers})
             .then((res) => {
                 this.allOrders = res.data;
@@ -179,7 +249,6 @@ class ShopsStore {
     @action
     getAddressUser = async (address: any) => {
         this.userAddress = address;
-        console.log('userAddress', address)
     }
 }
 
