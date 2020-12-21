@@ -15,9 +15,7 @@ import {ActionButton} from '../../share/components/ActionButton';
 import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
-import courierStore from "../../stores/CourierStore";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {toJS} from "mobx";

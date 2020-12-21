@@ -95,7 +95,6 @@ export const ShopsListItem = ({
                 <View style={{flex: 10}}>
                     <Text style={styles.author}>{name}</Text>
                 </View>
-
                 <Text style={styles.rating}>{rating}</Text>
             </View>
             <View style={styles.categoryReviewsContainer}>

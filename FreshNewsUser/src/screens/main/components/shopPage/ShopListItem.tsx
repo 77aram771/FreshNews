@@ -11,7 +11,6 @@ import {size16, WINDOW_WIDTH} from '../../../../share/consts';
 import {MontserratSemiBold} from '../../../../share/fonts';
 
 export const ShopListItem = ({data}: { data: any; }) => {
-
     return (
         <View
             style={{
@@ -43,7 +42,7 @@ export const ShopListItem = ({data}: { data: any; }) => {
                             color: '#000000',
                         }}
                     >
-                        {data.price} <Text style={{color: '#8CC83F'}}>₽ за</Text>
+                        {parseInt(data.price.replace(/\s/g, ''))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
                     </Text>
                     <Text
                         style={{
@@ -52,7 +51,7 @@ export const ShopListItem = ({data}: { data: any; }) => {
                             color: '#000000',
                             marginLeft: 8,
                         }}>
-                        100 <Text style={{color: '#8CC83F'}}>гр.</Text>
+                        {data.weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
                     </Text>
                 </View>
             </View>

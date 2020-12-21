@@ -8,8 +8,8 @@ import basketStore from "../../../../../stores/BasketStore";
 
 export class FinishPaymentScreen extends Component<NavigationProps> {
 
-    componentDidMount() {
-        basketStore.getCartUserInfo()
+    async componentDidMount() {
+        await basketStore.getCartUserInfo()
         setTimeout(() => {
             this.props.navigation.navigate('PurchaseHistory')
         }, 3000)
@@ -29,7 +29,7 @@ export class FinishPaymentScreen extends Component<NavigationProps> {
                             color: '#FFFFFF',
                         }}
                     >
-                        Ваш заказ оплачен
+                        Курьер спешит к вам
                     </Text>
                 </LinearGradient>
             </View>

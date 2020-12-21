@@ -34,7 +34,6 @@ class FinishOfferPage extends Component<NavigationProps> {
                 refreshing: false,
                 shopData: toJS(paymentStore.order)
             }, () => {
-                console.log('shopData', this.state.shopData);
                 let allSum = this.state.shopData.items.reduce((a, v) => a = a + Math.ceil(parseInt(v.price.replace(/\s/g, ''))), 0)
                 console.log('allSum', allSum);
                 this.setState({
@@ -56,8 +55,6 @@ class FinishOfferPage extends Component<NavigationProps> {
             this.setState({
                 refreshing: false,
                 shopData: toJS(paymentStore.order)
-            }, () => {
-                console.log('shopData', this.state.shopData)
             })
         }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -162,7 +159,6 @@ class FinishOfferPage extends Component<NavigationProps> {
                             </>
                         )
                 }
-
                 {
                     this.props.navigation.state.params.status === 6
                         ? <View/>

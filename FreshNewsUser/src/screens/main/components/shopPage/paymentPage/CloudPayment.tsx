@@ -5,22 +5,29 @@ import {LinearGradient} from 'expo-linear-gradient';
 import {MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import shopsStore from "../../../../../stores/ShopsStore";
-import { toJS } from 'mobx';
+import {toJS} from 'mobx';
 import basketStore from "../../../../../stores/BasketStore";
 
 export class CloudPayment extends Component<NavigationProps> {
-
-    componentDidMount() {
-        const {getAllOrders, allOrders} = shopsStore;
-        const {getCartUserInfo} = basketStore;
-        getAllOrders();
-        getCartUserInfo()
-        setTimeout(() => {
+    async componentDidMount() {
+        setTimeout(async () => {
+            const {getAllOrders, allOrders} = shopsStore;
+            const {getCartUserInfo} = basketStore;
+            await getAllOrders();
+            await getCartUserInfo();
+            console.log('toJS(allOrders)[0].id----------------------------', toJS(allOrders)[0].id);
+        }, 3000)
+        setTimeout(async () => {
+            const {getAllOrders, allOrders} = shopsStore;
+            const {getCartUserInfo} = basketStore;
+            await getAllOrders();
+            await getCartUserInfo();
+            console.log('toJS(allOrders)[0].id----------------------------', toJS(allOrders)[0].id);
             this.props.navigation.navigate('FinishOfferPage', {
-                id: toJS(allOrders)[0].id + 1,
+                id: toJS(allOrders)[0].id,
                 statusText: 'Собирается'
             })
-        }, 3000)
+        }, 6000)
     }
 
     render() {

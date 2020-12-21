@@ -50,7 +50,7 @@ export default class ProductPage extends Component<intProductPage> {
         if(getToken === null){
             this.props.navigation.navigate('Login')
         }
-        basketStore.getAddCartUser(id, count)
+        await basketStore.getAddCartUser(id, count)
         shopsStore.onShowShopInformation()
         setTimeout(() => {
             this.props.refresh()
@@ -61,7 +61,7 @@ export default class ProductPage extends Component<intProductPage> {
 
         const {onShowShopInformation, getShopItemInfo} = shopsStore;
 
-        const {description, id, image, name, price} = toJS(getShopItemInfo);
+        const {description, id, image, name, price, weight} = toJS(getShopItemInfo);
 
         const {refresh} = this.props;
 
@@ -163,7 +163,7 @@ export default class ProductPage extends Component<intProductPage> {
                                         color: '#000000',
                                     }}
                                 >
-                                    {price} <Text style={{color: '#8CC83F'}}>₽ за</Text>
+                                    {parseInt(price.replace(/\s/g, ''))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
                                 </Text>
                                 <Text
                                     style={{
@@ -173,7 +173,7 @@ export default class ProductPage extends Component<intProductPage> {
                                         marginLeft: 8,
                                     }}
                                 >
-                                    100 <Text style={{color: '#8CC83F'}}>гр.</Text>
+                                    {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
                                 </Text>
                             </View>
                         </View>

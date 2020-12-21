@@ -18,7 +18,6 @@ import MapView, {Marker} from 'react-native-maps';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import Modal from 'react-native-modal';
 import ReviewModal from './ReviewModal';
-import {NavigationProps} from '../../../../../share/interfaces';
 import modalsStore from "../../../../../stores/ModalsStore";
 import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
@@ -34,7 +33,7 @@ const pusher_app_key = '0f88b1991b1342108a18';
 const pusher_app_cluster = 'eu';
 
 @observer
-export default class MapPage extends Component<NavigationProps> {
+export default class MapPage extends Component<{}, any> {
 
     constructor(props: any) {
         super(props);
@@ -45,7 +44,7 @@ export default class MapPage extends Component<NavigationProps> {
             deliveryTime: ''
         };
         this.mapView = null;
-    }
+    };
 
     async componentDidMount() {
         Pusher.logToConsole = true;
@@ -53,30 +52,30 @@ export default class MapPage extends Component<NavigationProps> {
             cluster: pusher_app_cluster,
             encrypted: true,
         });
-        let {status} = await Location.requestPermissionsAsync();
-        if (status !== 'granted') {
-            this.setState({
-                errorText: 'Permission to access location was denied'
-            })
-            await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-                accuracy: Location.Accuracy.Balanced,
-            });
-        }
-        let location = await Location.getCurrentPositionAsync({});
-        const userCoordinate = {
-            longitude: location.coords.longitude,
-            latitude: location.coords.latitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        }
-        this.setState({
-            userLocation: userCoordinate
-        });
+        // let {status} = await Location.requestPermissionsAsync();
+        // if (status !== 'granted') {
+        //     this.setState({
+        //         errorText: 'Permission to access location was denied'
+        //     })
+        //     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        //         accuracy: Location.Accuracy.Balanced,
+        //     });
+        // }
+        // let location = await Location.getCurrentPositionAsync({});
+        // const userCoordinate = {
+        //     longitude: location.coords.longitude,
+        //     latitude: location.coords.latitude,
+        //     latitudeDelta: 0.0922,
+        //     longitudeDelta: 0.0421,
+        // }
+        // this.setState({
+        //     userLocation: userCoordinate
+        // });
         this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
         this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
             this.getGeolocation(data)
         });
-    }
+    };
 
     async getGeolocation(data: any) {
         const courierCordinate = {
@@ -85,9 +84,16 @@ export default class MapPage extends Component<NavigationProps> {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         }
+        const userCoordinate = {
+            latitude: Number(data.last_point.lat),
+            longitude: Number(data.last_point.lon),
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        }
         setTimeout(() => {
             this.setState({
-                courierCordinate: courierCordinate
+                courierCordinate: courierCordinate,
+                userLocation: userCoordinate
             });
         }, 1000)
     };

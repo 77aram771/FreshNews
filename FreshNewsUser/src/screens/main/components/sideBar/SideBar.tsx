@@ -16,8 +16,6 @@ import {
 } from '../../../../share/consts';
 import {NavigationProps} from "../../../../share/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Icon from 'react-native-vector-icons/Ionicons';
-import {imagesPaths} from "../../../../share/info";
 import modalsStore from '../../../../stores/ModalsStore';
 import authStore from "../../../../stores/AuthStore";
 
@@ -90,12 +88,6 @@ class SideBar extends Component<NavigationProps, SideBarProps> {
         const {
             animatedValue,
             onChangeView,
-            onCloseViewAndShowCourierInformationModal,
-            onCloseViewAndShowLegalEntities,
-            onCloseViewAndShowDelivery,
-            onCloseViewAndShowQuestionsAndAnswers,
-            onCloseViewAndShowFeedback,
-            onCloseViewAndShowTermsOfUse,
             isShowSideBar
         } = modalsStore;
 
@@ -183,7 +175,7 @@ class SideBar extends Component<NavigationProps, SideBarProps> {
                                                 size={size16}
                                                 color={'#BABABA'}
                                             />
-                                            <Text style={styles.bottomMenuTitle}>Мои заказы</Text>
+                                            <Text style={styles.bottomMenuTitle}>Корзина</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={styles.bottomMenuContainer}
@@ -324,7 +316,6 @@ const styles = StyleSheet.create({
         paddingLeft: 16,
         fontFamily: MontserratRegular,
     },
-
     bottomMenuTitle2: {
         fontSize: size16,
         color: '#fff',
@@ -339,7 +330,6 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#F5F4F4'
     },
-
     footerButton1: {
         width: '50%',
         flexDirection: 'row',
@@ -348,7 +338,6 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#F5F4F4'
     },
-
     footerButton2: {
         width: '50%',
         flexDirection: 'row',
@@ -357,7 +346,6 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#eeeded'
     },
-
     footerButton3: {
         width: '50%',
         flexDirection: 'row',

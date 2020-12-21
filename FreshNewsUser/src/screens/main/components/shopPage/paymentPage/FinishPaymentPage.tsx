@@ -11,23 +11,13 @@ import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {CustomInput} from '../../../../../share/components/CustomInput';
-import {
-    size14,
-    size16,
-    size20,
-    size32,
-    size44, WINDOW_WIDTH,
-} from '../../../../../share/consts';
+import {size16, size20, size44, WINDOW_WIDTH} from '../../../../../share/consts';
 import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {NavigationProps} from '../../../../../share/interfaces';
 import {PaymentElement} from './PaymentElement';
 import paymentStore from "../../../../../stores/PaymentStore";
-import RNPickerSelect from "react-native-picker-select";
-import userInfo from "../../../../../stores/UserInfo";
-import {toJS} from "mobx";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/Fontisto';
-import {TextInput} from 'react-native-gesture-handler';
 import basketStore from "../../../../../stores/BasketStore";
 
 let moment = require('moment');
@@ -37,17 +27,6 @@ export default // @ts-ignore
 class FinishPaymentPage extends Component<NavigationProps> {
 
     state = {
-        address: '',
-        porch: '',
-        level: '',
-        apartment: '',
-        intercom: '',
-        messageToCourier: '',
-        addressInput: false,
-        porchInput: false,
-        levelInput: false,
-        apartmentInput: false,
-        intercomInput: false,
         disabledBool: true,
         promotionalCode: '',
         selectAddress: '',
@@ -61,197 +40,18 @@ class FinishPaymentPage extends Component<NavigationProps> {
         cardCVC: '',
     };
 
-    componentDidMount() {
-        basketStore.getCartUserInfo()
+    async componentDidMount() {
+        await basketStore.getCartUserInfo()
         const NewDate = moment().format('YYYY-MM-DD');
         const NewTime = moment().format('HH:mm');
         this.setState({
             date: NewDate,
             time: NewTime
         });
-        // userInfo.getUserData();
-        // const {userData} = userInfo;
-        // const {addresses} = userData;
-        // addresses.map((item: any) => {
-        //     this.state.addressArray.push({
-        //         label: toJS(item.address),
-        //         value: toJS(item.address),
-        //     })
-        // });
-        // addresses.find((item: any) => {
-        //     if (item.address === paymentStore.selectAddress) {
-        //         this.setState({
-        //             selectAddress: item.address
-        //         })
-        //     }
-        // });
-        // const {orderUserTime} = paymentStore;
-        // orderUserTime();
     };
 
-    handleValidationAddress(value: string) {
-        if (value.length === 0) {
-            this.setState({
-                addressInput: false,
-                address: value,
-                disabledBool: true
-            })
-        } else {
-            this.setState({
-                address: value,
-                addressInput: true,
-            })
-        }
-
-        if (this.state.addressInput) {
-            if (this.state.porchInput) {
-                if (this.state.levelInput) {
-                    if (this.state.apartmentInput) {
-                        if (this.state.intercomInput) {
-                            this.setState({
-                                disabledBool: false
-                            })
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    handleValidationPorch(value: string) {
-        if (value.length === 0) {
-            this.setState({
-                porchInput: false,
-                porch: value,
-                disabledBool: true
-            })
-        } else {
-            this.setState({
-                porch: value,
-                porchInput: true,
-            })
-        }
-
-        if (this.state.addressInput) {
-            if (this.state.porchInput) {
-                if (this.state.levelInput) {
-                    if (this.state.apartmentInput) {
-                        if (this.state.intercomInput) {
-                            this.setState({
-                                disabledBool: false
-                            })
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    handleValidationLevel(value: string) {
-        if (value.length === 0) {
-            this.setState({
-                levelInput: false,
-                level: value,
-                disabledBool: true
-            })
-        } else {
-            this.setState({
-                level: value,
-                levelInput: true,
-            })
-        }
-
-        if (this.state.addressInput) {
-            if (this.state.porchInput) {
-                if (this.state.levelInput) {
-                    if (this.state.apartmentInput) {
-                        if (this.state.intercomInput) {
-                            this.setState({
-                                disabledBool: false
-                            })
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    handleValidationApartment(value: string) {
-        if (value.length === 0) {
-            this.setState({
-                apartmentInput: false,
-                apartment: value,
-            })
-        } else {
-            this.setState({
-                apartment: value,
-                apartmentInput: true,
-            })
-        }
-
-        if (this.state.addressInput) {
-            if (this.state.porchInput) {
-                if (this.state.levelInput) {
-                    if (this.state.apartmentInput) {
-                        if (this.state.intercomInput) {
-                            this.setState({
-                                disabledBool: false
-                            })
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    handleValidationIntercom(value: string) {
-        if (value.length === 0) {
-            this.setState({
-                intercomInput: false,
-                intercom: value,
-            })
-        } else {
-            this.setState({
-                intercom: value,
-                intercomInput: true,
-            })
-        }
-
-        if (this.state.addressInput) {
-            if (this.state.porchInput) {
-                if (this.state.levelInput) {
-                    if (this.state.apartmentInput) {
-                        if (this.state.intercomInput) {
-                            this.setState({
-                                disabledBool: false
-                            })
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    handleSelectAddress(value: string) {
-        if (value) {
-            this.setState({
-                selectAddress: value,
-            }, () => {
-                if (this.state.selectAddress.length > 0) {
-                    this.setState({
-                        disabledBool: false
-                    })
-                }
-            });
-        } else {
-            this.setState({
-                selectAddress: '',
-            })
-        }
-    };
-
-    handlePayment() {
-        paymentStore.finishPayment(this.props.navigation.state.params.id, paymentStore.isSelectedPayment)
+    async handlePayment() {
+        await paymentStore.finishPayment(this.props.navigation.state.params.id, paymentStore.isSelectedPayment)
         this.props.navigation.navigate('FinishPaymentScreen')
     };
 
@@ -297,18 +97,16 @@ class FinishPaymentPage extends Component<NavigationProps> {
     };
 
     handleValidationCardDate(value: any) {
-        let reg = /(0[1-9]|1[0-2])\/[0-9]{2}/;
+        // let reg = /(0[1-9]|1[0-2])\/[0-9]{2}/;
         if (value.indexOf('.') >= 0 || value.length > 5) {
             return;
         }
-
         if (value.length === 2 && this.state.cardDate.length === 1) {
             value += '/'
         }
         this.setState({
             cardDate: value
         });
-
     };
 
     handleValidationCardCVC(value: any) {
@@ -319,11 +117,6 @@ class FinishPaymentPage extends Component<NavigationProps> {
     };
 
     render() {
-        const placeholder = {
-            label: 'Выберите один из адресов',
-            value: null,
-            color: '#9EA0A4',
-        };
         const cards = [
             {
                 label: '41111111111111',
@@ -339,17 +132,6 @@ class FinishPaymentPage extends Component<NavigationProps> {
             },
         ];
         const {
-            address,
-            porch,
-            level,
-            apartment,
-            intercom,
-            messageToCourier,
-            addressInput,
-            porchInput,
-            levelInput,
-            apartmentInput,
-            intercomInput,
             disabledBool,
             promotionalCode,
             card,
@@ -651,190 +433,6 @@ class FinishPaymentPage extends Component<NavigationProps> {
                                 }}
                             />
                         </>
-                        {/*<Text*/}
-                        {/*    style={{*/}
-                        {/*        color: '#BABABA',*/}
-                        {/*        fontFamily: MontserratSemiBold,*/}
-                        {/*        fontSize: size20,*/}
-                        {/*        marginBottom: 20*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    Адрес доставки*/}
-                        {/*</Text>*/}
-                        {/*<RNPickerSelect*/}
-                        {/*    placeholder={placeholder}*/}
-                        {/*    items={this.state.addressArray}*/}
-                        {/*    onValueChange={value => this.handleSelectAddress(value)}*/}
-                        {/*    style={pickerSelectStyles}*/}
-                        {/*    value={this.state.selectAddress}*/}
-                        {/*    useNativeAndroidPickerStyle={false}*/}
-                        {/*/>*/}
-                        {/*{*/}
-                        {/*    this.state.selectAddress*/}
-                        {/*        ? <View/>*/}
-                        {/*        : (*/}
-                        {/*            <>*/}
-                        {/*                <Text*/}
-                        {/*                    style={{*/}
-                        {/*                        fontSize: size12,*/}
-                        {/*                        fontFamily: MontserratRegular,*/}
-                        {/*                        paddingTop: 36,*/}
-                        {/*                        color: '#000000',*/}
-                        {/*                    }}*/}
-                        {/*                >*/}
-                        {/*                    Адрес*/}
-                        {/*                </Text>*/}
-                        {/*                <CustomInput*/}
-                        {/*                    value={address}*/}
-                        {/*                    onChangeText={value => this.handleValidationAddress(value)}*/}
-                        {/*                    textInputStyle={{flex: 1}}*/}
-                        {/*                    style={{*/}
-                        {/*                        justifyContent: 'flex-start',*/}
-                        {/*                        marginTop: 16,*/}
-                        {/*                        height: 48*/}
-                        {/*                    }}*/}
-                        {/*                />*/}
-                        {/*                <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>*/}
-                        {/*                    <Text*/}
-                        {/*                        style={{*/}
-                        {/*                            fontFamily: MontserratBold*/}
-                        {/*                        }}*/}
-                        {/*                    >*/}
-                        {/*                        Пример: {' '}*/}
-                        {/*                        <Text*/}
-                        {/*                            style={{*/}
-                        {/*                                fontFamily: MontserratSemiBold*/}
-                        {/*                            }}*/}
-                        {/*                        >Москва ул. Тверская 11</Text></Text>*/}
-                        {/*                </View>*/}
-                        {/*                <View*/}
-                        {/*                    style={{*/}
-                        {/*                        flexDirection: 'row',*/}
-                        {/*                        justifyContent: 'space-between',*/}
-                        {/*                        paddingTop: size44,*/}
-                        {/*                    }}*/}
-                        {/*                >*/}
-                        {/*                    <View>*/}
-                        {/*                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>*/}
-                        {/*                            Подъезд{'    '}*/}
-                        {/*                        </Text>*/}
-                        {/*                        <CustomInput*/}
-                        {/*                            keyboardType={'numeric'}*/}
-                        {/*                            maxLength={3}*/}
-                        {/*                            value={porch}*/}
-                        {/*                            onChangeText={value => this.handleValidationPorch(value)}*/}
-                        {/*                            textInputStyle={{*/}
-                        {/*                                flex: 1,*/}
-                        {/*                                textAlign: 'center',*/}
-                        {/*                                fontFamily: MontserratRegular,*/}
-                        {/*                                fontSize: size16,*/}
-                        {/*                                paddingHorizontal: 6,*/}
-                        {/*                            }}*/}
-                        {/*                            style={{*/}
-                        {/*                                justifyContent: 'flex-start',*/}
-                        {/*                                marginTop: 16,*/}
-                        {/*                                height: 48*/}
-                        {/*                            }}*/}
-                        {/*                        />*/}
-                        {/*                    </View>*/}
-                        {/*                    <View>*/}
-                        {/*                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>*/}
-                        {/*                            Этаж{'          '}*/}
-                        {/*                        </Text>*/}
-                        {/*                        <CustomInput*/}
-                        {/*                            keyboardType={'numeric'}*/}
-                        {/*                            maxLength={3}*/}
-                        {/*                            value={level}*/}
-                        {/*                            onChangeText={value => this.handleValidationLevel(value)}*/}
-                        {/*                            textInputStyle={{*/}
-                        {/*                                flex: 1,*/}
-                        {/*                                textAlign: 'center',*/}
-                        {/*                                fontFamily: MontserratRegular,*/}
-                        {/*                                fontSize: size16,*/}
-                        {/*                                paddingHorizontal: 8,*/}
-                        {/*                            }}*/}
-                        {/*                            style={{*/}
-                        {/*                                justifyContent: 'flex-start',*/}
-                        {/*                                marginTop: 16,*/}
-                        {/*                                height: 48*/}
-                        {/*                            }}*/}
-                        {/*                        />*/}
-                        {/*                    </View>*/}
-                        {/*                    <View>*/}
-                        {/*                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>*/}
-                        {/*                            Квартира{'     '}*/}
-                        {/*                        </Text>*/}
-                        {/*                        <CustomInput*/}
-                        {/*                            keyboardType={'numeric'}*/}
-                        {/*                            maxLength={4}*/}
-                        {/*                            value={apartment}*/}
-                        {/*                            onChangeText={value => this.handleValidationApartment(value)}*/}
-                        {/*                            textInputStyle={{*/}
-                        {/*                                flex: 1,*/}
-                        {/*                                textAlign: 'center',*/}
-                        {/*                                fontFamily: MontserratRegular,*/}
-                        {/*                                fontSize: size16,*/}
-                        {/*                                paddingHorizontal: 8,*/}
-                        {/*                            }}*/}
-                        {/*                            style={{*/}
-                        {/*                                justifyContent: 'flex-start',*/}
-                        {/*                                marginTop: 16,*/}
-                        {/*                                height: 48*/}
-                        {/*                            }}*/}
-                        {/*                        />*/}
-                        {/*                    </View>*/}
-                        {/*                    <View>*/}
-                        {/*                        <Text style={{fontSize: size12, fontFamily: MontserratRegular}}>*/}
-                        {/*                            Домофон{'     '}*/}
-                        {/*                        </Text>*/}
-                        {/*                        <CustomInput*/}
-                        {/*                            //keyboardType={'numeric'}*/}
-                        {/*                            maxLength={4}*/}
-                        {/*                            value={intercom}*/}
-                        {/*                            onChangeText={value => this.handleValidationIntercom(value)}*/}
-                        {/*                            textInputStyle={{*/}
-                        {/*                                flex: 1,*/}
-                        {/*                                paddingHorizontal: 4,*/}
-                        {/*                                textAlign: 'center',*/}
-                        {/*                                fontFamily: MontserratRegular,*/}
-                        {/*                                fontSize: size16,*/}
-                        {/*                            }}*/}
-                        {/*                            style={{*/}
-                        {/*                                justifyContent: 'flex-start',*/}
-                        {/*                                marginTop: 16,*/}
-                        {/*                                height: 48*/}
-                        {/*                            }}*/}
-                        {/*                        />*/}
-                        {/*                    </View>*/}
-                        {/*                </View>*/}
-                        {/*            </>*/}
-                        {/*        )*/}
-                        {/*}*/}
-                        {/*<Text*/}
-                        {/*    style={{*/}
-                        {/*        fontSize: size16,*/}
-                        {/*        fontFamily: MontserratRegular,*/}
-                        {/*        paddingTop: size44,*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    Сообщение для курьера*/}
-                        {/*</Text>*/}
-                        {/*<CustomInput*/}
-                        {/*    multiline={true}*/}
-                        {/*    numberOfLines={3}*/}
-                        {/*    value={messageToCourier}*/}
-                        {/*    onChangeText={value => this.setState({messageToCourier: value})}*/}
-                        {/*    textInputStyle={{*/}
-                        {/*        flex: 1,*/}
-                        {/*        fontFamily: MontserratRegular,*/}
-                        {/*        fontSize: size12,*/}
-                        {/*    }}*/}
-                        {/*    style={{*/}
-                        {/*        justifyContent: 'flex-start',*/}
-                        {/*        marginTop: 16,*/}
-                        {/*        height: WINDOW_WIDTH / 4,*/}
-                        {/*    }}*/}
-                        {/*/>*/}
                     </ScrollView>
                     <View
                         style={{
@@ -902,26 +500,4 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
     },
 });
-// const pickerSelectStyles = StyleSheet.create({
-//     inputIOS: {
-//         fontSize: 16,
-//         paddingVertical: 12,
-//         paddingHorizontal: 10,
-//         borderWidth: 1,
-//         borderColor: 'gray',
-//         borderRadius: 4,
-//         color: 'black',
-//         paddingRight: 30, // to ensure the text is never behind the icon
-//     },
-//     inputAndroid: {
-//         fontSize: 16,
-//         paddingHorizontal: 10,
-//         paddingVertical: 8,
-//         borderWidth: 0.5,
-//         borderColor: 'purple',
-//         borderRadius: 8,
-//         color: 'black',
-//         paddingRight: 30, // to ensure the text is never behind the icon
-//     },
-// });
 
