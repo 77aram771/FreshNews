@@ -15,6 +15,7 @@ import modalsStore from "../../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
 import {SvgUri} from "react-native-svg";
+import _ from 'lodash';
 
 @observer
 export default // @ts-ignore
@@ -29,10 +30,8 @@ class BasketPage extends Component<NavigationProps> {
 
     async componentDidMount() {
         const {getCartUserInfo, cartUserInfo} = basketStore;
-        await getCartUserInfo()
-        this.setState({
-            refreshing: true
-        });
+        await getCartUserInfo();
+        this.setState({refreshing: true});
         setTimeout(() => {
             this.setState({
                 refreshing: false,
@@ -47,10 +46,8 @@ class BasketPage extends Component<NavigationProps> {
 
     async onRefresh() {
         const {getCartUserInfo, cartUserInfo} = basketStore;
-        await getCartUserInfo()
-        this.setState({
-            refreshing: true
-        });
+        await getCartUserInfo();
+        this.setState({refreshing: true});
         setTimeout(() => {
             this.setState({
                 refreshing: false,
@@ -145,46 +142,48 @@ class BasketPage extends Component<NavigationProps> {
                                                     keyExtractor={item => item.id.toString()}
                                                     showsVerticalScrollIndicator={true}
                                                     data={this.state.shopData}
-                                                    renderItem={({item, index}) => (
-                                                        <BasketListItem
-                                                            index={productCount}
-                                                            key={index}
-                                                            data={item}
-                                                            onRefresh={() => this.onRefresh()}
-                                                        />
-                                                    )}
+                                                    renderItem={({item, index}) => {
+                                                        return (
+                                                            <BasketListItem
+                                                                index={productCount}
+                                                                key={index}
+                                                                data={item}
+                                                                onRefresh={() => this.onRefresh()}
+                                                            />
+                                                        )
+                                                    }}
                                                     ListFooterComponent={
                                                         <>
                                                             {
                                                                 this.state.shopData.length < 2
                                                                     ? (
                                                                         <>
-                                                                            <View
-                                                                                style={{
-                                                                                    flexDirection: 'row',
-                                                                                    justifyContent: 'space-between',
-                                                                                    paddingHorizontal: 16,
-                                                                                    paddingTop: 30,
-                                                                                    paddingBottom: size34 * 2,
-                                                                                }}
-                                                                            >
-                                                                                <Text
-                                                                                    style={{
-                                                                                        fontFamily: MontserratSemiBold,
-                                                                                        fontSize: size16
-                                                                                    }}
-                                                                                >
-                                                                                    Доставка
-                                                                                </Text>
-                                                                                <Text
-                                                                                    style={{
-                                                                                        fontFamily: MontserratRegular,
-                                                                                        fontSize: size20
-                                                                                    }}
-                                                                                >
-                                                                                    99 <Text style={{color: '#8CC83F'}}>₽</Text>
-                                                                                </Text>
-                                                                            </View>
+                                                                            {/*<View*/}
+                                                                            {/*    style={{*/}
+                                                                            {/*        flexDirection: 'row',*/}
+                                                                            {/*        justifyContent: 'space-between',*/}
+                                                                            {/*        paddingHorizontal: 16,*/}
+                                                                            {/*        paddingTop: 30,*/}
+                                                                            {/*        paddingBottom: size34 * 2,*/}
+                                                                            {/*    }}*/}
+                                                                            {/*>*/}
+                                                                            {/*    <Text*/}
+                                                                            {/*        style={{*/}
+                                                                            {/*            fontFamily: MontserratSemiBold,*/}
+                                                                            {/*            fontSize: size16*/}
+                                                                            {/*        }}*/}
+                                                                            {/*    >*/}
+                                                                            {/*        Доставка*/}
+                                                                            {/*    </Text>*/}
+                                                                            {/*    <Text*/}
+                                                                            {/*        style={{*/}
+                                                                            {/*            fontFamily: MontserratRegular,*/}
+                                                                            {/*            fontSize: size20*/}
+                                                                            {/*        }}*/}
+                                                                            {/*    >*/}
+                                                                            {/*        99 <Text style={{color: '#8CC83F'}}>₽</Text>*/}
+                                                                            {/*    </Text>*/}
+                                                                            {/*</View>*/}
                                                                             <View
                                                                                 style={{
                                                                                     flexDirection: 'row',
@@ -194,23 +193,27 @@ class BasketPage extends Component<NavigationProps> {
                                                                                     flex: 1,
                                                                                 }}
                                                                             >
-                                                                                <Text style={{
-                                                                                    fontFamily: MontserratRegular,
-                                                                                    fontSize: size16
-                                                                                }}>
+                                                                                <Text
+                                                                                    style={{
+                                                                                        fontFamily: MontserratRegular,
+                                                                                        fontSize: size16
+                                                                                    }}
+                                                                                >
                                                                                     Время доставки
                                                                                 </Text>
                                                                                 <Text
                                                                                     style={{
                                                                                         fontFamily: MontserratSemiBold,
                                                                                         fontSize: size20
-                                                                                    }}>
+                                                                                    }}
+                                                                                >
                                                                                     25-30{' '}
                                                                                     <Text
                                                                                         style={{
                                                                                             color: '#8CC83F',
                                                                                             fontFamily: MontserratRegular
-                                                                                        }}>
+                                                                                        }}
+                                                                                    >
                                                                                         мин
                                                                                     </Text>
                                                                                 </Text>
@@ -238,7 +241,8 @@ class BasketPage extends Component<NavigationProps> {
                                                                                         fontSize: size20
                                                                                     }}
                                                                                 >
-                                                                                    {Math.ceil(allPrice) + this.state.deliveryPrice}
+                                                                                    {/*{Math.ceil(allPrice) + this.state.deliveryPrice}*/}
+                                                                                    {Math.ceil(allPrice)}
                                                                                     <Text
                                                                                         style={{
                                                                                             color: '#8CC83F',
@@ -284,6 +288,15 @@ class BasketPage extends Component<NavigationProps> {
                                                                         width: WINDOW_WIDTH - 20,
                                                                     }}
                                                                 >
+                                                                    {/*<Text*/}
+                                                                    {/*    style={{*/}
+                                                                    {/*        fontFamily: MontserratSemiBold,*/}
+                                                                    {/*        fontSize: 16,*/}
+                                                                    {/*        color: 'red'*/}
+                                                                    {/*    }}*/}
+                                                                    {/*>*/}
+                                                                    {/*    Цена*/}
+                                                                    {/*</Text>*/}
                                                                     <Text
                                                                         style={{
                                                                             fontFamily: MontserratSemiBold,
@@ -291,7 +304,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: 'red'
                                                                         }}
                                                                     >
-                                                                        Цена
+                                                                        Магазин
                                                                     </Text>
                                                                     <Text
                                                                         style={{
@@ -323,8 +336,9 @@ class BasketPage extends Component<NavigationProps> {
                                                                     }}
                                                                 >
                                                                     {
-                                                                        toJS(this.state.shopData).map((item, index) => {
-                                                                            let img = item.product.shop.image.substr(item.product.shop.image.length - 3);
+                                                                        basketStore.stackItem.map((item: any, index: any) => {
+                                                                            console.log('item', toJS(item));
+                                                                            let img = item.image[0].substr(item.image[0].length - 3);
                                                                             return (
                                                                                 <View
                                                                                     key={index}
@@ -349,22 +363,22 @@ class BasketPage extends Component<NavigationProps> {
                                                                                                 ? <SvgUri
                                                                                                     width="30"
                                                                                                     height="30"
-                                                                                                    uri={item.product.shop.image}
+                                                                                                    uri={item.image[0]}
                                                                                                     style={{marginRight: 5}}
                                                                                                 />
                                                                                                 : <Image
-                                                                                                    resizeMode={'contain'}
-                                                                                                    source={{uri: item.product.shop.image}}
+                                                                                                    resizeMode={'cover'}
+                                                                                                    source={{uri: item.image[0]}}
                                                                                                     style={{
                                                                                                         width: 30,
                                                                                                         height: 30,
+                                                                                                        marginRight: 5
                                                                                                     }}
                                                                                                 />
                                                                                         }
-                                                                                        <Text>{Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * parseInt(item.quantity)} р.</Text>
+                                                                                        <Text>{item.marketName}</Text>
                                                                                     </View>
-                                                                                    <Text>{this.state.deliveryPrice} р.</Text>
-                                                                                    <Text>{parseInt(this.state.deliveryPrice) + (Math.ceil(parseInt(item.price.replace(/\s/g, ''))) * parseInt(item.quantity))} р.</Text>
+                                                                                    <Text>{item.marketPrice} р.</Text>
                                                                                 </View>
                                                                             )
                                                                         })
@@ -394,7 +408,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        {`${parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice)} р.`}
+                                                                        {`${this.state.deliveryPrice} р.`}
                                                                     </Text>
                                                                     <Text
                                                                         style={{
@@ -403,7 +417,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             color: '#000'
                                                                         }}
                                                                     >
-                                                                        {`${parseInt(basketStore.allPrice) + (parseInt(this.state.itemQuantity) * parseInt(this.state.deliveryPrice))}`} р.
+                                                                        {`${Math.ceil(parseInt(basketStore.allPrice)) + this.state.deliveryPrice} р.`}
                                                                     </Text>
                                                                 </View>
                                                             </View>
@@ -455,19 +469,24 @@ class BasketPage extends Component<NavigationProps> {
             </View>
         );
     }
+
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#FFFFFF',
-        flex: 1,
-    },
-    header: {
-        paddingTop: size16,
-    },
-    headerMiddleTitle: {
-        fontFamily: MontserratRegular,
-        fontSize: size20,
-        color: '#000000',
-    },
-});
+        container: {
+            backgroundColor: '#FFFFFF',
+            flex: 1,
+        }
+        ,
+        header: {
+            paddingTop: size16,
+        }
+        ,
+        headerMiddleTitle: {
+            fontFamily: MontserratRegular,
+            fontSize: size20,
+            color: '#000000',
+        }
+        ,
+    }
+);

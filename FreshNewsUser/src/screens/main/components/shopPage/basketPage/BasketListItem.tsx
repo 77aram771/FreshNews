@@ -1,20 +1,20 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {size16, size20} from '../../../../../share/consts';
 import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-// @ts-ignore
 import {observer} from 'mobx-react';
 import basketStore from "../../../../../stores/BasketStore";
-import {toJS} from "mobx";
+import {SvgUri} from "react-native-svg";
 
 @observer
 export default // @ts-ignore
 class BasketListItem extends Component<{
-    data: { id: number, name: string; price: string; productCount: number, weight: number, quantity: number };
+    data: { id: number, name: string; price: string; productCount: number, weight: number, quantity: number, product: object };
     index: number;
     onRefresh?: any
 }> {
+
     state = {
         itemQuantity: 0,
     }
@@ -50,15 +50,38 @@ class BasketListItem extends Component<{
 
     render() {
         const {id, weight, product} = this.props.data;
+        const {image} = product;
+        let img = image.substr(image.length - 3);
         return (
             <View style={styles.rowInfoContainer}>
                 <View style={{flexDirection: 'column', flex: 2, paddingLeft: 8}}>
-                    <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
-                        {product.name}
-                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        {
+                            img === 'svg'
+                                ? <SvgUri
+                                    width="30"
+                                    height="30"
+                                    uri={image}
+                                    style={{marginRight: 5}}
+                                />
+                                : <Image
+                                    resizeMode={'cover'}
+                                    source={{uri:image}}
+                                    style={{
+                                        width: 30,
+                                        height: 30,
+                                        marginRight: 5
+                                    }}
+                                />
+                        }
+                        <Text style={{fontFamily: MontserratSemiBold, fontSize: size16}}>
+                            {product.name}
+                        </Text>
+                    </View>
                     <View style={{flexDirection: 'row', marginTop: 16}}>
                         <Text style={styles.price}>
-                            {Math.ceil(parseInt(product.price.replace(/\s/g, '')))} <Text style={{color: '#8CC83F'}}>₽ за</Text>
+                            {Math.ceil(parseInt(product.price.replace(/\s/g, '')))} <Text style={{color: '#8CC83F'}}>₽
+                            за</Text>
                         </Text>
                         <Text style={styles.weight}>
                             {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
@@ -69,7 +92,6 @@ class BasketListItem extends Component<{
                             Удалить
                         </Text>
                     </TouchableOpacity>
-
                 </View>
                 <View style={styles.minusPlusContainer}>
                     <TouchableOpacity onPress={() => this.countDownFunction(id)}>

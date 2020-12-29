@@ -131,7 +131,6 @@ class ShopsStore {
             console.log(` clientAddress==>>   ${SERVER_BASE}/shops/${id}?address=${this.clientAddress}`)
             await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.clientAddress}`)
                 .then((res) => {
-                    console.log('res.data this.clientAddress.length > 0', res.data);
                     this.getShopsItem = res.data;
                 })
                 .catch((error) => {
@@ -142,7 +141,6 @@ class ShopsStore {
             console.log(` userAddress==>>   ${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
             await axios.get(`${SERVER_BASE}/shops/${id}?address=${this.userAddress}`)
                 .then((res) => {
-                    console.log('res.data this.userAddress.length > 0', res.data);
                     this.getShopsItem = res.data;
                 })
                 .catch((error) => {
@@ -153,7 +151,6 @@ class ShopsStore {
             console.log(` not address ==>>   ${SERVER_BASE}/shops/${id}?address=${this.userAddress}`);
             await axios.get(`${SERVER_BASE}/shops/${id}`)
                 .then((res) => {
-                    console.log('res.data not address ==>>', res.data);
                     this.getShopsItem = res.data;
                 })
                 .catch((error) => {
@@ -170,7 +167,6 @@ class ShopsStore {
             console.log(` clientAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
                 .then((res) => {
-                    console.log('res.data this.clientAddress.length > 0', res.data);
                     this.getShopShares = res.data;
                 })
                 .catch((error) => {
@@ -181,7 +177,6 @@ class ShopsStore {
             console.log(` userAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
                 .then((res) => {
-                    console.log('res.data this.userAddress.length > 0', res.data);
                     this.getShopShares = res.data;
                 })
                 .catch((error) => {
@@ -192,7 +187,6 @@ class ShopsStore {
             console.log(` not address ==>>   ${SERVER_BASE}/promocode/${id}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}`)
                 .then((res) => {
-                    console.log('res.data not address ==>>', res.data);
                     this.getShopShares = res.data;
                 })
                 .catch((error) => {

@@ -3,16 +3,17 @@ import {action, observable, toJS} from 'mobx';
 import {SERVER_BASE} from "../share/consts";
 import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import _ from 'lodash';
 
 class BasketStore {
     @observable productCount: number = 0;
     @observable cartUserInfo: any = [];
+    @observable stackItem: any = [];
     @observable allPrice: number = 0;
     @observable errorData: any = null;
 
     @action
     getCartUserInfo = async () => {
-        //this.cartUserInfo = [];
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -20,15 +21,27 @@ class BasketStore {
         axios.get(`${SERVER_BASE}/cart`, {headers})
             .then((res) => {
                 let allPriceArray: any = [];
+                this.stackItem = _(toJS(res.data))
+                    .groupBy('product.shop.name')
+                    .map((objs, key) => {
+                        return ({
+                            'id': new Date().getUTCMilliseconds(),
+                            'marketName': key,
+                            'marketPrice': _.sumBy(objs, item => item.quantity * Number(Math.ceil(item.price.replace(/\s/g, '')))),
+                            'image': _.mapValues(objs, item => item.product.shop.image),
+                        })
+                    })
+                    .value()
+                console.log('getCartUserInfo stackItem', toJS(this.stackItem));
                 this.cartUserInfo = res.data;
                 this.cartUserInfo.reduce((sum: number, item: any) => {
                         return allPriceArray.push(parseInt(item.product.price.replace(/\s/g, '')) * toJS(item).quantity)
                     }, 0
                 );
-                let AllSum = allPriceArray.reduce(function (accumulator: number, currentValue: number) {
+                this.allPrice = allPriceArray.reduce(function (accumulator: number, currentValue: number) {
                     return accumulator + currentValue;
                 }, 0);
-                this.allPrice = AllSum;
+
             })
             .catch((error) => {
                 console.log('error getCartUserInfo', error);

@@ -67,8 +67,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                     if (item.status === 5) {
                         this.setState({
                             items: [...this.state.items, item]
-                        }, () => {
-                            console.log('this.state.items', this.state.items);
                         })
                     }
                 })
@@ -106,8 +104,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                     if (item.status === 5) {
                         this.setState({
                             items: [...this.state.items, item]
-                        }, () => {
-                            console.log('this.state.items', this.state.items);
                         })
                     }
                 })
