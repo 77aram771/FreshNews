@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-// @ts-ignore
 import {observer} from 'mobx-react';
 import {
     size12,
@@ -28,29 +27,44 @@ export default class HeaderInfo extends Component<headerInfoInterface> {
 
         const {image, name, city, reviews_count, rating} = this.props;
 
-        console.log('this.props', this.props);
+        console.log('image', image);
 
-        let formatImage = image.substr(image.length - 3);
+        let formatImage
+
+        if (image !== undefined) {
+            formatImage = image.substr(image.length - 3);
+        }
 
         return (
             <View style={styles.container}>
                 <View style={styles.infoContainer}>
-
                     {
-                        formatImage === 'svg'
-                            ? <SvgUri
-                                width={90}
-                                height={90}
-                                uri={image}
-                            />
-                            : <Image
-                                resizeMode={'contain'}
-                                source={{uri: image}}
-                                style={{
-                                    width: 90,
-                                    height: 90,
-                                }}
-                            />
+                        image !== undefined
+                            ? (
+                                formatImage === 'svg'
+                                    ? <SvgUri
+                                        width={90}
+                                        height={90}
+                                        uri={image}
+                                        // style={{
+                                        //     borderWidth: 1,
+                                        //     borderStyle: "solid",
+                                        //     borderColor: 'red',
+                                        //     borderRadius: 18
+                                        // }}
+                                    />
+                                    :
+                                    <Image
+                                        resizeMode={'cover'}
+                                        source={{uri: image}}
+                                        style={{
+                                            width: 90,
+                                            height: 90,
+                                            borderRadius: 25,
+                                        }}
+                                    />
+                            )
+                            : null
                     }
                     <Text style={styles.shopName}>{name}</Text>
                     <Text style={styles.serviceContainer}>

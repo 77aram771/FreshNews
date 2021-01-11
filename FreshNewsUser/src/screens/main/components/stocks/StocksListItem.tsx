@@ -6,12 +6,12 @@ import {MontserratRegular, MontserratSemiBold} from "../../../../share/fonts";
 
 export const StocksListItem = ({
                                    style,
-                                   keyIndex,
+                                   discount,
                                    onPressNavigation
                                }: {
     style?: StyleProp<ViewStyle>;
-    keyIndex: number;
-    onPressNavigation: void
+    discount: any,
+    onPressNavigation: any
 }) => {
     return (
         <TouchableOpacity
@@ -29,7 +29,6 @@ export const StocksListItem = ({
                     style,
                 ]}>
                 <View
-                    key={keyIndex}
                     style={{
                         flexDirection: 'column',
                         paddingLeft: 16,
@@ -50,7 +49,7 @@ export const StocksListItem = ({
                             fontFamily: MontserratSemiBold,
                             lineHeight: 30,
                         }}>
-                        -30<Text style={{fontFamily: MontserratRegular, color: '#fff', fontSize: size28,}}>%</Text>
+                        -{discount}<Text style={{fontFamily: MontserratRegular, color: '#fff', fontSize: size28,}}>%</Text>
                     </Text>
                     <Text
                         style={{

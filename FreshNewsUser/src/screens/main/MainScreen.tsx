@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Platform} from 'react-native';
-import {GOOGLE_MAPS_APIKEY} from '../../share/consts';
+import {View, Platform, ImageBackground, Text, TouchableOpacity} from 'react-native';
+import {GOOGLE_MAPS_APIKEY, size20, WINDOW_WIDTH} from '../../share/consts';
 import MainHeader from '../../share/components/MainHeader';
 import basketStore from '../../stores/BasketStore';
 import userInfo from '../../stores/UserInfo';
@@ -14,6 +14,11 @@ import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
 import * as Location from 'expo-location';
 import {toJS} from "mobx";
+import {imagesPaths} from "../../share/info";
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+import Icon from "react-native-vector-icons/Fontisto";
+import {MontserratRegular} from "../../share/fonts";
+import HeaderContent from "./components/headerContent/HeaderContent";
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 Notifications.setNotificationHandler({
@@ -34,7 +39,6 @@ Notifications.requestPermissionsAsync({
 
 export const MainScreen = ({navigation}: any) => {
     const [expoPushToken, setExpoPushToken] = useState('');
-    const [location, setLocation] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [notification, setNotification] = useState(false);
     const notificationListener = useRef();
@@ -43,6 +47,7 @@ export const MainScreen = ({navigation}: any) => {
     useEffect(() => {
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
+            console.log('getToken', getToken);
             const {status} = await Permissions.askAsync(Permissions.LOCATION);
             if (status !== 'granted') {
                 setErrorMessage('Permission to access location was denied');
@@ -140,7 +145,7 @@ export const MainScreen = ({navigation}: any) => {
     const getGeocodeAsync = async () => {
         const {status} = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
-            setErrorMessage('Permission to access location was denied');
+            setErrorMessage('Permission to access location was denied')
         }
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
         const {latitude, longitude} = location.coords;
@@ -162,9 +167,7 @@ export const MainScreen = ({navigation}: any) => {
                 marginTop: Platform.OS === 'ios' ? 0 : 20
             }}
         >
-            <MainHeader
-                navigation={navigation}
-            />
+            <MainHeader navigation={navigation}/>
             {/*<View*/}
             {/*    style={{*/}
             {/*        alignItems: 'center',*/}
@@ -185,6 +188,7 @@ export const MainScreen = ({navigation}: any) => {
                 navigation={navigation}
                 getGeocodeAsync={() => getGeocodeAsync()}
             />
+
         </View>
     );
 }

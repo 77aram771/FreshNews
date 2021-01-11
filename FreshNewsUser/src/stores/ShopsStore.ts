@@ -33,12 +33,9 @@ class ShopsStore {
     onChangeClientAddress = (address: string) => {
         this.userAddress = '';
         this.loader = true;
-        console.log('this.loader', this.loader);
         this.clientAddress = address;
-        console.log('this.clientAddress', this.clientAddress);
         if (this.clientAddress.length >= 3) {
             setTimeout(() => {
-                console.log('this.loader', this.loader);
                 this.loader = false;
                 // this.getShops(1)
             }, 3000)
@@ -64,6 +61,12 @@ class ShopsStore {
             this.loader = false;
         }
     };
+
+    @action
+    onResetClientAddress = () => {
+        this.clientAddress = '';
+        this.userAddress = '';
+    }
 
     @action
     onChangeView = () => {

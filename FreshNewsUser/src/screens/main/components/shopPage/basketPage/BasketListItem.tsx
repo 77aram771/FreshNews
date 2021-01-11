@@ -70,7 +70,8 @@ class BasketListItem extends Component<{
                                     style={{
                                         width: 30,
                                         height: 30,
-                                        marginRight: 5
+                                        marginRight: 5,
+                                        borderRadius: 5,
                                     }}
                                 />
                         }
@@ -112,7 +113,7 @@ class BasketListItem extends Component<{
                 </View>
                 <View style={{flex: 1, alignItems: 'center'}}>
                     <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
-                        {Math.ceil(parseInt(product.price.replace(/\s/g, '')) * this.state.itemQuantity)} <Text
+                        {Math.ceil(Number(product.price.replace(/\s/g, '')) * this.state.itemQuantity)} <Text
                         style={{color: '#8CC83F'}}> ₽</Text>
                     </Text>
                 </View>

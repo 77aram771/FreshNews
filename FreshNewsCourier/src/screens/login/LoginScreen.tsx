@@ -112,9 +112,9 @@ class LoginScreen extends React.Component<NavigationProps> {
         }
     };
 
-    getCodeNumber(text: Number) {
+    getCodeNumber(text: String) {
         this.setState({
-            confirmationPin: String(text)
+            confirmationPin: text
         })
     };
 
@@ -261,7 +261,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                                             style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
                                             placeholder={'Код из смс'}
                                             value={String(this.state.confirmationPin)}
-                                            onChangeText={item => this.getCodeNumber(Number(item))}
+                                            onChangeText={item => this.getCodeNumber(String(item))}
                                             headerStyleWidth={WINDOW_WIDTH - 90}
                                             headerStyleText={WINDOW_WIDTH / 1.6}
                                         />

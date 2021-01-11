@@ -77,6 +77,11 @@ class SideBar extends Component<NavigationProps, SideBarProps> {
         this.props.navigation.navigate('MyData')
     };
 
+    handleNavigateLogin(){
+        modalsStore.onChangeView()
+        this.props.navigation.navigate('Login')
+    }
+
     logOut() {
         AsyncStorage.removeItem('Token');
         authStore.getUser(false);
@@ -272,7 +277,7 @@ class SideBar extends Component<NavigationProps, SideBarProps> {
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={styles.footerButton2}
-                                        onPress={() => this.props.navigation.navigate('Login')}
+                                        onPress={() => this.handleNavigateLogin()}
                                     >
                                         <FontAwesome5
                                             name={'user-alt'}

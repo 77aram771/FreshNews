@@ -1,10 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
+import {FlatList, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
-import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
-import {size16, size20, WINDOW_WIDTH} from '../../../../share/consts';
-import {NavigationProps} from '../../../../share/interfaces';
+import {MontserratSemiBold} from '../../../../share/fonts';
+import {size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {HeaderText} from '../HeaderText';
 import shopsStore from "../../../../stores/ShopsStore";
 import {PulseIndicator} from 'react-native-indicators';
@@ -20,7 +19,7 @@ interface ShopsListInterface {
 }
 
 @observer
-export default class StocksList extends React.Component<ShopsListInterface, NavigationProps> {
+export default class StocksList extends React.Component<ShopsListInterface, any> {
 
     // @ts-ignore
     state = {
@@ -64,163 +63,122 @@ export default class StocksList extends React.Component<ShopsListInterface, Navi
     };
 
     render() {
-
         return (
-            <View style={styles.shopsListContainer}>
-                {
-                    this.state.refreshing
-                        ? (
-                            <View
+            <>
+                <Header
+                    style={{
+                        width: WINDOW_WIDTH,
+                        paddingTop: size20,
+                    }}
+                    headerLeft={
+                        <AntDesign
+                            onPress={() => this.props.navigation.goBack()}
+                            style={{paddingLeft: 8}}
+                            name={'left'}
+                            size={18}
+                            color={'#000'}
+                        />
+                    }
+                    headerMid={
+                        <LogoAndTitle/>
+                    }
+                />
+                <FlatList
+                    ListHeaderComponent={
+                        <>
+                            <HeaderContentMarketShares
+                                navigation={this.props.navigation}
+                                code={this.props.navigation.state.params.shopCode}
+                                discount={this.props.navigation.state.params.shopDiscount}
+                            />
+                            <HeaderText
                                 style={{
-                                    flex: 1,
-                                    justifyContent: 'center',
+                                    justifyContent: "center",
                                     alignItems: 'center',
-                                    alignContent: 'center',
-                                    alignSelf: 'center',
+                                    alignSelf: "center",
+                                    fontSize: 15
                                 }}
-                            >
-                                <PulseIndicator
-                                    size={100}
-                                    color='#8CC83F'
-                                />
-                            </View>
+                                title={'Магазины участвующие в акции'}
+                            />
+                        </>
+                    }
+                    scrollEnabled={true}
+                    keyExtractor={item => item.id.toString()}
+                    showsVerticalScrollIndicator={true}
+                    data={this.state.shopData.shops}
+                    renderItem={({item, index}) => {
+                        return (
+                            <ShopsListItem
+                                key={index}
+                                logo={item.image}
+                                time={item.time}
+                                name={item.name}
+                                rating={item.rating}
+                                categories={item.categories}
+                                reviews={item.reviews_count}
+                                backgroundImage={item.background_image}
+                                onPressNavigation={() => this.handleNavigation(item.id)}
+                            />
                         )
-                        : (
-                            <>
-                                <Header
+                    }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                    ListFooterComponent={
+                        this.state.refreshing
+                            ? (
+                                <View
                                     style={{
-                                        width: WINDOW_WIDTH,
-                                        paddingTop: size20,
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        alignContent: 'center',
+                                        alignSelf: 'center',
                                     }}
-                                    headerLeft={
-                                        <AntDesign
-                                            onPress={() => this.props.navigation.goBack()}
-                                            style={{paddingLeft: 8}}
-                                            name={'left'}
-                                            size={18}
-                                            color={'#000'}
-                                        />
-                                    }
-                                    headerMid={
-                                        <LogoAndTitle/>
-                                    }
-                                />
-                                <FlatList
-                                    ListHeaderComponent={
-                                        <>
-                                            <HeaderContentMarketShares
-                                                navigation={this.props.navigation}
-                                                code={this.props.navigation.state.params.shopCode}
-                                                discount={this.props.navigation.state.params.shopDiscount}
-                                            />
-                                            <HeaderText
-                                                style={{
-                                                    fontFamily: MontserratRegular,
-                                                    justifyContent: "center",
-                                                    alignItems: 'center',
-                                                    alignSelf: "center",
-                                                    fontSize: 15
-                                                }}
-                                                title={'Магазины участвующие в акции'}
-                                            />
-                                        </>
-                                    }
-                                    scrollEnabled={true}
-                                    keyExtractor={item => item.id.toString()}
-                                    showsVerticalScrollIndicator={true}
-                                    data={this.state.shopData.shops}
-                                    renderItem={({item, index}) => {
-                                        return (
-                                            <ShopsListItem
-                                                key={index}
-                                                logo={item.image}
-                                                time={item.time}
-                                                name={item.name}
-                                                rating={item.rating}
-                                                categories={item.categories}
-                                                reviews={item.reviews_count}
-                                                backgroundImage={item.background_image}
-                                                onPressNavigation={() => this.handleNavigation(item.id)}
-                                            />
-                                        )
+                                >
+                                    <PulseIndicator
+                                        size={100}
+                                        color='#8CC83F'
+                                    />
+                                </View>
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={() => alert('test')}
+                                    style={{
+                                        width: '100%',
+                                        marginBottom: 50,
+                                        justifyContent: "center",
+                                        alignItems: "center"
                                     }}
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this.onRefresh.bind(this)}
-                                        />
-                                    }
-                                    ListFooterComponent={
-                                        <TouchableOpacity
-                                            onPress={() => alert('test')}
+                                >
+                                    <View
+                                        style={{
+                                            width: WINDOW_WIDTH - 40,
+                                            borderRadius: 10,
+                                            backgroundColor: '#8CC83F',
+                                            justifyContent: 'center',
+                                            alignItems: "center",
+                                            padding: 15,
+                                        }}
+                                    >
+                                        <Text
                                             style={{
-                                                width: '100%',
-                                                marginBottom: 50,
-                                                justifyContent: "center",
-                                                alignItems: "center"
+                                                color: '#fff',
+                                                fontSize: 18,
+                                                fontFamily: MontserratSemiBold
                                             }}
                                         >
-                                            <View
-                                                style={{
-                                                    width: WINDOW_WIDTH - 40,
-                                                    borderRadius: 10,
-                                                    backgroundColor: '#8CC83F',
-                                                    justifyContent: 'center',
-                                                    alignItems: "center",
-                                                    padding: 15,
-                                                }}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        color: '#fff',
-                                                        fontSize: 18,
-                                                        fontFamily: MontserratSemiBold
-                                                    }}
-                                                >
-                                                    Показать ещё
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    }
-                                />
-                            </>
-                        )
-                }
-            </View>
+                                            Показать ещё
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                    }
+                />
+            </>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    shopsListContainer: {width: '100%', flex: 1},
-    footerContainer: {
-        backgroundColor: '#F5F4F4',
-        alignItems: 'flex-start',
-        paddingLeft: 30,
-        flex: 1,
-        paddingTop: 16,
-    },
-    headerTitleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    headerTitle: {
-        color: '#FFFFFF',
-        fontSize: size16,
-        fontFamily: MontserratRegular,
-        textAlign: 'center',
-    },
-    categoriesContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        marginTop: 29,
-    },
-    categoryContainer: {
-        paddingVertical: 6,
-        paddingHorizontal: 16,
-        borderRadius: 10,
-    },
-});

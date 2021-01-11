@@ -7,7 +7,7 @@ import {
     Image
 } from 'react-native';
 import React from 'react';
-import {SvgUri} from 'react-native-svg';
+import {SvgUri, SvgCssUri} from 'react-native-svg';
 import {
     size12, size14,
     size16,
@@ -68,13 +68,20 @@ export const ShopsListItem = ({
                                             height="60"
                                             //uri={logo}
                                             uri={logo}
+                                            // style={{
+                                            //     borderStyle: "solid",
+                                            //     borderColor: 'red',
+                                            //     borderWidth: 1,
+                                            //     borderRadius: 15,
+                                            // }}
                                         />
                                         : <Image
-                                            resizeMode={'contain'}
+                                            resizeMode={'cover'}
                                             source={{uri: logo}}
                                             style={{
                                                 width: 60,
                                                 height: 60,
+                                                borderRadius: 15,
                                             }}
                                         />
                                 )

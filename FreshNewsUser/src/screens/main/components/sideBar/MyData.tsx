@@ -2,19 +2,9 @@ import React, {Component} from 'react';
 import {ScrollView, Text, TouchableOpacity, View, Switch, Platform} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
-import {
-    size12,
-    size14,
-    size20,
-    size28,
-    size34,
-    size44,
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH,
-} from '../../../../share/consts';
+import {size12, size14, size20, size28, size34, size44, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../../../share/consts';
 import {CustomInput} from '../../../../share/components/CustomInput';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import {Toggle} from '../../../../share/components/Toggle';
 import Modal from "react-native-modal";
 import {toJS} from "mobx";
 import userInfo from '../../../../stores/UserInfo';
@@ -25,7 +15,6 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 // @ts-ignore
 import {CreditCardInput} from "react-native-credit-card-input";
 import {ErrorModal} from "../modals/ErrorModal";
-// @ts-ignore
 import Modals, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 @observer
@@ -57,8 +46,8 @@ class MyData extends Component {
         errorData: [],
     };
 
-    componentDidMount() {
-        userInfo.getUserData();
+    async componentDidMount() {
+        await userInfo.getUserData();
         const {userData} = userInfo;
         const {name, email, surname, phone, addresses, cards} = userData;
         this.setState({
@@ -78,8 +67,8 @@ class MyData extends Component {
     };
 
     async handleSave(name: string, email: string, surname: string) {
-        modalsStore.onShowMyDataModal()
-        await userInfo.getUserDataUpdate(name, email, surname);
+        await modalsStore.onShowMyDataModal()
+        await userInfo.getUserDataUpdate(name, email, surname, this.state.alertsIsOn);
         setTimeout(() => {
             console.log('toJS(userInfo.errorData)', toJS(userInfo.errorData));
             if (userInfo.errorData !== null) {
@@ -234,7 +223,7 @@ class MyData extends Component {
         })
     };
 
-    handleAddAddress() {
+    async handleAddAddress() {
         let obj = {
             id: new Date().getUTCMilliseconds(),
             address: this.state.addAddress,
@@ -247,12 +236,12 @@ class MyData extends Component {
             address: [...this.state.address, obj]
         });
 
-        userInfo.getUserDataAddAddress(this.state.addAddress, this.state.porch, this.state.floor, this.state.intercom)
+        await userInfo.getUserDataAddAddress(this.state.addAddress, this.state.porch, this.state.floor, this.state.intercom)
         shopsStore.onShowAddAddressModal()
     };
 
-    handleDeleteAddress(id: number) {
-        userInfo.getUserDataDeleteAddress(id)
+    async handleDeleteAddress(id: number) {
+        await userInfo.getUserDataDeleteAddress(id)
         let obj = this.state.address.filter(item => item.id !== id)
 
         this.setState({
@@ -271,8 +260,8 @@ class MyData extends Component {
         shopsStore.onShowAddAddressModal()
     };
 
-    handleOpenModalCreditCart() {
-        shopsStore.onShowAddCreditCart()
+    async handleOpenModalCreditCart() {
+        await shopsStore.onShowAddCreditCart()
     };
 
     renderAddressItem(item: any) {
@@ -357,7 +346,7 @@ class MyData extends Component {
         })
     };
 
-    handleAddCart() {
+    async handleAddCart() {
         let obj = {
             code: this.state.enterCart.cvc,
             holder: this.state.enterCart.name,
@@ -369,21 +358,21 @@ class MyData extends Component {
         this.setState({
                 creditCart: [...this.state.creditCart, obj]
             },
-            () => {
+            async () => {
                 let lastItem = this.state.creditCart[this.state.creditCart.length - 1]
-                userInfo.getUserAddCreditCard(
+                await userInfo.getUserAddCreditCard(
                     lastItem.number,
                     lastItem.month,
                     lastItem.year,
                     lastItem.holder,
                     lastItem.code,
                 );
-                shopsStore.onShowAddCreditCart();
+                await shopsStore.onShowAddCreditCart();
             });
     };
 
-    handleDeleteCart(id: number) {
-        userInfo.getUserDataDeleteCard(id);
+    async handleDeleteCart(id: number) {
+        await userInfo.getUserDataDeleteCard(id);
         let obj = this.state.creditCart.filter(item => item.id !== id)
         this.setState({
             creditCart: obj
@@ -464,7 +453,6 @@ class MyData extends Component {
     render() {
 
         const {isShowAddAddressModal, isShowAddCreditCart, onShowAddAddressModal, onShowAddCreditCart} = shopsStore;
-
         const {
             name,
             surname,
@@ -831,7 +819,7 @@ class MyData extends Component {
                             }}
                         >
                             <ModalButton
-                                text="Закрить"
+                                text="Закрыть"
                                 textStyle={{
                                     color: '#fff'
                                 }}
@@ -888,11 +876,7 @@ class MyData extends Component {
                         alignItems: 'center',
                     }}
                 >
-                    <ScrollView
-                        style={{
-                            width: WINDOW_WIDTH - 40
-                        }}
-                    >
+                    <ScrollView style={{width: WINDOW_WIDTH - 40}}>
                         <Text
                             style={{
                                 color: '#BABABA',

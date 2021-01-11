@@ -15,7 +15,7 @@ export const LogoAndTitle = ({
                     source={require('../../../assets/iconImages/LogoTitle.png')}
                     resizeMode='contain'
                     style={{
-                        width: 100,
+                        width: 70,
                         height: 70,
                     }}
                 />
@@ -23,7 +23,7 @@ export const LogoAndTitle = ({
                 <Image
                     source={require('../../../assets/iconImages/logo_grey.png')}
                     style={{
-                        width: 100,
+                        width: 70,
                         height: 70,
                     }}
                 />

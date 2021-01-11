@@ -4,7 +4,7 @@ import {
     Text,
     View,
     Image,
-    KeyboardAvoidingView, Platform
+    KeyboardAvoidingView, Platform, TouchableOpacity
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
@@ -107,9 +107,9 @@ class LoginScreen extends React.Component<NavigationProps> {
         }
     };
 
-    getCodeNumber(text: Number) {
+    getCodeNumber(text: String) {
         this.setState({
-            confirmationPin: String(text)
+            confirmationPin: text
         })
     };
 
@@ -119,7 +119,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                 isLoading: true,
                 codeInput: false
             })
-            await verify(Number(this.state.formattedValue), Number(this.state.confirmationPin))
+            await verify(Number(this.state.formattedValue), this.state.confirmationPin)
                 .then(res => {
                     const Token = JSON.stringify(res.data.token);
                     AsyncStorage.setItem('Token', Token);
@@ -167,29 +167,33 @@ class LoginScreen extends React.Component<NavigationProps> {
     };
 
     handleGetBack = async () => {
-        alert('test')
-        // this.props.navigation.navigate('MainScreen');
+        modalsStore.onChangeView();
+        this.props.navigation.navigate('MainScreen')
     }
 
     render() {
         return (
             <View style={styles.container}>
-                {/*<Header*/}
-                {/*    style={{*/}
-                {/*        width: WINDOW_WIDTH,*/}
-                {/*        height: 20,*/}
-                {/*    }}*/}
-                {/*    headerLeft={*/}
-                {/*        <AntDesign*/}
-                {/*            onPress={() => this.handleGetBack()}*/}
-                {/*            // onPress={() => alert('test')}*/}
-                {/*            style={{paddingLeft: 8}}*/}
-                {/*            name={'left'}*/}
-                {/*            size={18}*/}
-                {/*            color={'#000'}*/}
-                {/*        />*/}
-                {/*    }*/}
-                {/*/>*/}
+                <Header
+                    style={{width: WINDOW_WIDTH}}
+                    headerLeft={
+                        <TouchableOpacity
+                            onPress={() => this.handleGetBack()}
+                            style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: 40,
+                                height: 40
+                            }}
+                        >
+                            <AntDesign
+                                name={'left'}
+                                size={18}
+                                color={'#000'}
+                            />
+                        </TouchableOpacity>
+                    }
+                />
                 <Modal
                     visible={this.state.errorModal}
                     useNativeDriver={false}
@@ -200,7 +204,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                             }}
                         >
                             <ModalButton
-                                text="Закрить"
+                                text="Закрыть"
                                 textStyle={{
                                     color: '#fff'
                                 }}
@@ -281,8 +285,8 @@ class LoginScreen extends React.Component<NavigationProps> {
                                             textInputStyle={{textAlign: 'center', marginHorizontal: 24}}
                                             style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
                                             placeholder={'Код из смс'}
-                                            value={String(this.state.confirmationPin)}
-                                            onChangeText={item => this.getCodeNumber(Number(item))}
+                                            value={this.state.confirmationPin}
+                                            onChangeText={item => this.getCodeNumber(item)}
                                             headerStyleWidth={WINDOW_WIDTH - 90}
                                             headerStyleText={WINDOW_WIDTH / 1.6}
                                         />

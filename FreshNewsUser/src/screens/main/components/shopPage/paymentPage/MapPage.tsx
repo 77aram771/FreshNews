@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {observer} from 'mobx-react';
 import {
     GOOGLE_MAPS_APIKEY,
@@ -12,7 +7,7 @@ import {
     size16,
     size20,
     WINDOW_HEIGHT,
-    WINDOW_WIDTH,
+    WINDOW_WIDTH
 } from '../../../../../share/consts';
 import MapView, {Marker} from 'react-native-maps';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
@@ -24,11 +19,16 @@ import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
 import {PulseIndicator} from 'react-native-indicators';
-import * as Location from 'expo-location';
 import Pusher from 'pusher-js/react-native';
 import {MapStyle} from "../../../../../share/MapStyle";
+// @ts-ignore
+import call from 'react-native-phone-call'
 
-const LOCATION_TASK_NAME = 'background-location-task';
+const args = {
+    number: '+79296014443', // String value with the number to call
+    prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
+}
+
 const pusher_app_key = '0f88b1991b1342108a18';
 const pusher_app_cluster = 'eu';
 
@@ -40,6 +40,18 @@ export default class MapPage extends Component<{}, any> {
         this.state = {
             courierCordinate: null,
             userLocation: null,
+            // courierCordinate: {
+            //     latitude: 41.43206,
+            //     longitude: -81.38992,
+            //     latitudeDelta: 0.0922,
+            //     longitudeDelta: 0.0421,
+            // },
+            // userLocation: {
+            //     latitude: 41.43206,
+            //     longitude: -82.38992,
+            //     latitudeDelta: 0.0922,
+            //     longitudeDelta: 0.0421,
+            // },
             errorText: '',
             deliveryTime: ''
         };
@@ -52,25 +64,6 @@ export default class MapPage extends Component<{}, any> {
             cluster: pusher_app_cluster,
             encrypted: true,
         });
-        // let {status} = await Location.requestPermissionsAsync();
-        // if (status !== 'granted') {
-        //     this.setState({
-        //         errorText: 'Permission to access location was denied'
-        //     })
-        //     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        //         accuracy: Location.Accuracy.Balanced,
-        //     });
-        // }
-        // let location = await Location.getCurrentPositionAsync({});
-        // const userCoordinate = {
-        //     longitude: location.coords.longitude,
-        //     latitude: location.coords.latitude,
-        //     latitudeDelta: 0.0922,
-        //     longitudeDelta: 0.0421,
-        // }
-        // this.setState({
-        //     userLocation: userCoordinate
-        // });
         this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
         this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
             this.getGeolocation(data)
@@ -113,11 +106,11 @@ export default class MapPage extends Component<{}, any> {
                 top: (WINDOW_HEIGHT / 20),
             },
         });
-    }
+    };
 
     onError = (errorMessage: any) => {
-        console.log(errorMessage);
-    }
+        console.log(errorMessage)
+    };
 
     render() {
         const {onShowReviewModal, isShowReviewModal} = modalsStore;
@@ -170,7 +163,6 @@ export default class MapPage extends Component<{}, any> {
                             alignSelf: 'center',
                             width: WINDOW_WIDTH - 40,
                             flexDirection: 'row'
-
                         }}
                     >
                         <View
@@ -223,19 +215,16 @@ export default class MapPage extends Component<{}, any> {
                                 >
                                     <Marker
                                         coordinate={this.state.userLocation}
-                                        // style={{
-                                        //     width: 20,
-                                        //     height: 20
-                                        // }}
-                                        image={require('../../../../../../assets/iconImages/location-user-icon.psd')}
-                                    />
+                                    >
+                                        <Image
+                                            source={require('../../../../../../assets/iconImages/location-user-icon.psd')}
+                                            style={{width: 30, height: 30}}
+                                            resizeMode="contain"
+                                        />
+                                    </Marker>
                                     <Marker
                                         coordinate={this.state.courierCordinate}
-                                        // style={{
-                                        //     width: 20,
-                                        //     height: 20
-                                        // }}
-                                        image={require('../../../../../../assets/iconImages/mapIcon.jpg')}
+                                        image={require('../../../../../../assets/iconImages/local_icon.png')}
                                     />
                                     <MapViewDirections
                                         origin={this.state.userLocation}
@@ -268,7 +257,7 @@ export default class MapPage extends Component<{}, any> {
                                         <Text style={{fontFamily: MontserratSemiBold}}>{this.state.deliveryTime} мин.</Text>
                                     </Text>
                                     <TouchableOpacity
-                                        onPress={() => alert('связь с поддержкой')}
+                                        onPress={() => call(args).catch(console.error)}
                                         style={styles.supportTextContainer}>
                                         <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
                                             Связаться с поддержкой
@@ -279,23 +268,6 @@ export default class MapPage extends Component<{}, any> {
                         )
                         : (
                             <>
-                                {/*<MapView*/}
-                                {/*    region={this.state.userLocation}*/}
-                                {/*    style={{flex: 2, width: WINDOW_WIDTH}}*/}
-                                {/*    ref={c => this.mapView = c}*/}
-                                {/*    showsUserLocation={true}*/}
-                                {/*    followUserLocation={true}*/}
-                                {/*    zoomEnabled={true}*/}
-                                {/*    // minZoomLevel={2}  // default => 0*/}
-                                {/*    // maxZoomLevel={15} // default => 20*/}
-                                {/*    pitchEnabled={true}*/}
-                                {/*    showsCompass={true}*/}
-                                {/*    showsBuildings={true}*/}
-                                {/*    showsTraffic={true}*/}
-                                {/*    showsIndoors={true}*/}
-                                {/*    customMapStyle={MapStyle}*/}
-                                {/*    provider={MapView.PROVIDER_GOOGLE}*/}
-                                {/*/>*/}
                                 <View
                                     style={{
                                         flex: 1,
@@ -312,11 +284,9 @@ export default class MapPage extends Component<{}, any> {
                                     />
                                     <Text style={{fontFamily: MontserratSemiBold, fontSize: 16}}> Поиск курера </Text>
                                 </View>
-                                <View
-                                    style={styles.textContainer}
-                                >
+                                <View style={styles.textContainer}>
                                     <TouchableOpacity
-                                        onPress={() => alert('связь с поддержкой')}
+                                        onPress={() => call(args).catch(console.error)}
                                         style={styles.supportTextContainer}>
                                         <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
                                             Связаться с поддержкой

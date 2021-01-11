@@ -32,7 +32,6 @@ class BasketStore {
                         })
                     })
                     .value()
-                console.log('getCartUserInfo stackItem', toJS(this.stackItem));
                 this.cartUserInfo = res.data;
                 this.cartUserInfo.reduce((sum: number, item: any) => {
                         return allPriceArray.push(parseInt(item.product.price.replace(/\s/g, '')) * toJS(item).quantity)

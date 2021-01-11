@@ -9,7 +9,6 @@ import Header from "../../../../share/components/Header";
 import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
 import {PulseIndicator} from 'react-native-indicators';
-import {toJS} from "mobx";
 
 @observer
 export default // @ts-ignore
@@ -26,17 +25,15 @@ class PurchaseHistory extends Component<NavigationProps> {
         })
         await shopsStore.getAllOrders();
 
-        setTimeout(() => {
-            const newFile = shopsStore.allOrders.map((item: any) => {
-                return {...item, bool: false};
-            });
-            this.setState({
-                refreshing: false,
-                allOrders: newFile
-            }, () => {
-                console.log('newFile', newFile);
-            })
-        }, 1000)
+        const newFile = shopsStore.allOrders.map((item: any) => {
+            return {...item, bool: false};
+        });
+        this.setState({
+            refreshing: false,
+            allOrders: newFile
+        }, () => {
+            console.log('newFile', newFile);
+        })
     };
 
     async onRefresh() {
@@ -222,8 +219,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 3) {
+        } else if (item.status === 3) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -357,8 +353,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                     </View>
                 </TouchableOpacity>
             )
-        }
-        else if (item.status === 4) {
+        } else if (item.status === 4) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -681,7 +676,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                                         marginRight: 10,
                                         fontFamily: MontserratSemiBold,
                                         color: '#939292'
-                                    }}>Скрит</Text>
+                                    }}>Скрыть</Text>
                                     : <Text style={{
                                         marginRight: 10,
                                         fontFamily: MontserratSemiBold
@@ -831,117 +826,112 @@ class PurchaseHistory extends Component<NavigationProps> {
                         <View/>
                     }
                 />
-                {
-                    this.state.refreshing
-                        ? (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    alignContent: 'center',
-                                    alignSelf: 'center',
-                                }}
-                            >
-                                <PulseIndicator
-                                    size={100}
-                                    color='#8CC83F'
-                                />
-                            </View>
-                        )
-                        : (
-                            <ScrollView
-                                style={{
-                                    flex: 1,
-                                }}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.refreshing}
-                                        onRefresh={this.onRefresh.bind(this)}
-                                    />
-                                }
-                            >
-                                <View
-                                    style={{
-                                        width: WINDOW_WIDTH - 40,
-                                        flex: 1,
-                                        // justifyContent: "center",
-                                        // alignItems: "center",
-                                        alignSelf: "center",
-                                        paddingTop: 30,
-                                        paddingBottom: 50,
-                                    }}
-                                >
-                                    {
-                                        this.state.allOrders !== null
-                                            ? (
-                                                <FlatList
-                                                    scrollEnabled={true}
-                                                    keyExtractor={item => item.id.toString()}
-                                                    showsVerticalScrollIndicator={true}
-                                                    data={this.state.allOrders}
-                                                    renderItem={({item}) => {
-                                                        return (
-                                                            this.renderItem(item)
-                                                        )
-                                                    }}
-                                                    refreshControl={
-                                                        <RefreshControl
-                                                            refreshing={this.state.refreshing}
-                                                            onRefresh={this.onRefresh.bind(this)}
-                                                        />
-                                                    }
-                                                    ListFooterComponent={
-                                                        <TouchableOpacity
-                                                            onPress={() => alert('test')}
-                                                            style={{
-                                                                width: '100%',
-                                                                marginBottom: 50,
-                                                                justifyContent: "center",
-                                                                alignItems: "center"
-                                                            }}
-                                                        >
-                                                            <View
-                                                                style={{
-                                                                    width: WINDOW_WIDTH - 40,
-                                                                    borderRadius: 10,
-                                                                    backgroundColor: '#8CC83F',
-                                                                    justifyContent: 'center',
-                                                                    alignItems: "center",
-                                                                    padding: 15,
-                                                                }}
-                                                            >
-                                                                <Text
-                                                                    style={{
-                                                                        color: '#fff',
-                                                                        fontSize: 18,
-                                                                        fontFamily: MontserratSemiBold
-                                                                    }}
-                                                                >
-                                                                    Показать ещё
-                                                                </Text>
-                                                            </View>
-                                                        </TouchableOpacity>
-                                                    }
-                                                />
+                <ScrollView
+                    style={{flex: 1}}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                            progressBackgroundColor="#8CC83F"
+                            tintColor="#8CC83F"
+                        />
+                    }
+                >
+                    <View
+                        style={{
+                            width: WINDOW_WIDTH - 40,
+                            flex: 1,
+                            alignSelf: "center",
+                            paddingTop: 30,
+                            paddingBottom: 50,
+                        }}
+                    >
+                        {
+                            this.state.allOrders !== null
+                                ? (
+                                    <FlatList
+                                        ListHeaderComponent={
+                                            <>
+                                                {/*{*/}
+                                                {/*    this.state.refreshing*/}
+                                                {/*        ? (*/}
+                                                {/*            <View*/}
+                                                {/*                style={{*/}
+                                                {/*                    flex: 1,*/}
+                                                {/*                    justifyContent: 'center',*/}
+                                                {/*                    alignItems: 'center',*/}
+                                                {/*                    alignContent: 'center',*/}
+                                                {/*                    alignSelf: 'center',*/}
+                                                {/*                }}*/}
+                                                {/*            >*/}
+                                                {/*                <PulseIndicator*/}
+                                                {/*                    size={100}*/}
+                                                {/*                    color='#8CC83F'*/}
+                                                {/*                />*/}
+                                                {/*            </View>*/}
+                                                {/*        )*/}
+                                                {/*        : null*/}
+                                                {/*}*/}
+                                            </>
+                                        }
+                                        scrollEnabled={true}
+                                        keyExtractor={item => item.id.toString()}
+                                        showsVerticalScrollIndicator={true}
+                                        data={this.state.allOrders}
+                                        renderItem={({item}) => {
+                                            return (
+                                                this.renderItem(item)
                                             )
-                                            : (
+                                        }}
+                                        ListFooterComponent={
+                                            <TouchableOpacity
+                                                onPress={() => alert('test')}
+                                                style={{
+                                                    width: '100%',
+                                                    marginBottom: 50,
+                                                    justifyContent: "center",
+                                                    alignItems: "center"
+                                                }}
+                                            >
                                                 <View
                                                     style={{
-                                                        justifyContent: "center",
+                                                        width: WINDOW_WIDTH - 40,
+                                                        borderRadius: 10,
+                                                        backgroundColor: '#8CC83F',
+                                                        justifyContent: 'center',
                                                         alignItems: "center",
+                                                        padding: 15,
                                                     }}
                                                 >
-                                                    <Text>
-                                                        У вас нет заказов
+                                                    <Text
+                                                        style={{
+                                                            color: '#fff',
+                                                            fontSize: 18,
+                                                            fontFamily: MontserratSemiBold
+                                                        }}
+                                                    >
+                                                        Показать ещё
                                                     </Text>
                                                 </View>
-                                            )
-                                    }
-                                </View>
-                            </ScrollView>
-                        )
-                }
+                                            </TouchableOpacity>
+                                        }
+                                    />
+                                )
+                                : (
+                                    <View
+                                        style={{
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Text>
+                                            У вас нет заказов
+                                        </Text>
+                                    </View>
+                                )
+                        }
+                    </View>
+                </ScrollView>
             </>
         )
     };

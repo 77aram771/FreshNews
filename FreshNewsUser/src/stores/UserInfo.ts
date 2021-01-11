@@ -26,7 +26,7 @@ class UserInfo {
     };
 
     @action
-    getUserDataUpdate = async (name: string, email: string, surname: string) => {
+    getUserDataUpdate = async (name: string, email: string, surname: string, sms_notifications: boolean) => {
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
@@ -39,13 +39,16 @@ class UserInfo {
             redirect: 'follow'
         };
 
-        fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}`, requestOptions)
+        console.log(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&sms_notifications=${sms_notifications ? 1 : 0}`)
+
+        fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&sms_notifications=${sms_notifications ? 1 : 0}`, requestOptions)
             .then(res => {
-                // console.log('res getUserDataUpdate', res);
                 if (toJS(res).status === 200) {
                     this.getUserData()
                 }
-                this.errorData = res;
+                else {
+                    this.errorData = res;
+                }
                 console.log('errorData getUserDataUpdate then', this.errorData);
             })
             .catch(error => {

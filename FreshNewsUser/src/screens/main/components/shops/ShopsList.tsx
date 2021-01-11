@@ -75,158 +75,120 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
 
     render() {
         return (
-            <View style={styles.shopsListContainer}>
-                {
-                    this.state.refreshing
-                        ? (
-                            <View
+            <>
+                <Header
+                    style={{
+                        width: WINDOW_WIDTH,
+                        paddingTop: size20,
+                    }}
+                    headerLeft={
+                        <AntDesign
+                            onPress={() => this.props.navigation.goBack()}
+                            style={{paddingLeft: 8}}
+                            name={'left'}
+                            size={18}
+                            color={'#000'}
+                        />
+                    }
+                    headerMid={
+                        <LogoAndTitle/>
+                    }
+                />
+                <FlatList
+                    ListHeaderComponent={
+                        <>
+                            <HeaderContentMarket
+                                name={this.props.navigation.state.params.shopName}
+                                navigation={this.props.navigation}
+                            />
+                            <HeaderText
                                 style={{
-                                    flex: 1,
-                                    justifyContent: 'center',
+                                    justifyContent: "center",
                                     alignItems: 'center',
-                                    alignContent: 'center',
-                                    alignSelf: 'center',
+                                    alignSelf: "center",
                                 }}
-                            >
-                                <PulseIndicator
-                                    size={100}
-                                    color='#8CC83F'
-                                />
-                            </View>
+                                title={'Магазины'}
+                            />
+                        </>
+                    }
+                    scrollEnabled={true}
+                    keyExtractor={item => item.id.toString()}
+                    showsVerticalScrollIndicator={true}
+                    data={this.state.shopData.shops}
+                    renderItem={({item, index}) => {
+                        return (
+                            <ShopsListItem
+                                key={index}
+                                logo={item.image}
+                                time={item.time}
+                                name={item.name}
+                                rating={item.rating}
+                                reviews={item.reviews_count}
+                                categories={item.categories}
+                                backgroundImage={item.background_image}
+                                onPressNavigation={() => this.handleNavigation(item.id)}
+                            />
                         )
-                        : (
-                            <>
-                                <Header
+                    }}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
+                    ListFooterComponent={
+                        this.state.refreshing
+                            ? (
+                                <View
                                     style={{
-                                        width: WINDOW_WIDTH,
-                                        paddingTop: size20,
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        alignContent: 'center',
+                                        alignSelf: 'center',
                                     }}
-                                    headerLeft={
-                                        <AntDesign
-                                            onPress={() => this.props.navigation.goBack()}
-                                            style={{paddingLeft: 8}}
-                                            name={'left'}
-                                            size={18}
-                                            color={'#000'}
-                                        />
-                                    }
-                                    headerMid={
-                                        <LogoAndTitle/>
-                                    }
-                                />
-                                <FlatList
-                                    ListHeaderComponent={
-                                        <>
-                                            <HeaderContentMarket
-                                                name={this.props.navigation.state.params.shopName}
-                                                navigation={this.props.navigation}
-                                            />
-                                            <HeaderText
-                                                style={{
-                                                    justifyContent: "center",
-                                                    alignItems: 'center',
-                                                    alignSelf: "center",
-                                                }}
-                                                title={'Магазины ринка'}
-                                            />
-                                        </>
-                                    }
-                                    scrollEnabled={true}
-                                    keyExtractor={item => item.id.toString()}
-                                    showsVerticalScrollIndicator={true}
-                                    data={this.state.shopData.shops}
-                                    renderItem={({item, index}) => {
-                                        return (
-                                            <ShopsListItem
-                                                key={index}
-                                                logo={item.image}
-                                                time={item.time}
-                                                name={item.name}
-                                                rating={item.rating}
-                                                reviews={item.reviews_count}
-                                                categories={item.categories}
-                                                backgroundImage={item.background_image}
-                                                onPressNavigation={() => this.handleNavigation(item.id)}
-                                            />
-                                        )
+                                >
+                                    <PulseIndicator
+                                        size={100}
+                                        color='#8CC83F'
+                                    />
+                                </View>
+                            )
+                            : (
+                                <TouchableOpacity
+                                    onPress={() => alert('test')}
+                                    style={{
+                                        width: '100%',
+                                        marginBottom: 50,
+                                        justifyContent: "center",
+                                        alignItems: "center"
                                     }}
-                                    refreshControl={
-                                        <RefreshControl
-                                            refreshing={this.state.refreshing}
-                                            onRefresh={this.onRefresh.bind(this)}
-                                        />
-                                    }
-                                    ListFooterComponent={
-                                        <TouchableOpacity
-                                            onPress={() => alert('test')}
+                                >
+                                    <View
+                                        style={{
+                                            width: WINDOW_WIDTH - 40,
+                                            borderRadius: 10,
+                                            backgroundColor: '#8CC83F',
+                                            justifyContent: 'center',
+                                            alignItems: "center",
+                                            padding: 15,
+                                        }}
+                                    >
+                                        <Text
                                             style={{
-                                                width: '100%',
-                                                marginBottom: 50,
-                                                justifyContent: "center",
-                                                alignItems: "center"
+                                                color: '#fff',
+                                                fontSize: 18,
+                                                fontFamily: MontserratSemiBold
                                             }}
                                         >
-                                            <View
-                                                style={{
-                                                    width: WINDOW_WIDTH - 40,
-                                                    borderRadius: 10,
-                                                    backgroundColor: '#8CC83F',
-                                                    justifyContent: 'center',
-                                                    alignItems: "center",
-                                                    padding: 15,
-                                                }}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        color: '#fff',
-                                                        fontSize: 18,
-                                                        fontFamily: MontserratSemiBold
-                                                    }}
-                                                >
-                                                    Показать ещё
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    }
-                                />
-                            </>
-                        )
-                }
-            </View>
+                                            Показать ещё
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                    }
+                />
+            </>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    shopsListContainer: {width: '100%', flex: 1},
-    footerContainer: {
-        backgroundColor: '#F5F4F4',
-        alignItems: 'flex-start',
-        paddingLeft: 30,
-        flex: 1,
-        paddingTop: 16,
-    },
-    headerTitleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    headerTitle: {
-        color: '#FFFFFF',
-        fontSize: size16,
-        fontFamily: MontserratRegular,
-        textAlign: 'center',
-    },
-    categoriesContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 20,
-        marginTop: 29,
-    },
-    categoryContainer: {
-        paddingVertical: 6,
-        paddingHorizontal: 16,
-        borderRadius: 10,
-    },
-});

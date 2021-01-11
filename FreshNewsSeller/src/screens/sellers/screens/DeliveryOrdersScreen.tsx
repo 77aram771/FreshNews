@@ -1,14 +1,12 @@
 import React, {Component} from "react";
-import {View, Text, TouchableOpacity, ScrollView, Platform} from "react-native";
+import {View, Text, TouchableOpacity, ScrollView} from "react-native";
 import {WINDOW_WIDTH} from "../../../share/consts";
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from "../../../share/fonts";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from "../../../stores/SellerStore";
 import {toJS} from "mobx";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {ErrorModal} from "../modals/ErrorModal";
-// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 
 export default class DeliveryOrdersScreen extends Component<any, any> {

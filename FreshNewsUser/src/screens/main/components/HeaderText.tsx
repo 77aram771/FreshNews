@@ -21,7 +21,8 @@ export const HeaderText = ({
                         color: '#000000',
                     },
                     style,
-                ]}>
+                ]}
+            >
                 {title}
             </Text>
         </View>

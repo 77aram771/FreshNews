@@ -11,6 +11,7 @@ import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from 'mobx';
 import RNPickerSelect from 'react-native-picker-select';
 import paymentStore from "../../../../../stores/PaymentStore";
+import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
 
 @observer
 export default // @ts-ignore
@@ -311,14 +312,15 @@ class PaymentPage extends Component<NavigationProps> {
                             color={'#464646'}
                         />
                     }
-                    headerMid={
-                        <Text style={styles.headerMiddleTitle}>
-                            Заказы в{' '}
-                            <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                                Supermango
-                            </Text>
-                        </Text>
-                    }
+                    // headerMid={
+                    //     <Text style={styles.headerMiddleTitle}>
+                    //         Заказы в{' '}
+                    //         <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
+                    //             Supermango
+                    //         </Text>
+                    //     </Text>
+                    // }
+                    headerMid={<LogoAndTitle/>}
                 />
                 <ScrollView style={{paddingHorizontal: 26}}>
                     <Text

@@ -1,23 +1,14 @@
 import React from 'react';
-import {CustomInput} from '../../../../share/components/CustomInput';
-import {
-    size18,
-    WINDOW_WIDTH,
-} from '../../../../share/consts';
-import {
-    StyleSheet,
-    View,
-    Text,
-    ImageBackground,
-    TouchableOpacity,
-    Animated,
-} from 'react-native';
+import {GOOGLE_MAPS_APIKEY, size20, WINDOW_WIDTH} from '../../../../share/consts';
+import {View, Text, ImageBackground, TouchableOpacity} from 'react-native';
 import {imagesPaths} from '../../../../share/info';
 import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 import {NavigationProps} from '../../../../share/interfaces';
 import {observer} from 'mobx-react';
 import shopsStore from '../../../../stores/ShopsStore';
 import {AntDesign} from "@expo/vector-icons";
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import Icon from "react-native-vector-icons/Fontisto";
 
 interface HeaderContentInterface {
     getGeocodeAsync: any,
@@ -28,144 +19,186 @@ interface HeaderContentInterface {
 @observer
 export default // @ts-ignore
 class HeaderContent extends React.Component<HeaderContentInterface, NavigationProps> {
-
     render() {
-
         const {
-            animatedValue,
-            isShowBackgroundInput,
             clientAddress,
             onChangeClientAddress
         } = shopsStore;
-
-        const viewOpacity = animatedValue.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [1, 0.5, 0],
-        });
-
+        console.log('clientAddress', clientAddress);
         return (
-            <View>
-                {!isShowBackgroundInput ? (
-                    <Animated.View
-                        style={{
-                            opacity: viewOpacity,
-                        }}
-                    >
-                        {
-                            this.props.items.map((item: any) => {
-                                return (
-                                    <TouchableOpacity
-                                        onPress={() => this.props.navigation.navigate('MapPage', {
-                                            order_id: item.id
-                                        })}
-                                        key={item.id}
-                                        style={{
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            flexDirection: 'row',
-                                            width: '100%',
-                                            paddingTop: 15,
-                                            paddingBottom: 15,
-                                            backgroundColor: '#8CC83F',
-                                        }}
-                                    >
-                                        <View
-                                            style={{
-                                                width: WINDOW_WIDTH - 40,
-                                                justifyContent: 'space-around',
-                                                alignItems: "center",
-                                                flexDirection: 'row',
-                                            }}
-                                        >
-                                            <Text
-                                                style={{
-                                                    color: '#fff',
-                                                    fontSize: 14,
-                                                    fontFamily: MontserratSemiBold
-                                                }}
-                                            >
-                                                Готовется заказ {item.id}
-                                            </Text>
-                                            <Text
-                                                style={{
-                                                    color: '#fff',
-                                                    fontSize: 15,
-                                                    fontFamily: MontserratSemiBold
-                                                }}
-                                            >
-                                                {item.delivery_time} мин.
-                                            </Text>
-                                        </View>
-                                        <View
-                                            style={{
-                                                alignItems: "center",
-                                                justifyContent: "center"
-                                            }}
-                                        >
-                                            <AntDesign name="right" size={18} color="#fff" />
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                        <ImageBackground
-                            style={{
-                                width: WINDOW_WIDTH,
-                                height: WINDOW_WIDTH / 1.5
-                            }}
-                            source={imagesPaths.backgroundListImage}>
-                            <View
+            <View
+                style={{
+                    flexDirection: "column"
+                }}
+            >
+                {
+                    this.props.items.map((item: any, index: any) => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() => this.props.navigation.navigate('MapPage', {
+                                    order_id: item.id
+                                })}
+                                key={index}
                                 style={{
-                                    flex: 1,
-                                    justifyContent: 'flex-end',
                                     alignItems: 'center',
-                                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                    width: '100%',
+                                    paddingTop: 15,
+                                    paddingBottom: 15,
+                                    backgroundColor: '#8CC83F',
                                 }}
                             >
-                                <Text style={styles.headerTitle}>
-                                    Быстрая доставка свежих{'\n'} овощей и фруктов на дом 24/7{' '}
-                                    {'\n'}
-                                    Москва
-                                </Text>
-                                <CustomInput
-                                    // editable={true}
-                                    placeholder={'Куда доставляем?'}
-                                    placeholderTextColor={'#7C7878'}
-                                    leftIcon={true}
-                                    style={{marginBottom: size18, marginTop: 46,}}
-                                    textInputStyle={{textAlign: 'center', paddingLeft: 0}}
-                                    getGeocodeAsync={() => this.props.getGeocodeAsync()}
-                                    value={clientAddress}
-                                    onChangeText={text => {onChangeClientAddress(text)}}
-                                    headerStyleWidth={WINDOW_WIDTH - 40}
-                                    headerStyleText={WINDOW_WIDTH / 1.3}
-                                />
-                            </View>
-                        </ImageBackground>
-                    </Animated.View>
-                ) : (
+                                <View
+                                    style={{
+                                        width: WINDOW_WIDTH - 40,
+                                        justifyContent: 'space-around',
+                                        alignItems: "center",
+                                        flexDirection: 'row',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: '#fff',
+                                            fontSize: 14,
+                                            fontFamily: MontserratSemiBold
+                                        }}
+                                    >
+                                        Готовется заказ {item.id}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            color: '#fff',
+                                            fontSize: 15,
+                                            fontFamily: MontserratSemiBold
+                                        }}
+                                    >
+                                        {item.delivery_time} мин.
+                                    </Text>
+                                </View>
+                                <View
+                                    style={{
+                                        alignItems: "center",
+                                        justifyContent: "center"
+                                    }}
+                                >
+                                    <AntDesign name="right" size={18} color="#fff"/>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
+                <ImageBackground
+                    style={{
+                        width: WINDOW_WIDTH,
+                        height: WINDOW_WIDTH / 1.5,
+                    }}
+                    source={imagesPaths.backgroundListImage}
+                >
                     <View
                         style={{
-                            height: WINDOW_WIDTH / 5,
+                            flex: 1,
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            paddingTop: 80,
+                            paddingBottom: 25,
                         }}
-                    />
-                )}
+                    >
+                        <Text
+                            style={{
+                                color: '#FFFFFF',
+                                fontSize: 15,
+                                fontFamily: MontserratRegular,
+                                textAlign: 'center',
+                            }}
+                        >
+                            Быстрая доставка свежих{'\n'} овощей и фруктов на дом 24/7{' '}
+                            {'\n'}
+                            Москва
+                        </Text>
+                        <View
+                            style={{
+                                width: WINDOW_WIDTH - 40,
+                                height: 50,
+                                backgroundColor: '#fff',
+                                borderRadius: 10,
+                            }}
+                        >
+                            <GooglePlacesAutocomplete
+                                placeholder='Куда доставляем?'
+                                fetchDetails={true}
+                                onPress={data => onChangeClientAddress(data.description)}
+                                textInputProps={{
+                                    value: clientAddress,
+                                    onChangeText: (text) => {
+                                        onChangeClientAddress(text)
+                                    }
+                                }}
+                                query={{
+                                    key: GOOGLE_MAPS_APIKEY,
+                                    language: 'ru', // language of the results
+                                }}
+                                styles={{
+                                    container: {
+                                        height: 50,
+                                    },
+                                    textInput: {
+                                        height: 50,
+                                        textAlign: "center"
+                                    },
+                                    textInputContainer: {
+                                        flexDirection: 'row',
+                                        height: 50,
+                                    },
+                                    poweredContainer: {
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderColor: '#c8c7cc',
+                                    },
+                                    powered: {},
+                                    description: {
+                                        fontWeight: 'bold',
+                                    },
+                                    listView: {
+                                        marginTop: 50,
+                                        elevation: 1,
+                                        backgroundColor: 'white',
+                                        position: 'absolute',
+                                        zIndex: 500,
+                                    },
+                                    row: {
+                                        backgroundColor: '#fff',
+                                        height: 50,
+                                        flexDirection: 'row',
+                                    },
+                                    separator: {
+                                        height: 0.5,
+                                        backgroundColor: '#c8c7cc',
+                                    },
+                                }}
+                                renderLeftButton={() => <TouchableOpacity
+                                    style={{
+                                        borderRadius: 10,
+                                        flexDirection: 'row',
+                                        backgroundColor: '#EBEBEB',
+                                        width: 45,
+                                        height: 50,
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                    onPress={() => this.props.getGeocodeAsync()}
+                                >
+                                    <Icon name={'map-marker'} size={size20} color={'#8CC83F'}/>
+                                </TouchableOpacity>}
+                                nearbyPlacesAPI='GooglePlacesSearch'
+                                filterReverseGeocodingByTypes={['locality']}
+                                debounce={300}
+                            />
+                        </View>
+                    </View>
+                </ImageBackground>
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    headerTitleContainer: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    headerTitle: {
-        color: '#FFFFFF',
-        fontSize: 15,
-        fontFamily: MontserratRegular,
-        textAlign: 'center',
-    },
-});

@@ -1,23 +1,10 @@
 import React, {Component} from 'react'
 import {NavigationProps} from "../../../../../share/interfaces";
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {
-    size12,
-    size14,
-    size16,
-    size18,
-    size20,
-    WINDOW_WIDTH
-} from "../../../../../share/consts";
+import {size12, size14, size16, size18, size20, WINDOW_WIDTH} from "../../../../../share/consts";
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
 import basketStore from '../../../../../stores/BasketStore';
 import paymentStore from "../../../../../stores/PaymentStore";
@@ -26,6 +13,7 @@ import {toJS} from "mobx";
 // @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from '../../modals/ErrorModal';
+import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
 
 let moment = require('moment');
 
@@ -41,16 +29,24 @@ class AssemblyPage extends Component<NavigationProps> {
         date: '',
         errorModal: false,
         errorData: [],
+        shopsName: []
     };
 
     componentDidMount() {
         const NewDate = moment().format('YYYY-MM-DD');
-        this.setState({
-            date: NewDate,
-        });
         const {cartUserInfo} = basketStore;
         this.setState({
-            shopData: cartUserInfo
+            shopData: cartUserInfo,
+            date: NewDate,
+        }, () => {
+            toJS(this.state.shopData).map(item => {
+                this.setState({
+                    shopsName: [...this.state.shopsName, item.product.shop.name]
+                }, () => {
+                    console.log('item shops', this.state.shopsName)
+                })
+            })
+
         });
         if (this.props.navigation.state.params.navAddress.address.length > 0) {
             console.log('this.props.navigation.state.params.navAddress if', this.props.navigation.state.params.navAddress.address.length);
@@ -106,14 +102,14 @@ class AssemblyPage extends Component<NavigationProps> {
         )
     };
 
-    handlePayment() {
+    async handlePayment() {
 
         const {userData} = userInfo;
         const {addresses} = userData;
         const {address, porch, level, intercom} = this.props.navigation.state.params.navAddress;
 
         if (this.props.navigation.state.params.navAddress.address.length > 0) {
-            paymentStore.orderUserCheckout(address, porch, level, intercom, '', this.state.date, paymentStore.selectTime);
+            await paymentStore.orderUserCheckout(address, porch, level, intercom, '', this.state.date, paymentStore.selectTime);
             setTimeout(() => {
                 console.log('paymentStore.Error', paymentStore.errorData);
                 if (paymentStore.errorData !== null) {
@@ -125,8 +121,7 @@ class AssemblyPage extends Component<NavigationProps> {
                     this.props.navigation.navigate('CloudPayment')
                 }
             }, 1000)
-        }
-        else {
+        } else {
             toJS(addresses).find((item: any) => {
                     if (item.address === paymentStore.selectAddress) {
                         paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
@@ -148,42 +143,6 @@ class AssemblyPage extends Component<NavigationProps> {
         }
     }
 
-// async handlePayment() {
-//     const {userData} = userInfo;
-//     const {addresses} = userData;
-//     const {address, apartment, intercom, level, messageToCourier, porch} = this.props.navigation.state.params.navAddress
-//     toJS(addresses).find((item: any) => {
-//         if (item.address === paymentStore.selectAddress) {
-//             paymentStore.orderUserCheckout(item.address, item.porch, item.floor, item.intercom, '', this.state.date, paymentStore.selectTime);
-//             setTimeout(() => {
-//                 console.log('paymentStore.Error', paymentStore.errorData);
-//                 if (paymentStore.errorData !== null) {
-//                     this.setState({
-//                         errorData: toJS(paymentStore.errorData),
-//                         errorModal: true
-//                     })
-//                 } else {
-//                     this.props.navigation.navigate('CloudPayment')
-//                 }
-//             }, 1000)
-//         } else {
-//             console.log('false')
-//             paymentStore.orderUserCheckout(address, item.porch, level, intercom, messageToCourier, this.state.date, paymentStore.selectTime);
-//             setTimeout(() => {
-//                 console.log('paymentStore.Error', paymentStore.errorData);
-//                 if (paymentStore.errorData !== null) {
-//                     this.setState({
-//                         errorData: toJS(paymentStore.errorData),
-//                         errorModal: true
-//                     })
-//                 } else {
-//                     this.props.navigation.navigate('CloudPayment')
-//                 }
-//             }, 1000)
-//         }
-//     });
-// };
-
     handleCloseErrorModal = async () => {
         await this.setState({
             errorModal: false,
@@ -191,11 +150,8 @@ class AssemblyPage extends Component<NavigationProps> {
     };
 
     render() {
-
         const {allPrice} = basketStore;
-
         const {disabledBool, shopData, errorModal, errorData} = this.state;
-
         return (
             <>
                 <Modal
@@ -208,7 +164,7 @@ class AssemblyPage extends Component<NavigationProps> {
                             }}
                         >
                             <ModalButton
-                                text="Закрить"
+                                text="Закрыть"
                                 textStyle={{
                                     color: '#fff'
                                 }}
@@ -238,11 +194,7 @@ class AssemblyPage extends Component<NavigationProps> {
                             color={'#fff'}
                         />
                     }
-                    headerMid={
-                        <Text style={styles.headerMiddleTitle}>
-                            Заказ собирается
-                        </Text>
-                    }
+                    headerMid={<LogoAndTitle/>}
                 />
                 <ScrollView style={{flex: 1}}>
                     <View style={styles.table}>
@@ -269,7 +221,7 @@ class AssemblyPage extends Component<NavigationProps> {
                                 <Text
                                     style={{fontFamily: MontserratSemiBold, fontSize: size14,}}
                                 >
-                                    Доставка
+                                    Доставка из
                                 </Text>
                             </View>
                             <View
@@ -279,8 +231,7 @@ class AssemblyPage extends Component<NavigationProps> {
                                 }}
                             >
                                 <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
-                                    {this.state.delivery} <Text
-                                    style={{color: '#8CC83F', fontSize: size14}}>₽</Text>
+                                    {this.state.delivery} <Text style={{color: '#8CC83F', fontSize: size14}}>₽</Text>
                                 </Text>
                             </View>
                         </View>
@@ -298,7 +249,7 @@ class AssemblyPage extends Component<NavigationProps> {
                             >
                                 <Text
                                     style={{fontFamily: MontserratSemiBold, fontSize: size14,}}>
-                                    из
+
                                 </Text>
                             </View>
                             <View
@@ -307,9 +258,19 @@ class AssemblyPage extends Component<NavigationProps> {
                                     alignItems: "flex-end",
                                 }}
                             >
-                                <Text style={{fontFamily: MontserratSemiBold, fontSize: size14, color: '#8CC83F'}}>
-                                    Supermango
-                                </Text>
+                                {
+                                    this.state.shopsName.map((item, index) => {
+                                        return (
+                                            <Text key={index} style={{
+                                                fontFamily: MontserratSemiBold,
+                                                fontSize: size14,
+                                                color: '#8CC83F'
+                                            }}>
+                                                {item}
+                                            </Text>
+                                        )
+                                    })
+                                }
                             </View>
                         </View>
                     </View>
@@ -337,7 +298,7 @@ class AssemblyPage extends Component<NavigationProps> {
                                 Итого
                             </Text>
                             <Text style={{fontFamily: MontserratSemiBold, fontSize: size20}}>
-                                {Math.ceil(parseInt(allPrice) + parseInt(this.state.delivery))}
+                                {Math.ceil(allPrice) + this.state.delivery}
                                 <Text style={{color: '#8CC83F', fontSize: size16}}>₽</Text>
                             </Text>
                         </View>
@@ -371,15 +332,15 @@ class AssemblyPage extends Component<NavigationProps> {
                                                 alignItems: "center"
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    fontFamily: MontserratSemiBold,
-                                                    fontSize: 20,
-                                                    color: '#fff'
-                                                }}
-                                            >
-                                                Заказ собран
-                                            </Text>
+                                            {/*<Text*/}
+                                            {/*    style={{*/}
+                                            {/*        fontFamily: MontserratSemiBold,*/}
+                                            {/*        fontSize: 20,*/}
+                                            {/*        color: '#fff'*/}
+                                            {/*    }}*/}
+                                            {/*>*/}
+                                            {/*    Заказ собран*/}
+                                            {/*</Text>*/}
                                         </View>
                                     )
                                     : (
@@ -531,13 +492,13 @@ class AssemblyPage extends Component<NavigationProps> {
                             <TouchableOpacity
                                 onPress={() => this.handlePayment()}
                                 style={{
-                                    backgroundColor: '#8CC83F',
+                                    backgroundColor: '#679b25',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     paddingVertical: 27,
-                                    borderStyle: 'solid',
-                                    borderColor: 'white',
-                                    borderWidth: 2
+                                    // borderStyle: 'solid',
+                                    // borderColor: 'white',
+                                    // borderWidth: 2
                                 }}
                             >
                                 <Text
@@ -562,34 +523,33 @@ class AssemblyPage extends Component<NavigationProps> {
     ;
 }
 
-const
-    styles = StyleSheet.create({
-        headers: {
-            width: WINDOW_WIDTH,
-            paddingTop: size20,
-            backgroundColor: '#8CC83F',
-        },
-        headerMiddleTitle: {
-            fontFamily: MontserratRegular,
-            fontSize: size18,
-            color: '#fff',
-        },
-        table: {
-            marginTop: 30,
-            justifyContent: "center",
-            alignItems: "flex-start",
-            alignContent: 'center',
-            alignSelf: 'center',
-            width: WINDOW_WIDTH - 40,
-        },
-        delivery: {
-            marginTop: 20,
-            marginBottom: 50,
-            justifyContent: "center",
-            alignItems: "flex-start",
-            alignContent: 'center',
-            alignSelf: 'center',
-            width: WINDOW_WIDTH - 40,
-            flexDirection: "column"
-        },
-    });
+const styles = StyleSheet.create({
+    headers: {
+        width: WINDOW_WIDTH,
+        paddingTop: size20,
+        backgroundColor: '#8CC83F',
+    },
+    headerMiddleTitle: {
+        fontFamily: MontserratRegular,
+        fontSize: size18,
+        color: '#fff',
+    },
+    table: {
+        marginTop: 30,
+        justifyContent: "center",
+        alignItems: "flex-start",
+        alignContent: 'center',
+        alignSelf: 'center',
+        width: WINDOW_WIDTH - 40,
+    },
+    delivery: {
+        marginTop: 20,
+        marginBottom: 50,
+        justifyContent: "center",
+        alignItems: "flex-start",
+        alignContent: 'center',
+        alignSelf: 'center',
+        width: WINDOW_WIDTH - 40,
+        flexDirection: "column"
+    },
+});

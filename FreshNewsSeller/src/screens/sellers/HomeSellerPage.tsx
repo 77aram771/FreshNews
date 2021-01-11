@@ -7,12 +7,10 @@ import CollectedOrders from "./CollectedOrders";
 import ShopAssortment from "./ShopAssortment";
 import AllCollectedOrders from "./AllCollectedOrders";
 import {MontserratRegular} from "../../share/fonts";
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import sellerStore from '../../stores/SellerStore';
 import authStore from '../../stores/UserInfo';
 import {toJS} from "mobx";
-// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {EditModal} from "./modals/EditModal";
 import {InfoModal} from "./modals/InfoModal";
@@ -23,37 +21,40 @@ import {ErrorModal} from "./modals/ErrorModal";
 export default // @ts-ignore
 class HomeSellerPage extends Component<any, any> {
 
-    state = {
-        show1: false,
-        show2: false,
-        show3: false,
-        show4: false,
-        refreshing: false,
-        orders: null,
-        products: null,
-        startOrder: [],
-        buildOrder: [],
-        finishOrder: [],
-        editModal: false,
-        editData: [],
-        infoModal: false,
-        infoData: [],
-        addModal: false,
-        addData: [],
-        errorModal: false,
-        errorData: [],
-    };
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            show1: false,
+            show2: false,
+            show3: false,
+            show4: false,
+            refreshing: false,
+            orders: null,
+            products: null,
+            startOrder: [],
+            buildOrder: [],
+            finishOrder: [],
+            editModal: false,
+            editData: [],
+            infoModal: false,
+            infoData: [],
+            addModal: false,
+            addData: [],
+            errorModal: false,
+            errorData: [],
+        };
+        this._unsubscribe = null
+    }
 
     async componentDidMount() {
-        sellerStore.getUserData();
-        authStore.getUserInfo();
-        this.setState({
-            refreshing: true
-        })
+        await sellerStore.getUserData();
+        await authStore.getUserInfo();
+        this.setState({refreshing: true})
         setTimeout(() => {
             this.setState({
                 orders: toJS(sellerStore.sellerData.orders),
                 products: toJS(sellerStore.sellerData.products),
+                refreshing: false
             }, () => {
                 console.log('sellerStore.errorData', sellerStore.errorData);
                 if (sellerStore.errorData !== null) {
@@ -94,11 +95,57 @@ class HomeSellerPage extends Component<any, any> {
                     }
                 })
             })
+        }, 2000);
+        this._unsubscribe = this.props.navigation.addListener('focus', () => {
+            this.onRefresh()
+        });
+        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+    };
+
+    componentWillUnmount() {
+        this._unsubscribe();
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
+    };
+
+    async onRefresh() {
+        await sellerStore.getUserData();
+        await authStore.getUserInfo();
+        this.setState({
+            refreshing: true,
+            orders: null,
+            products: null,
+            startOrder: [],
+            buildOrder: [],
+            finishOrder: []
+        });
+        setTimeout(() => {
+            this.setState({
+                orders: toJS(sellerStore.sellerData.orders),
+                products: toJS(sellerStore.sellerData.products),
+            }, () => {
+                // @ts-ignore
+                this.state.orders && this.state.orders.map((item: any) => {
+                    if (item.status === 1) {
+                        // @ts-ignore
+                        this.state.startOrder.push(item);
+                        // console.log('startOrder', this.state.startOrder)
+                    } else if (item.status === 3 || item.status === 4 || item.status === 5) {
+                        // @ts-ignore
+                        this.state.buildOrder.push(item);
+                        // console.log('buildOrder', this.state.buildOrder)
+                    } else if (item.status === 6) {
+                        // @ts-ignore
+                        this.state.finishOrder.push(item);
+                        // console.log('finishOrder', this.state.finishOrder)
+                    }
+                })
+            })
+        }, 2000);
+        setTimeout(() => {
             this.setState({
                 refreshing: false
             })
-        }, 2000);
-        BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
+        }, 3000)
     };
 
     handleShow1() {
@@ -125,47 +172,8 @@ class HomeSellerPage extends Component<any, any> {
         })
     };
 
-    onRefresh() {
-        sellerStore.getUserData();
-        authStore.getUserInfo();
-        this.setState({
-            refreshing: true,
-            orders: null,
-            products: null,
-            startOrder: [],
-            buildOrder: [],
-            finishOrder: []
-        })
-        setTimeout(() => {
-            this.setState({
-                orders: toJS(sellerStore.sellerData.orders),
-                products: toJS(sellerStore.sellerData.products),
-            }, () => {
-                // @ts-ignore
-                this.state.orders && this.state.orders.map((item: any) => {
-                    if (item.status === 1) {
-                        // @ts-ignore
-                        this.state.startOrder.push(item);
-                        // console.log('startOrder', this.state.startOrder)
-                    } else if (item.status === 3 || item.status === 4 || item.status === 5) {
-                        // @ts-ignore
-                        this.state.buildOrder.push(item);
-                        // console.log('buildOrder', this.state.buildOrder)
-                    } else if (item.status === 6) {
-                        // @ts-ignore
-                        this.state.finishOrder.push(item);
-                        // console.log('finishOrder', this.state.finishOrder)
-                    }
-                })
-            })
-            this.setState({
-                refreshing: false
-            })
-        }, 2000);
-    };
-
     handleOpenEditModal = async (id: any) => {
-        sellerStore.getDataInfo(id);
+        await sellerStore.getDataInfo(id);
         setTimeout(() => {
             this.setState({
                 editModal: true,
@@ -195,7 +203,7 @@ class HomeSellerPage extends Component<any, any> {
 
     handleOpenInfoModal = async (id: any) => {
         console.log('id', id);
-        sellerStore.getDataInfo(id);
+        await sellerStore.getDataInfo(id);
         setTimeout(() => {
             this.setState({
                 infoModal: true,
@@ -225,10 +233,6 @@ class HomeSellerPage extends Component<any, any> {
         }, () => console.log('errorModal', this.state.errorModal))
     };
 
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
-    };
-
     onBackPress = () => {
         this.props.navigation.navigate('HomeSellerPage')
         return true;
@@ -249,8 +253,8 @@ class HomeSellerPage extends Component<any, any> {
         }, 3000)
     };
 
-    handleSaveEditItem = (id: any, name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
-        sellerStore.getEditItem(id, name, category_id, weight, type, price, description, image);
+    handleSaveEditItem = async (id: any, name: any, category_id: any, weight: any, type: any, price: any, description: any, image: any) => {
+        await sellerStore.getEditItem(id, name, category_id, weight, type, price, description, image);
         setTimeout(() => {
             this.handleCloseEditModal();
             if (sellerStore.errorData !== null) {
@@ -294,16 +298,10 @@ class HomeSellerPage extends Component<any, any> {
                                     visible={this.state.editModal}
                                     useNativeDriver={true}
                                     footer={
-                                        <ModalFooter
-                                            style={{
-                                                backgroundColor: 'red',
-                                            }}
-                                        >
+                                        <ModalFooter style={{backgroundColor: 'red'}}>
                                             <ModalButton
                                                 text="Закрить"
-                                                textStyle={{
-                                                    color: '#fff'
-                                                }}
+                                                textStyle={{color: '#fff'}}
                                                 onPress={() => {
                                                     this.setState({editModal: false})
                                                 }}
@@ -311,7 +309,7 @@ class HomeSellerPage extends Component<any, any> {
                                         </ModalFooter>
                                     }
                                     onTouchOutside={() => {
-                                        this.setState({editModal: false});
+                                        this.setState({editModal: false})
                                     }}
                                 >
                                     <ModalContent>
@@ -326,16 +324,10 @@ class HomeSellerPage extends Component<any, any> {
                                     visible={this.state.infoModal}
                                     useNativeDriver={true}
                                     footer={
-                                        <ModalFooter
-                                            style={{
-                                                backgroundColor: 'red'
-                                            }}
-                                        >
+                                        <ModalFooter style={{backgroundColor: 'red'}}>
                                             <ModalButton
                                                 text="Закрить"
-                                                textStyle={{
-                                                    color: '#fff'
-                                                }}
+                                                textStyle={{color: '#fff'}}
                                                 onPress={() => {
                                                     this.setState({infoModal: false})
                                                 }}
@@ -343,7 +335,7 @@ class HomeSellerPage extends Component<any, any> {
                                         </ModalFooter>
                                     }
                                     onTouchOutside={() => {
-                                        this.setState({infoModal: false});
+                                        this.setState({infoModal: false})
                                     }}
                                 >
                                     <ModalContent>
@@ -358,16 +350,10 @@ class HomeSellerPage extends Component<any, any> {
                                     visible={this.state.addModal}
                                     useNativeDriver={true}
                                     footer={
-                                        <ModalFooter
-                                            style={{
-                                                backgroundColor: 'red'
-                                            }}
-                                        >
+                                        <ModalFooter style={{backgroundColor: 'red'}}>
                                             <ModalButton
                                                 text="Закрить"
-                                                textStyle={{
-                                                    color: '#fff'
-                                                }}
+                                                textStyle={{color: '#fff'}}
                                                 onPress={() => {
                                                     this.setState({addModal: false})
                                                 }}
@@ -375,7 +361,7 @@ class HomeSellerPage extends Component<any, any> {
                                         </ModalFooter>
                                     }
                                     onTouchOutside={() => {
-                                        this.setState({addModal: false});
+                                        this.setState({addModal: false})
                                     }}
                                 >
                                     <ModalContent>
@@ -389,16 +375,10 @@ class HomeSellerPage extends Component<any, any> {
                                     visible={this.state.errorModal}
                                     useNativeDriver={true}
                                     footer={
-                                        <ModalFooter
-                                            style={{
-                                                backgroundColor: 'red'
-                                            }}
-                                        >
+                                        <ModalFooter style={{backgroundColor: 'red'}}>
                                             <ModalButton
                                                 text="Закрить"
-                                                textStyle={{
-                                                    color: '#fff'
-                                                }}
+                                                textStyle={{color: '#fff'}}
                                                 onPress={() => this.handleCloseErrorModal()}
                                             />
                                         </ModalFooter>
@@ -434,6 +414,7 @@ class HomeSellerPage extends Component<any, any> {
                                             alignItems: "center",
                                         }}
                                     >
+                                        {/*<NavigationEvents onDidFocus={() => this.onRefresh()}/>*/}
                                         <TouchableOpacity
                                             onPress={() => this.handleShow1()}
                                             style={{

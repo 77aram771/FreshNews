@@ -14,10 +14,7 @@ import {ActionButton} from '../../share/components/ActionButton';
 import {size12, size16, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../share/consts';
 import {verify, request} from "../../services/services";
 import PhoneInput from 'react-native-phone-number-input';
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
-import sellerStore from "../../stores/SellerStore";
-// @ts-ignore
 import Modal, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {toJS} from "mobx";
 import {ErrorModal} from '../sellers/modals/ErrorModal';
@@ -113,9 +110,9 @@ class LoginScreen extends React.Component<NavigationProps> {
         }
     };
 
-    getCodeNumber(text: Number) {
+    getCodeNumber(text: String) {
         this.setState({
-            confirmationPin: String(text)
+            confirmationPin: text
         })
     };
 
@@ -210,11 +207,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                             height: WINDOW_HEIGHT / 4.5,
                         }}
                     />
-                    <View
-                        style={{
-                            alignItems: 'center',
-                        }}
-                    >
+                    <View style={{alignItems: 'center'}}>
                         <PhoneInput
                             ref={this.phoneInput}
                             defaultValue={this.state.value}
@@ -261,7 +254,7 @@ class LoginScreen extends React.Component<NavigationProps> {
                                             style={this.state.codeInput ? styles.codeInputTrue : styles.codeInputFalse}
                                             placeholder={'Код из смс'}
                                             value={String(this.state.confirmationPin)}
-                                            onChangeText={item => this.getCodeNumber(Number(item))}
+                                            onChangeText={item => this.getCodeNumber(String(item))}
                                             headerStyleWidth={WINDOW_WIDTH - 90}
                                             headerStyleText={WINDOW_WIDTH / 1.6}
                                         />

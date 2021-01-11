@@ -46,12 +46,11 @@ export default class ProductPage extends Component<intProductPage> {
 
     async handleAddItem(id: number, count: number) {
         let getToken = await AsyncStorage.getItem('Token');
-        // console.log('getToken', getToken);
         if(getToken === null){
             this.props.navigation.navigate('Login')
         }
         await basketStore.getAddCartUser(id, count)
-        shopsStore.onShowShopInformation()
+        await shopsStore.onShowShopInformation()
         setTimeout(() => {
             this.props.refresh()
         }, 2500)
@@ -62,8 +61,6 @@ export default class ProductPage extends Component<intProductPage> {
         const {onShowShopInformation, getShopItemInfo} = shopsStore;
 
         const {description, id, image, name, price, weight} = toJS(getShopItemInfo);
-
-        const {refresh} = this.props;
 
         return (
             <View
