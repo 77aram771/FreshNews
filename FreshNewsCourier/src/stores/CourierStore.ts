@@ -159,11 +159,11 @@ class CourierStore {
             redirect: 'follow'
         };
         fetch(`${SERVER_BASE}/courier/maps/time/${id}?lat=${lat}&lon=${lon}`, requestOptions)
-            .then(res => console.log(res))
-            .catch((err) => {
-                console.log('getCourierCoordinate error', err);
-                this.errorData = err;
-            })
+            // .then(res => console.log(res))
+            // .catch((err) => {
+            //     console.log('getCourierCoordinate error', err);
+            //     this.errorData = err;
+            // })
     };
 
     @action

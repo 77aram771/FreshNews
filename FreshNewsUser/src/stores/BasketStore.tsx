@@ -27,14 +27,14 @@ class BasketStore {
                         return ({
                             'id': new Date().getUTCMilliseconds(),
                             'marketName': key,
-                            'marketPrice': _.sumBy(objs, item => item.quantity * Number(Math.ceil(item.price.replace(/\s/g, '')))),
+                            'marketPrice': _.sumBy(objs, item => item.quantity * Math.ceil(parseInt(item.product.price.replace(/\s/g, '')))),
                             'image': _.mapValues(objs, item => item.product.shop.image),
                         })
                     })
                     .value()
                 this.cartUserInfo = res.data;
                 this.cartUserInfo.reduce((sum: number, item: any) => {
-                        return allPriceArray.push(parseInt(item.product.price.replace(/\s/g, '')) * toJS(item).quantity)
+                        return allPriceArray.push(Math.ceil(parseInt(item.product.price.replace(/\s/g, ''))) * toJS(item).quantity)
                     }, 0
                 );
                 this.allPrice = allPriceArray.reduce(function (accumulator: number, currentValue: number) {

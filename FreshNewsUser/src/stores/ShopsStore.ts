@@ -16,10 +16,12 @@ class ShopsStore {
     @observable getShopShares: any = [];
     @observable isShowShopInformation: boolean = false;
     @observable isShowShopInformationModal: boolean = false;
+    @observable isShowShopReviewModal: boolean = false;
     @observable isShowAddAddressModal: boolean = false;
     @observable isShowAddCreditCart: boolean = false;
     @observable getShopItemInfo: any = [];
     @observable allOrders: any = [];
+    @observable allOrdersItem: any = [];
     @observable userAddress: string = '';
     @observable errorData: any = null;
     @observable loader: any = false;
@@ -48,15 +50,14 @@ class ShopsStore {
     getUserAddress = async (address: any) => {
         this.userAddress = '';
         this.loader = true;
-        console.log('this.loader', this.loader);
+        // console.log('this.loader', this.loader);
         this.clientAddress = address;
-        console.log('this.clientAddress', this.clientAddress);
         if (this.clientAddress.length >= 3) {
             setTimeout(() => {
-                console.log('this.loader', this.loader);
+                // console.log('this.loader', this.loader);
                 this.loader = false;
                 // this.getShops(1)
-            }, 3000)
+            }, 1000)
         } else {
             this.loader = false;
         }
@@ -92,7 +93,6 @@ class ShopsStore {
         this.getShopData = [];
         await axios.get(`${SERVER_BASE}/home?address`)
             .then((res) => {
-                console.log('res home?address', res)
                 this.getShopData = res.data;
             })
             .catch((error) => {
@@ -217,6 +217,11 @@ class ShopsStore {
     };
 
     @action
+    onShowShopReviewModal = () => {
+        this.isShowShopReviewModal = !this.isShowShopReviewModal;
+    };
+
+    @action
     onShowAddCreditCart = () => {
         this.isShowAddCreditCart = !this.isShowAddCreditCart;
     };
@@ -228,6 +233,7 @@ class ShopsStore {
 
     @action
     getAllOrders = async () => {
+        this.allOrdersItem = []
         let getToken = await AsyncStorage.getItem('Token')
         // @ts-ignore
         let str = getToken.slice(1)
@@ -236,6 +242,13 @@ class ShopsStore {
         axios.get(`${SERVER_BASE}/orders`, {headers})
             .then((res) => {
                 this.allOrders = res.data;
+                toJS(res.data).map((item: any) => {
+                    if (item.status === 4 || item.status === 5) {
+                        this.allOrdersItem.push(item)
+                    }
+                })
+                // console.log('item allOrders', toJS(this.allOrdersItem));
+
             })
             .catch((error) => {
                 console.log('error getPromoCode', error);
@@ -244,8 +257,32 @@ class ShopsStore {
     }
 
     @action
+    resetAllOrder = async () => {
+        this.allOrders = []
+    }
+
+    @action
     getAddressUser = async (address: any) => {
         this.userAddress = address;
+    }
+
+    @action
+    postReview = async (order_id: any, shop_id: any, rating: any, review: any) => {
+        let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
+        let str = getToken.slice(1)
+        let strTrue = str.substring(0, str.length - 1)
+        const headers = {Authorization: `Bearer ${strTrue}`};
+        console.log(`${SERVER_BASE}/reviews?${order_id}&shop_id=${shop_id}&rating=${rating}&review=${review}`)
+        axios.post(`${SERVER_BASE}/reviews?${order_id}&shop_id=${shop_id}&rating=${rating}&review=${review}`, {headers})
+            .then((res) => {
+                // this.allOrders = res.data;
+                console.log('res postReview', res)
+            })
+            .catch((error) => {
+                console.log('error postReview', error);
+                this.errorData = error
+            })
     }
 }
 

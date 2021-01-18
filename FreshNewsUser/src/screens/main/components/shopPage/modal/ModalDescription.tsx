@@ -4,6 +4,7 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import {size34, WINDOW_WIDTH} from "../../../../../share/consts";
 import {MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
 import shopsStore from "../../../../../stores/ShopsStore";
+import {toJS} from "mobx";
 
 export const ModalDescription = () => {
     const {getShopInfo} = shopsStore;

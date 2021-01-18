@@ -4,18 +4,38 @@ import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {CustomInput} from '../../../../../share/components/CustomInput';
-import {size12, size16, size20, size34, size44, WINDOW_HEIGHT, WINDOW_WIDTH,} from '../../../../../share/consts';
-import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
-import {NavigationProps} from '../../../../../share/interfaces';
+import {
+    GOOGLE_MAPS_APIKEY,
+    size12,
+    size16,
+    size20,
+    size34,
+    size44,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH
+} from '../../../../../share/consts';
+import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import userInfo from "../../../../../stores/UserInfo";
 import {toJS} from 'mobx';
 import RNPickerSelect from 'react-native-picker-select';
 import paymentStore from "../../../../../stores/PaymentStore";
 import {LogoAndTitle} from "../../../../../share/components/LogoAndTitle";
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
+
+const placeholder = {
+    label: 'Выберите один из адресов',
+    value: null,
+    color: '#9EA0A4',
+};
+const placeholder2 = {
+    label: 'Выберите один из времини',
+    value: null,
+    color: '#9EA0A4',
+};
 
 @observer
 export default // @ts-ignore
-class PaymentPage extends Component<NavigationProps> {
+class PaymentPage extends Component<any, any> {
 
     constructor(props: any) {
         super(props);
@@ -42,17 +62,6 @@ class PaymentPage extends Component<NavigationProps> {
     async componentDidMount() {
         await paymentStore.orderUserTime();
         await userInfo.getUserData();
-        const {userData} = userInfo;
-        const {addresses} = userData;
-        const addressMap = addresses.map((item: any) => {
-            return {
-                    label: toJS(item.address),
-                    value: toJS(item.address),
-                };
-            }
-        )
-        this.setState({addressArray: addressMap})
-
         const {time} = paymentStore;
         for (let key in toJS(time)) {
             if (toJS(time).hasOwnProperty(key)) {
@@ -233,7 +242,7 @@ class PaymentPage extends Component<NavigationProps> {
         await paymentStore.getSelectAddress(value);
     };
 
-    handleSelectTime(value: any) {
+    async handleSelectTime(value: any) {
         if (value) {
             this.setState({
                 selectTime: value,
@@ -251,7 +260,7 @@ class PaymentPage extends Component<NavigationProps> {
                 selectTime: '',
             })
         }
-        paymentStore.getSelectTime(value);
+        await paymentStore.getSelectTime(value);
     };
 
     handleClick() {
@@ -266,20 +275,9 @@ class PaymentPage extends Component<NavigationProps> {
         this.props.navigation.navigate('AssemblyPage', {
             navAddress: addressObj
         });
-    }
+    };
 
     render() {
-        const placeholder = {
-            label: 'Выберите один из адресов',
-            value: null,
-            color: '#9EA0A4',
-        };
-        const placeholder2 = {
-            label: 'Выберите один из времини',
-            value: null,
-            color: '#9EA0A4',
-        };
-
         const {
             address,
             porch,
@@ -287,13 +285,7 @@ class PaymentPage extends Component<NavigationProps> {
             apartment,
             intercom,
             messageToCourier,
-            addressInput,
-            porchInput,
-            levelInput,
-            apartmentInput,
-            intercomInput,
             disabledBool,
-            addressArray,
             timeArray,
             selectTime,
             selectAddress
@@ -312,17 +304,9 @@ class PaymentPage extends Component<NavigationProps> {
                             color={'#464646'}
                         />
                     }
-                    // headerMid={
-                    //     <Text style={styles.headerMiddleTitle}>
-                    //         Заказы в{' '}
-                    //         <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                    //             Supermango
-                    //         </Text>
-                    //     </Text>
-                    // }
                     headerMid={<LogoAndTitle/>}
                 />
-                <ScrollView style={{paddingHorizontal: 26}}>
+                <ScrollView style={{paddingHorizontal: 26}} keyboardShouldPersistTaps={'always'}>
                     <Text
                         style={{
                             color: '#BABABA',
@@ -336,7 +320,7 @@ class PaymentPage extends Component<NavigationProps> {
                     </Text>
                     <RNPickerSelect
                         placeholder={placeholder}
-                        items={addressArray}
+                        items={toJS(userInfo.userDataArray)}
                         onValueChange={value => this.handleSelectAddress(value)}
                         style={pickerSelectStyles}
                         value={selectAddress}
@@ -378,28 +362,96 @@ class PaymentPage extends Component<NavigationProps> {
                                     >
                                         Адрес
                                     </Text>
-                                    <CustomInput
-                                        value={address}
-                                        onChangeText={value => this.handleValidationAddress(value)}
-                                        textInputStyle={{flex: 1}}
-                                        style={{
-                                            justifyContent: 'flex-start',
-                                            marginTop: 16,
-                                            height: 40
-                                        }}
-                                    />
-                                    <View style={{justifyContent: "center", alignItems: "center", marginTop: 10}}>
-                                        <Text
-                                            style={{
-                                                fontFamily: MontserratBold
+                                    {/*<CustomInput*/}
+                                    {/*    value={address}*/}
+                                    {/*    onChangeText={value => this.handleValidationAddress(value)}*/}
+                                    {/*    textInputStyle={{flex: 1}}*/}
+                                    {/*    style={{*/}
+                                    {/*        justifyContent: 'flex-start',*/}
+                                    {/*        marginTop: 16,*/}
+                                    {/*        height: 40*/}
+                                    {/*    }}*/}
+                                    {/*/>*/}
+                                    <View style={{zIndex: 1}}>
+                                        <GooglePlacesAutocomplete
+                                            placeholder=''
+                                            fetchDetails={true}
+                                            onPress={data => {
+                                                if (data.description !== undefined) {
+                                                    // console.log('data', data.structured_formatting.main_text);
+                                                    this.handleValidationAddress(data.structured_formatting.main_text)
+                                                } else {
+                                                    // console.log(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                                    // @ts-ignore
+                                                    this.handleValidationAddress(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                                }
                                             }}
-                                        >
-                                            Пример: {' '}
-                                            <Text
-                                                style={{
-                                                    fontFamily: MontserratSemiBold
-                                                }}
-                                            >Москва ул. Тверская 11</Text></Text>
+                                            textInputProps={{
+                                                value: address,
+                                                onChangeText: (text) => {
+                                                    this.handleValidationAddress(text)
+                                                }
+                                            }}
+                                            query={{
+                                                key: GOOGLE_MAPS_APIKEY,
+                                                language: 'ru', // language of the results
+                                                components: "country:ru",
+                                                types: ['address'], // default: 'geocode'
+                                                region: "RU", //It removes the country name from the suggestion list
+                                                location: '55.751244, 37.618423',
+                                                radius: '55000', //100 km
+                                            }}
+                                            currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                                            currentLocationLabel="Current location"
+                                            nearbyPlacesAPI={'GoogleReverseGeocoding'} // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                                            GoogleReverseGeocodingQuery={{
+                                                // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                                                language: 'ru',
+                                            }}
+                                            enablePoweredByContainer={false}
+                                            renderDescription={row => row.description || row.formatted_address || row.name}
+                                            styles={{
+                                                container: {
+                                                    height: 50,
+                                                },
+                                                textInput: {
+                                                    height: 50,
+                                                    textAlign: "center",
+                                                    backgroundColor: '#F5F4F4',
+                                                    marginTop: 16,
+                                                },
+                                                textInputContainer: {
+                                                    flexDirection: 'row',
+                                                    height: 50,
+                                                },
+                                                poweredContainer: {
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    borderColor: '#c8c7cc',
+                                                },
+                                                powered: {},
+                                                description: {
+                                                    fontWeight: 'bold',
+                                                },
+                                                listView: {
+                                                    marginTop: 50,
+                                                    elevation: 1,
+                                                    backgroundColor: 'white',
+                                                    position: 'absolute',
+                                                    zIndex: 500,
+                                                },
+                                                row: {
+                                                    backgroundColor: '#fff',
+                                                    height: 50,
+                                                    flexDirection: 'row',
+                                                },
+                                                separator: {
+                                                    height: 0.5,
+                                                    backgroundColor: '#c8c7cc',
+                                                },
+                                            }}
+                                            debounce={300}
+                                        />
                                     </View>
                                     <View
                                         style={{

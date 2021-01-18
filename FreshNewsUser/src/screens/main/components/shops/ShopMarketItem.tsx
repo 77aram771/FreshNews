@@ -1,25 +1,7 @@
-import {
-    ImageBackground,
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    Image
-} from 'react-native';
 import React from 'react';
-import {SvgUri} from 'react-native-svg';
-
-import {
-    size12, size14,
-    size16,
-    size20,
-    WINDOW_HEIGHT,
-} from '../../../../share/consts';
-import {
-    MontserratBold,
-    MontserratRegular,
-    MontserratSemiBold,
-} from '../../../../share/fonts';
+import {ImageBackground, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {size12, size14, size16, size20, WINDOW_HEIGHT} from '../../../../share/consts';
+import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
 
 export const ShopMarketItem = ({
                                    name,
@@ -55,6 +37,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingHorizontal: 18,
         justifyContent: 'center',
+        // borderColor: 'red',
+        // borderWidth: 10,
+        // borderStyle: "solid"
     },
     imageBackgroundContent: {
         flexDirection: 'column',

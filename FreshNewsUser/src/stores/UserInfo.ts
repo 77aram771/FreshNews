@@ -6,18 +6,27 @@ import axios from "axios";
 
 class UserInfo {
     @observable userData: any = [];
+    @observable userDataArray: any = [];
     @observable notificationsData: any = null;
     @observable errorData: any = null;
 
     @action
     getUserData = async () => {
+        // this.userData = [];
         let getToken = await AsyncStorage.getItem('Token')
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
         axios.get(`${SERVER_BASE}/profile`, {headers})
             .then((res) => {
-                this.userData = res.data;
+                this.userData = res.data
+                this.userDataArray = res.data.addresses.map((item: any) => {
+                    return {
+                        label: toJS(item.address),
+                        value: toJS(item.address),
+                    };
+                });
+                console.log('this.userDataArray', toJS(this.userDataArray))
             })
             .catch(error => {
                 console.log('getUserData error', error);
@@ -45,8 +54,7 @@ class UserInfo {
             .then(res => {
                 if (toJS(res).status === 200) {
                     this.getUserData()
-                }
-                else {
+                } else {
                     this.errorData = res;
                 }
                 console.log('errorData getUserDataUpdate then', this.errorData);
@@ -71,6 +79,7 @@ class UserInfo {
             headers: myHeaders,
             redirect: 'follow'
         };
+
         fetch(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {

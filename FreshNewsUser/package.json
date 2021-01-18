@@ -21,6 +21,7 @@
     "@react-native-community/netinfo": "^5.9.7",
     "@react-native-community/picker": "1.6.0",
     "@types/react-native-vector-icons": "^6.4.5",
+    "@vitalets/google-translate-api": "^4.0.0",
     "add": "^2.0.6",
     "axios": "^0.19.2",
     "expo": "^38.0.0",
@@ -89,12 +90,15 @@
     "react-native-rn-apple-pay-button": "^1.0.2",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
+    "react-native-star-rating": "^1.1.0",
     "react-native-super-grid": "^4.0.2",
     "react-native-svg": "12.1.0",
+    "react-native-translation": "^1.1.0",
     "react-native-vector-icons": "7.0.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "4.0.9",
     "react-navigation-stack": "^2.8.2",
+    "translate-google-api": "^1.0.4",
     "yarn": "^1.22.10"
   },
   "devDependencies": {
@@ -103,6 +107,7 @@
     "@types/react-native": "~0.62.13",
     "@types/react-native-indicators": "^0.16.0",
     "@types/react-native-modals": "^0.19.0",
+    "@types/react-native-star-rating": "^1.1.1",
     "react-native-modals": "^0.19.9",
     "typescript": "~3.9.5"
   },

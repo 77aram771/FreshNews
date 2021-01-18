@@ -24,7 +24,7 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
             clientAddress,
             onChangeClientAddress
         } = shopsStore;
-        console.log('clientAddress', clientAddress);
+        // console.log('clientAddress', clientAddress);
         return (
             <View
                 style={{
@@ -64,7 +64,7 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                             fontFamily: MontserratSemiBold
                                         }}
                                     >
-                                        Готовется заказ {item.id}
+                                        В пути заказ {item.id}
                                     </Text>
                                     <Text
                                         style={{
@@ -128,7 +128,15 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                             <GooglePlacesAutocomplete
                                 placeholder='Куда доставляем?'
                                 fetchDetails={true}
-                                onPress={data => onChangeClientAddress(data.description)}
+                                onPress={data => {
+                                    if (data.description !== undefined) {
+                                        // console.log('data', data.structured_formatting.main_text);
+                                        onChangeClientAddress(data.structured_formatting.main_text)
+                                    } else {
+                                        // console.log(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                        onChangeClientAddress(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                    }
+                                }}
                                 textInputProps={{
                                     value: clientAddress,
                                     onChangeText: (text) => {
@@ -138,7 +146,21 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                 query={{
                                     key: GOOGLE_MAPS_APIKEY,
                                     language: 'ru', // language of the results
+                                    components: "country:ru",
+                                    types: ['address'], // default: 'geocode'
+                                    region: "RU", //It removes the country name from the suggestion list
+                                    location: '55.751244, 37.618423',
+                                    radius: '55000', //100 km
                                 }}
+                                currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                                currentLocationLabel="Current location"
+                                nearbyPlacesAPI={'GoogleReverseGeocoding'} // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                                GoogleReverseGeocodingQuery={{
+                                    // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                                    language: 'ru',
+                                }}
+                                enablePoweredByContainer={false}
+                                renderDescription={row => row.description || row.formatted_address || row.name}
                                 styles={{
                                     container: {
                                         height: 50,
@@ -177,7 +199,7 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                         backgroundColor: '#c8c7cc',
                                     },
                                 }}
-                                renderLeftButton={() => <TouchableOpacity
+                                renderLeftButton={() => (<TouchableOpacity
                                     style={{
                                         borderRadius: 10,
                                         flexDirection: 'row',
@@ -190,9 +212,10 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                     onPress={() => this.props.getGeocodeAsync()}
                                 >
                                     <Icon name={'map-marker'} size={size20} color={'#8CC83F'}/>
-                                </TouchableOpacity>}
-                                nearbyPlacesAPI='GooglePlacesSearch'
-                                filterReverseGeocodingByTypes={['locality']}
+                                </TouchableOpacity>)}
+                                // filterReverseGeocodingByTypes={[
+                                //     "locality", "administrative_area_level_3",
+                                // ]}
                                 debounce={300}
                             />
                         </View>

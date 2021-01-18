@@ -42,18 +42,23 @@ const CourierStack = createStackNavigator(
     {
         CourierScreen: {
             screen: CourierScreen,
+            gesturesEnabled: false
         },
         ConfirmScreen: {
             screen: ConfirmScreen,
+            gesturesEnabled: false
         },
         CourierProfile: {
             screen: CourierProfile,
+            gesturesEnabled: false
         },
         TakeOrderScreen: {
             screen: TakeOrderScreen,
+            gesturesEnabled: false
         },
         BarcodeScanner: {
             screen: BarcodeScanner,
+            gesturesEnabled: false
         },
     },
     {

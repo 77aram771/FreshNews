@@ -53,7 +53,7 @@ export default class ConfirmScreen extends React.Component<NavigationProps, { na
     };
 
     handleFinishOrder = async (id: number) => {
-        courierStore.getCourierDataFinish(id);
+        await courierStore.getCourierDataFinish(id);
         setTimeout(() => {
             console.log('courierStore.errorData', courierStore.errorData);
             if (courierStore.errorData !== null) {

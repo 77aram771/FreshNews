@@ -474,7 +474,7 @@ class HomeSellerPage extends Component<any, any> {
                                         {
                                             show1
                                                 ? <DeliveryOrders
-                                                    startOrder={this.state.startOrder}
+                                                    startOrder={this.state.startOrder.reverse()}
                                                     navigation={this.props.navigation}
                                                 />
                                                 : null

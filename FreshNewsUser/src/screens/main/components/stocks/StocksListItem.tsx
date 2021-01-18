@@ -7,11 +7,13 @@ import {MontserratRegular, MontserratSemiBold} from "../../../../share/fonts";
 export const StocksListItem = ({
                                    style,
                                    discount,
-                                   onPressNavigation
+                                   onPressNavigation,
+                                   promoName
                                }: {
     style?: StyleProp<ViewStyle>;
     discount: any,
-    onPressNavigation: any
+    onPressNavigation: any,
+    promoName: any
 }) => {
     return (
         <TouchableOpacity
@@ -40,7 +42,7 @@ export const StocksListItem = ({
                             color: '#fff',
                             fontFamily: MontserratRegular,
                         }}>
-                        ЯНВАРЬ
+                        {promoName}
                     </Text>
                     <Text
                         style={{

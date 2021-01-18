@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Platform, ImageBackground, Text, TouchableOpacity} from 'react-native';
-import {GOOGLE_MAPS_APIKEY, size20, WINDOW_WIDTH} from '../../share/consts';
+import {View, Platform} from 'react-native';
+import {GOOGLE_MAPS_APIKEY} from '../../share/consts';
 import MainHeader from '../../share/components/MainHeader';
 import basketStore from '../../stores/BasketStore';
 import userInfo from '../../stores/UserInfo';
@@ -14,13 +14,9 @@ import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
 import * as Location from 'expo-location';
 import {toJS} from "mobx";
-import {imagesPaths} from "../../share/info";
-import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
-import Icon from "react-native-vector-icons/Fontisto";
-import {MontserratRegular} from "../../share/fonts";
-import HeaderContent from "./components/headerContent/HeaderContent";
 
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
+
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -47,7 +43,14 @@ export const MainScreen = ({navigation}: any) => {
     useEffect(() => {
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
-            console.log('getToken', getToken);
+            if (getToken !== null) {
+                await shopsStore.getAllOrders();
+                await basketStore.getCartUserInfo()
+                await userInfo.getUserData();
+                await paymentStore.orderUserTime();
+                await userInfo.getUserNotifications();
+                await sendPushNotification(expoPushToken);
+            }
             const {status} = await Permissions.askAsync(Permissions.LOCATION);
             if (status !== 'granted') {
                 setErrorMessage('Permission to access location was denied');
@@ -56,8 +59,8 @@ export const MainScreen = ({navigation}: any) => {
             const {latitude, longitude} = location.coords;
             Geocoder.from(latitude, longitude)
                 .then((json: any) => {
-                    let addressComponent = json.results[5].formatted_address;
-                    // console.log('json', addressComponent);
+                    let addressComponent = `${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`;
+                    // console.log(`${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`);
                     shopsStore.getAddressUser(addressComponent);
                 })
                 .catch((error: any) => console.warn(error));
@@ -71,14 +74,6 @@ export const MainScreen = ({navigation}: any) => {
                     id: response.notification.request.content.data.body.id,
                 })
             });
-            if (getToken !== null) {
-                await shopsStore.getAllOrders();
-                await basketStore.getCartUserInfo()
-                await userInfo.getUserData();
-                await paymentStore.orderUserTime();
-                await userInfo.getUserNotifications();
-                await sendPushNotification(expoPushToken);
-            }
             return () => {
                 Notifications.removeNotificationSubscription(notificationListener);
                 Notifications.removeNotificationSubscription(responseListener);
@@ -123,13 +118,13 @@ export const MainScreen = ({navigation}: any) => {
                 finalStatus = status;
             }
             if (finalStatus !== 'granted') {
-                alert('Failed to get push token for push notification!');
+                // alert('Failed to get push token for push notification!');
                 return;
             }
             token = (await Notifications.getExpoPushTokenAsync()).data;
             console.log(token);
         } else {
-            alert('Must use physical device for Push Notifications');
+            // alert('Must use physical device for Push Notifications');
         }
         if (Platform.OS === 'android') {
             await Notifications.setNotificationChannelAsync('default', {
@@ -151,8 +146,8 @@ export const MainScreen = ({navigation}: any) => {
         const {latitude, longitude} = location.coords;
         Geocoder.from(latitude, longitude)
             .then((json: any) => {
-                let addressComponent = json.results[5].formatted_address;
-                // console.log('json', addressComponent);
+                let addressComponent = `${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`;
+                // console.log(`${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`);
                 shopsStore.getAddressUser(addressComponent);
                 shopsStore.getUserAddress(addressComponent);
             })

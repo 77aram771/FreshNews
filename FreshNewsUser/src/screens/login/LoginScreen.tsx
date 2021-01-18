@@ -73,7 +73,6 @@ class LoginScreen extends React.Component<NavigationProps> {
             })
             request(Number(this.state.formattedValue))
                 .then(res => {
-                    console.log('res request', res)
                     if (res.status === 200) {
                         this.setState({
                             smsStatus: true

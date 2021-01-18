@@ -15,7 +15,6 @@ import modalsStore from "../../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
 import {toJS} from "mobx";
 import {SvgUri} from "react-native-svg";
-import _ from 'lodash';
 
 @observer
 export default // @ts-ignore
@@ -39,6 +38,8 @@ class BasketPage extends Component<NavigationProps> {
             }, () => {
                 this.setState({
                     itemQuantity: this.state.shopData.length
+                }, () => {
+                    console.log('basketStore.stackItem', toJS(basketStore.stackItem).length);
                 })
             })
         }, 1000)
@@ -153,7 +154,7 @@ class BasketPage extends Component<NavigationProps> {
                                             ListFooterComponent={
                                                 <>
                                                     {
-                                                        this.state.shopData.length < 2
+                                                        basketStore.stackItem.length < 2
                                                             ? (
                                                                 <>
                                                                     <View
@@ -224,6 +225,7 @@ class BasketPage extends Component<NavigationProps> {
                                                                             paddingHorizontal: 16,
                                                                             paddingTop: 30,
                                                                             flex: 1,
+                                                                            marginBottom: 50
                                                                         }}
                                                                     >
                                                                         <Text
@@ -266,7 +268,7 @@ class BasketPage extends Component<NavigationProps> {
                                             }
                                         />
                                         {
-                                            this.state.shopData.length < 2
+                                            basketStore.stackItem.length < 2
                                                 ? null
                                                 : (
                                                     <View
@@ -275,7 +277,7 @@ class BasketPage extends Component<NavigationProps> {
                                                             justifyContent: "center",
                                                             alignItems: "center",
                                                             backgroundColor: '#fff',
-                                                            marginBottom: 10
+                                                            marginBottom: 10,
                                                         }}
                                                     >
                                                         <View
@@ -284,6 +286,8 @@ class BasketPage extends Component<NavigationProps> {
                                                                 alignItems: "center",
                                                                 flexDirection: "row",
                                                                 width: WINDOW_WIDTH - 20,
+                                                                borderTopWidth: 0.5,
+                                                                borderColor: 'grey'
                                                             }}
                                                         >
                                                             {/*<Text*/}
@@ -330,12 +334,12 @@ class BasketPage extends Component<NavigationProps> {
                                                                 flexDirection: "column",
                                                                 width: WINDOW_WIDTH - 20,
                                                                 borderBottomWidth: 0.5,
-                                                                borderColor: 'grey'
+                                                                borderColor: 'grey',
                                                             }}
                                                         >
                                                             {
                                                                 basketStore.stackItem.map((item: any, index: any) => {
-                                                                    console.log('item', toJS(item));
+                                                                    console.log("item", toJS(item));
                                                                     let img = item.image[0].substr(item.image[0].length - 3);
                                                                     return (
                                                                         <View
@@ -482,5 +486,4 @@ const styles = StyleSheet.create({
             fontSize: size20,
             color: '#000000',
         },
-    }
-);
+    });

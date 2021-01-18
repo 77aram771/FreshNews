@@ -1,21 +1,8 @@
 import React from 'react';
-import {
-    RefreshControl,
-    Text,
-    TouchableOpacity,
-    View,
-    Platform,
-    BackHandler,
-    ScrollView
-} from 'react-native';
+import {RefreshControl, Text, TouchableOpacity, View, Platform, BackHandler, ScrollView} from 'react-native';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';
-import {
-    size16,
-    size28,
-    size34,
-    WINDOW_WIDTH,
-} from '../../share/consts';
+import {size16, size28, size34, WINDOW_WIDTH} from '../../share/consts';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {LogoAndTitle} from '../../share/components/LogoAndTitle';
@@ -26,7 +13,6 @@ import {toJS} from "mobx";
 import {NavigationEvents} from "react-navigation";
 import userInfo from '../../stores/UserInfo';
 import courierStore from '../../stores/CourierStore';
-// @ts-ignore
 import {PulseIndicator} from 'react-native-indicators';
 import * as Location from 'expo-location';
 // @ts-ignore
@@ -100,15 +86,11 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
     async onRefresh() {
         await userInfo.getUserData();
         await courierStore.getCourierData();
-        this.setState({
-            refreshing: true,
-        });
         setTimeout(async () => {
             const {getCourierData, courierUserData} = courierStore;
             await getCourierData();
             if (courierStore.errorData !== null) {
                 this.setState({
-                    refreshing: false,
                     errorData: toJS(courierStore.errorData),
                     errorModal: true
                 })
@@ -116,13 +98,36 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
             if (toJS(courierUserData).length === 1) {
                 this.setState({
                     ActiveOrder: toJS(courierUserData),
-                    refreshing: false,
                 }, async () => {
                 })
             } else {
                 this.setState({
                     ActiveOrder: null,
-                    refreshing: false
+                })
+            }
+        }, 1000);
+    };
+
+    async refresh() {
+        await userInfo.getUserData();
+        await courierStore.getCourierData();
+        setTimeout(async () => {
+            const {getCourierData, courierUserData} = courierStore;
+            await getCourierData();
+            if (courierStore.errorData !== null) {
+                this.setState({
+                    errorData: toJS(courierStore.errorData),
+                    errorModal: true
+                })
+            }
+            if (toJS(courierUserData).length === 1) {
+                this.setState({
+                    ActiveOrder: toJS(courierUserData),
+                }, async () => {
+                })
+            } else {
+                this.setState({
+                    ActiveOrder: null,
                 })
             }
         }, 1000);
@@ -209,7 +214,7 @@ export default class CourierScreen extends React.Component<NavigationProps, any>
                                         marginTop: Platform.OS === "ios" ? 0 : 40,
                                     }}
                                 >
-                                    <NavigationEvents onDidFocus={() => this.onRefresh()}/>
+                                    <NavigationEvents onDidFocus={() => this.refresh()}/>
                                     <Header
                                         headerLeft={
                                             <TouchableOpacity

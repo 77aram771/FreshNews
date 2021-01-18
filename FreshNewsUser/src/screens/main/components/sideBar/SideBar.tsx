@@ -18,6 +18,7 @@ import {NavigationProps} from "../../../../share/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import modalsStore from '../../../../stores/ModalsStore';
 import authStore from "../../../../stores/AuthStore";
+import shopsStore from "../../../../stores/ShopsStore";
 
 interface SideBarProps {
     navigation: any;
@@ -82,10 +83,11 @@ class SideBar extends Component<NavigationProps, SideBarProps> {
         this.props.navigation.navigate('Login')
     }
 
-    logOut() {
-        AsyncStorage.removeItem('Token');
+    async logOut() {
         authStore.getUser(false);
         modalsStore.onChangeView();
+        await shopsStore.resetAllOrder();
+        await AsyncStorage.removeItem('Token');
         this.props.navigation.navigate('Login');
     };
 

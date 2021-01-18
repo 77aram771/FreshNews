@@ -1,12 +1,7 @@
 import React, {Component} from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {observer} from 'mobx-react';
-import {
-    size12,
-    size14,
-    size16,
-    size20,
-} from '../../../../share/consts';
+import {size12, size14, size16, size20} from '../../../../share/consts';
 import {MontserratBold, MontserratRegular} from '../../../../share/fonts';
 import ShopRating from './ShopRating';
 import {SvgUri} from "react-native-svg";
@@ -26,8 +21,6 @@ export default class HeaderInfo extends Component<headerInfoInterface> {
     render() {
 
         const {image, name, city, reviews_count, rating} = this.props;
-
-        console.log('image', image);
 
         let formatImage
 
@@ -71,7 +64,7 @@ export default class HeaderInfo extends Component<headerInfoInterface> {
                         Доставка овощей и фруктов · {`${city}`}
                     </Text>
                     <ShopRating review={false} rating={rating}/>
-                    <Text style={styles.reviews}>{reviews_count} отзыва</Text>
+                    <Text onPress={() => shopsStore.onShowShopReviewModal()} style={styles.reviews}>{reviews_count} отзыва</Text>
                     <Text onPress={() => shopsStore.onShowShopInformationModal()} style={styles.moreDetails}>
                         Подробнее
                     </Text>

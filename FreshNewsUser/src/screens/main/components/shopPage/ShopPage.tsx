@@ -19,14 +19,22 @@ import {LogoAndTitle} from "../../../../share/components/LogoAndTitle";
 import basketStore from "../../../../stores/BasketStore";
 import AsyncStorage from "@react-native-community/async-storage";
 import {ModalDescription} from "./modal/ModalDescription";
+import {ModalReview} from "./modal/ModalReview";
 
 @observer
 export default // @ts-ignore
 class ShopPage extends React.Component<NavigationProps> {
 
-    state = {
-        shopData: [],
-        refreshing: true
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            shopData: [],
+            refreshing: true,
+            reviewText: '',
+            customStarCount: ''
+        }
+        this.handleReviewText = this.handleReviewText.bind(this)
+        this.onCustomStarRatingPress = this.onCustomStarRatingPress.bind(this)
     }
 
     componentDidMount() {
@@ -36,7 +44,6 @@ class ShopPage extends React.Component<NavigationProps> {
         setTimeout(async () => {
             const {getShopInfo} = shopsStore;
             let getToken = await AsyncStorage.getItem('Token');
-            console.log('getToken', getToken);
             if (getToken !== null) {
                 const {getCartUserInfo} = basketStore;
                 await getCartUserInfo();
@@ -101,15 +108,35 @@ class ShopPage extends React.Component<NavigationProps> {
         }, 1000)
     }
 
+    onCustomStarRatingPress(rating: any) {
+        console.log('rating', rating)
+        this.setState({
+            customStarCount: rating,
+        });
+    }
+
+    handleReviewText(value: any) {
+        this.setState({
+            reviewText: value
+        })
+    }
+
+    handleReview() {
+        shopsStore.postReview()
+    }
+
     render() {
         const {
             getShopInfo,
             isShowShopInformation,
             isShowShopInformationModal,
+            isShowShopReviewModal,
             onShowShopInformation,
             onShowShopInformationModal,
+            onShowShopReviewModal,
             getShopItem
         } = shopsStore;
+
         const {background_image} = toJS(getShopInfo);
 
         return (
@@ -140,6 +167,24 @@ class ShopPage extends React.Component<NavigationProps> {
                     isVisible={isShowShopInformationModal}
                 >
                     <ModalDescription/>
+                </Modal>
+                <Modal
+                    animationInTiming={400}
+                    animationOutTiming={400}
+                    onBackButtonPress={onShowShopReviewModal}
+                    hideModalContentWhileAnimating={true}
+                    backdropOpacity={0}
+                    onBackdropPress={onShowShopReviewModal}
+                    style={{margin: 0}}
+                    isVisible={isShowShopReviewModal}
+                >
+                    <ModalReview
+                        name={toJS(getShopInfo).name}
+                        handleReviewText={this.handleReviewText}
+                        handleReview={this.handleReview}
+                        onCustomStarRatingPress={this.onCustomStarRatingPress}
+                        customStarCount={this.state.customStarCount}
+                    />
                 </Modal>
                 <Header
                     style={{width: WINDOW_WIDTH}}

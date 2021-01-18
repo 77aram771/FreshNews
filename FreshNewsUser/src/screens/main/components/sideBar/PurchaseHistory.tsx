@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {NavigationProps} from "../../../../share/interfaces";
 import {View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, FlatList} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,11 +7,11 @@ import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold}
 import Header from "../../../../share/components/Header";
 import {observer} from "mobx-react";
 import shopsStore from "../../../../stores/ShopsStore";
-import {PulseIndicator} from 'react-native-indicators';
+import {NavigationEvents} from "react-navigation";
 
 @observer
 export default // @ts-ignore
-class PurchaseHistory extends Component<NavigationProps> {
+class PurchaseHistory extends Component<any, any> {
 
     state = {
         refreshing: false,
@@ -24,7 +23,6 @@ class PurchaseHistory extends Component<NavigationProps> {
             refreshing: true
         })
         await shopsStore.getAllOrders();
-
         const newFile = shopsStore.allOrders.map((item: any) => {
             return {...item, bool: false};
         });
@@ -41,7 +39,6 @@ class PurchaseHistory extends Component<NavigationProps> {
             refreshing: true
         })
         await shopsStore.getAllOrders();
-
         setTimeout(() => {
             const newFile = shopsStore.allOrders.map((item: any) => {
                 return {...item, bool: false};
@@ -356,10 +353,8 @@ class PurchaseHistory extends Component<NavigationProps> {
         } else if (item.status === 4) {
             return (
                 <TouchableOpacity
-                    onPress={() => this.props.navigation.navigate('FinishOfferPage', {
-                        id: item.id,
-                        transaction: item.transaction,
-                        statusText: 'Курер спешит к вам'
+                    onPress={() => this.props.navigation.navigate('MapPage', {
+                        order_id: item.id
                     })}
                     style={{
                         width: "100%",
@@ -826,6 +821,7 @@ class PurchaseHistory extends Component<NavigationProps> {
                         <View/>
                     }
                 />
+                <NavigationEvents onDidFocus={() => this.onRefresh()}/>
                 <ScrollView
                     style={{flex: 1}}
                     refreshControl={
@@ -938,10 +934,6 @@ class PurchaseHistory extends Component<NavigationProps> {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#FFFFFF',
-        flex: 1,
-    },
     header: {
         paddingTop: size16,
         borderBottomWidth: 2,

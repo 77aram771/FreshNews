@@ -2,7 +2,17 @@ import React, {Component} from 'react';
 import {ScrollView, Text, TouchableOpacity, View, Switch, Platform} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
-import {size12, size14, size20, size28, size34, size44, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../../../share/consts';
+import {
+    GOOGLE_MAPS_APIKEY,
+    size12,
+    size14,
+    size20,
+    size28,
+    size34,
+    size44,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH
+} from '../../../../share/consts';
 import {CustomInput} from '../../../../share/components/CustomInput';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Modal from "react-native-modal";
@@ -16,10 +26,11 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import {CreditCardInput} from "react-native-credit-card-input";
 import {ErrorModal} from "../modals/ErrorModal";
 import Modals, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
 
 @observer
 export default // @ts-ignore
-class MyData extends Component {
+class MyData extends Component <any, any> {
 
     state = {
         name: '',
@@ -33,7 +44,7 @@ class MyData extends Component {
         floor: '',
         intercom: '',
         level: '',
-        addAddressInput: false,
+        addAddressInput: true,
         porchInput: false,
         floorInput: false,
         intercomInput: false,
@@ -63,14 +74,13 @@ class MyData extends Component {
     };
 
     alertsToggleHandle() {
-        this.setState({alertsIsOn: !this.state.alertsIsOn});
+        this.setState({alertsIsOn: !this.state.alertsIsOn})
     };
 
     async handleSave(name: string, email: string, surname: string) {
         await modalsStore.onShowMyDataModal()
         await userInfo.getUserDataUpdate(name, email, surname, this.state.alertsIsOn);
         setTimeout(() => {
-            console.log('toJS(userInfo.errorData)', toJS(userInfo.errorData));
             if (userInfo.errorData !== null) {
                 let errorData = {
                     status_code: toJS(userInfo.errorData).status,
@@ -80,6 +90,10 @@ class MyData extends Component {
                     errorData: errorData,
                     errorModal: true
                 });
+            } else {
+                setTimeout(() => {
+                    this.props.navigation.goBack()
+                }, 300)
             }
         }, 1000);
     };
@@ -103,124 +117,158 @@ class MyData extends Component {
     };
 
     handleSandAddress(value: string) {
-        console.log('Address', value);
-        this.setState({
-            addAddress: value
-        }, () => {
-            if (this.state.addAddress.length > -1) {
-                if (this.state.porch.length > -1) {
-                    if (this.state.floor.length > -1) {
-                        if (this.state.intercom.length > -1) {
+        // console.log('Address', value);
+        // @ts-ignore
+        if (this.state.addAddress === 0) {
+            this.setState({
+                addressInput: false,
+                addAddress: value,
+                saveButton: false
+            })
+        }
+        else {
+            this.setState({
+                addAddress: value,
+                addressInput: true,
+            })
+        }
+        console.log('Address', this.state.addAddress);
+        console.log('addAddressInput', this.state.addAddressInput);
+        if (this.state.addAddressInput) {
+            if (this.state.porchInput) {
+                if (this.state.levelInput) {
+                    if (this.state.floorInput) {
+                        if (this.state.intercomInput) {
                             this.setState({
-                                addAddressInput: true,
                                 saveButton: true
-                            })
+                            }, () => console.log('saveButton', this.state.saveButton))
                         }
                     }
                 }
-            } else {
-                this.setState({
-                    saveButton: false
-                })
             }
-        })
+        }
     };
 
     handleSandPorch(value: string) {
+        // console.log('Porch', value);
+        if (value.length === 0) {
+            this.setState({
+                porchInput: false,
+                porch: value,
+                saveButton: false
+            })
+        } else {
+            this.setState({
+                porch: value,
+                porchInput: true,
+            })
+        }
         console.log('Porch', value);
-        this.setState({
-                porch: value
-            }, () => {
-                if (this.state.addAddress.length > -1) {
-                    if (this.state.porch.length > -1) {
-                        if (this.state.floor.length > -1) {
-                            if (this.state.intercom.length > -1) {
-                                this.setState({
-                                    porchInput: true,
-                                    saveButton: true
-                                })
-                            }
-                        }
-                    }
-                } else {
-                    this.setState({
-                        saveButton: false
-                    })
-                }
-            }
-        )
-    };
-
-    handleSandFloor(value: string) {
-        console.log('Floor', value);
-        this.setState({
-            floor: value
-        }, () => {
-            if (this.state.addAddress.length > -1) {
-                if (this.state.porch.length > -1) {
-                    if (this.state.floor.length > -1) {
-                        if (this.state.intercom.length > -1) {
+        console.log('porchInput', this.state.porchInput);
+        if (this.state.addAddressInput) {
+            if (this.state.porchInput) {
+                if (this.state.levelInput) {
+                    if (this.state.floorInput) {
+                        if (this.state.intercomInput) {
                             this.setState({
-                                floorInput: true,
                                 saveButton: true
-                            })
+                            }, () => console.log('saveButton', this.state.saveButton))
                         }
                     }
                 }
-            } else {
-                this.setState({
-                    saveButton: false
-                })
             }
-        })
-    };
-
-    handleSandIntercom(value: string) {
-        console.log('Intercom', value);
-        this.setState({
-            intercom: value
-        }, () => {
-            if (this.state.addAddress.length > -1) {
-                if (this.state.porch.length > -1) {
-                    if (this.state.floor.length > -1) {
-                        if (this.state.intercom.length > -1) {
-                            this.setState({
-                                intercomInput: true,
-                                saveButton: true
-                            })
-                        }
-                    }
-                }
-            } else {
-                this.setState({
-                    saveButton: false
-                })
-            }
-        })
+        }
     };
 
     handleSandLevel(value: string) {
+        if (value.length === 0) {
+            this.setState({
+                levelInput: false,
+                level: value,
+                saveButton: false
+            })
+        } else {
+            this.setState({
+                level: value,
+                levelInput: true,
+            })
+        }
         console.log('Level', value);
-        this.setState({
-            level: value
-        }, () => {
-            if (this.state.addAddress.length > -1) {
-                if (this.state.porch.length > -1) {
-                    if (this.state.floor.length > -1) {
-                        if (this.state.intercom.length > -1) {
+        console.log('levelInput', this.state.levelInput);
+        if (this.state.addAddressInput) {
+            if (this.state.porchInput) {
+                if (this.state.levelInput) {
+                    if (this.state.floorInput) {
+                        if (this.state.intercomInput) {
                             this.setState({
-                                porchInput: true,
                                 saveButton: true
-                            })
+                            }, () => console.log('saveButton', this.state.saveButton))
                         }
                     }
                 }
-            } else {
-                this.setState({
-                    saveButton: false
-                })
             }
-        })
+        }
+    };
+
+    handleSandFloor(value: string) {
+        // console.log('Floor', value);
+        if (value.length === 0) {
+            this.setState({
+                floorInput: false,
+                floor: value,
+                saveButton: false
+            })
+        } else {
+            this.setState({
+                floor: value,
+                floorInput: true,
+            })
+        }
+        console.log('Floor', value);
+        console.log('floorInput', this.state.floorInput);
+        if (this.state.addAddressInput) {
+            if (this.state.porchInput) {
+                if (this.state.levelInput) {
+                    if (this.state.floorInput) {
+                        if (this.state.intercomInput) {
+                            this.setState({
+                                saveButton: true
+                            }, () => console.log('saveButton', this.state.saveButton))
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    handleSandIntercom(value: string) {
+        if (value.length === 0) {
+            this.setState({
+                intercomInput: false,
+                intercom: value,
+                saveButton: false
+            })
+        } else {
+            this.setState({
+                intercom: value,
+                intercomInput: true,
+            })
+        }
+        console.log('Intercom', value);
+        console.log('intercomInput', this.state.intercomInput);
+        if (this.state.addAddressInput) {
+            if (this.state.porchInput) {
+                if (this.state.levelInput) {
+                    if (this.state.floorInput) {
+                        if (this.state.intercomInput) {
+                            this.setState({
+                                saveButton: true
+                            }, () => console.log('saveButton', this.state.saveButton))
+                        }
+                    }
+                }
+            }
+        }
     };
 
     async handleAddAddress() {
@@ -243,7 +291,6 @@ class MyData extends Component {
     async handleDeleteAddress(id: number) {
         await userInfo.getUserDataDeleteAddress(id)
         let obj = this.state.address.filter(item => item.id !== id)
-
         this.setState({
             address: obj
         })
@@ -451,7 +498,6 @@ class MyData extends Component {
     };
 
     render() {
-
         const {isShowAddAddressModal, isShowAddCreditCart, onShowAddAddressModal, onShowAddCreditCart} = shopsStore;
         const {
             name,
@@ -512,38 +558,93 @@ class MyData extends Component {
                             >
                                 Добавить новый адрес
                             </Text>
-                            <CustomInput
-                                value={addAddress}
-                                onChangeText={value => this.handleSandAddress(value)}
-                                textInputStyle={{
-                                    flex: 1,
-                                    fontFamily: MontserratRegular,
-                                    fontSize: size14,
-                                    backgroundColor: '#fff',
-                                    borderRadius: 10,
-                                }}
+                            <View
                                 style={{
+                                    width: WINDOW_WIDTH - 75,
                                     marginTop: 15,
                                     height: 40,
-                                    marginBottom: 10
-                                }}
-                                headerStyleWidth={WINDOW_WIDTH - 40}
-                                headerStyleText={WINDOW_WIDTH / 1.6}
-                            />
-                            <Text
-                                style={{
-                                    fontFamily: MontserratSemiBold,
-                                    fontSize: 1,
-                                    color: '#000',
-                                    marginBottom: 20
+                                    marginBottom: 30,
+                                    zIndex: 1
                                 }}
                             >
-                                Пример: <Text style={{
-                                fontFamily: MontserratSemiBold,
-                                fontSize: 14,
-                                color: '#000'
-                            }}> Москва ул. Тверская 11</Text>
-                            </Text>
+                                <GooglePlacesAutocomplete
+                                    placeholder=''
+                                    fetchDetails={true}
+                                    onPress={data => {
+                                        if (data.description !== undefined) {
+                                            // console.log('data', data.structured_formatting.main_text);
+                                            this.handleSandAddress(data.structured_formatting.main_text)
+                                        } else {
+                                            // console.log(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                            this.handleSandAddress(`${data.address_components[1].long_name} ${data.address_components[0].long_name}`)
+                                        }
+                                    }}
+                                    textInputProps={{
+                                        value: addAddress,
+                                        onChangeText: (text) => {
+                                            this.handleSandAddress(text)
+                                        }
+                                    }}
+                                    query={{
+                                        key: GOOGLE_MAPS_APIKEY,
+                                        language: 'ru', // language of the results
+                                        components: "country:ru",
+                                        types: ['address'], // default: 'geocode'
+                                        region: "RU", //It removes the country name from the suggestion list
+                                        location: '55.751244, 37.618423',
+                                        radius: '55000', //100 km
+                                    }}
+                                    currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                                    currentLocationLabel="Current location"
+                                    nearbyPlacesAPI={'GoogleReverseGeocoding'} // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                                    GoogleReverseGeocodingQuery={{
+                                        // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                                        language: 'ru',
+                                    }}
+                                    enablePoweredByContainer={false}
+                                    renderDescription={row => row.description || row.formatted_address || row.name}
+                                    styles={{
+                                        container: {
+                                            height: 50,
+                                        },
+                                        textInput: {
+                                            height: 50,
+                                            textAlign: "center",
+                                            borderRadius: 10
+                                        },
+                                        textInputContainer: {
+                                            flexDirection: 'row',
+                                            height: 50,
+                                        },
+                                        poweredContainer: {
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderColor: '#c8c7cc',
+                                        },
+                                        powered: {},
+                                        description: {
+                                            fontWeight: 'bold',
+                                        },
+                                        listView: {
+                                            marginTop: 50,
+                                            elevation: 1,
+                                            backgroundColor: 'white',
+                                            position: 'absolute',
+                                            zIndex: 500,
+                                        },
+                                        row: {
+                                            backgroundColor: '#fff',
+                                            height: 50,
+                                            flexDirection: 'row',
+                                        },
+                                        separator: {
+                                            height: 0.5,
+                                            backgroundColor: '#c8c7cc',
+                                        },
+                                    }}
+                                    debounce={300}
+                                />
+                            </View>
                             <View
                                 style={{
                                     width: '90%',
@@ -673,10 +774,10 @@ class MyData extends Component {
                             <TouchableOpacity
                                 onPress={() => this.handleAddAddress()}
                                 style={
-                                    saveButton
+                                    !saveButton
                                         ? {
                                             borderRadius: 10,
-                                            backgroundColor: '#8CC83F',
+                                            backgroundColor: 'grey',
                                             marginTop: 20,
                                             paddingTop: 20,
                                             paddingBottom: 20,
@@ -685,7 +786,7 @@ class MyData extends Component {
                                         }
                                         : {
                                             borderRadius: 10,
-                                            backgroundColor: 'grey',
+                                            backgroundColor: '#8CC83F',
                                             marginTop: 20,
                                             paddingTop: 20,
                                             paddingBottom: 20,
@@ -828,7 +929,7 @@ class MyData extends Component {
                         </ModalFooter>
                     }
                     onTouchOutside={() => {
-                        this.setState({errorModal: false});
+                        this.setState({errorModal: false})
                     }}
                 >
                     <ModalContent>
