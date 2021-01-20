@@ -19,9 +19,9 @@ class PurchaseHistory extends Component<any, any> {
     };
 
     async componentDidMount() {
-        this.setState({
-            refreshing: true
-        })
+        // this.setState({
+        //     refreshing: true
+        // })
         await shopsStore.getAllOrders();
         const newFile = shopsStore.allOrders.map((item: any) => {
             return {...item, bool: false};
@@ -30,7 +30,7 @@ class PurchaseHistory extends Component<any, any> {
             refreshing: false,
             allOrders: newFile
         }, () => {
-            console.log('newFile', newFile);
+            // console.log('newFile', toJS(newFile[5].items.product));
         })
     };
 
@@ -216,7 +216,8 @@ class PurchaseHistory extends Component<any, any> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 3) {
+        }
+        else if (item.status === 3) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -350,11 +351,13 @@ class PurchaseHistory extends Component<any, any> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 4) {
+        }
+        else if (item.status === 4) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('MapPage', {
-                        order_id: item.id
+                        order_id: item.id,
+                        shop_id: item.items[0].product.shop.id
                     })}
                     style={{
                         width: "100%",
@@ -481,11 +484,14 @@ class PurchaseHistory extends Component<any, any> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 5) {
+        }
+        else if (item.status === 5) {
             return (
                 <TouchableOpacity
                     onPress={() => this.props.navigation.navigate('MapPage', {
-                        order_id: item.id
+                        order_id: item.id,
+                        shop_id: item.items[0].product.shop.id,
+                        shop_name: item.items[0].product.shop.name
                     })}
                     style={{
                         width: "100%",
@@ -600,7 +606,8 @@ class PurchaseHistory extends Component<any, any> {
                     </View>
                 </TouchableOpacity>
             )
-        } else if (item.status === 6) {
+        }
+        else if (item.status === 6) {
             return (
                 <TouchableOpacity
                     // onPress={() => this.props.navigation.navigate('FinishOfferPage', {
@@ -840,6 +847,9 @@ class PurchaseHistory extends Component<any, any> {
                             alignSelf: "center",
                             paddingTop: 30,
                             paddingBottom: 50,
+                            // borderStyle: "solid",
+                            // borderWidth: 1,
+                            // borderColor: 'red'
                         }}
                     >
                         {

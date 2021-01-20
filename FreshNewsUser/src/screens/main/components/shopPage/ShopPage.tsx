@@ -31,7 +31,7 @@ class ShopPage extends React.Component<NavigationProps> {
             shopData: [],
             refreshing: true,
             reviewText: '',
-            customStarCount: ''
+            customStarCount: 0
         }
         this.handleReviewText = this.handleReviewText.bind(this)
         this.onCustomStarRatingPress = this.onCustomStarRatingPress.bind(this)

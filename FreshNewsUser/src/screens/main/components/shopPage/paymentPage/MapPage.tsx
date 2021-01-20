@@ -11,8 +11,7 @@ import {
 } from '../../../../../share/consts';
 import MapView, {Marker} from 'react-native-maps';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
-import Modal from 'react-native-modal';
-import ReviewModal from './ReviewModal';
+import {ReviewModal} from './ReviewModal';
 import modalsStore from "../../../../../stores/ModalsStore";
 import MapViewDirections from 'react-native-maps-directions';
 import Header from "../../../../../share/components/Header";
@@ -23,6 +22,10 @@ import Pusher from 'pusher-js/react-native';
 import {MapStyle} from "../../../../../share/MapStyle";
 // @ts-ignore
 import call from 'react-native-phone-call'
+import shopsStore from "../../../../../stores/ShopsStore";
+import Modal from 'react-native-modal';
+import Modals, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
+import {ErrorModal} from "../../modals/ErrorModal";
 
 const args = {
     number: '+79296014443', // String value with the number to call
@@ -33,29 +36,37 @@ const pusher_app_key = '0f88b1991b1342108a18';
 const pusher_app_cluster = 'eu';
 
 @observer
-export default class MapPage extends Component<{}, any> {
+export default class MapPage extends Component<any, any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-            courierCordinate: null,
-            userLocation: null,
-            // courierCordinate: {
-            //     latitude: 41.43206,
-            //     longitude: -81.38992,
-            //     latitudeDelta: 0.0922,
-            //     longitudeDelta: 0.0421,
-            // },
-            // userLocation: {
-            //     latitude: 41.43206,
-            //     longitude: -82.38992,
-            //     latitudeDelta: 0.0922,
-            //     longitudeDelta: 0.0421,
-            // },
+            // courierCordinate: null,
+            // userLocation: null,
+            courierCordinate: {
+                latitude: 41.43206,
+                longitude: -81.38992,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            },
+            userLocation: {
+                latitude: 41.43206,
+                longitude: -82.38992,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            },
             errorText: '',
-            deliveryTime: ''
+            deliveryTime: '',
+            reviewText: '',
+            reviewTextInput: false,
+            customStarCount: 0,
+            errorModal: false,
+            errorData: [],
         };
         this.mapView = null;
+        this.handleReview = this.handleReview.bind(this)
+        this.handleReviewText = this.handleReviewText.bind(this)
+        this.onCustomStarRatingPress = this.onCustomStarRatingPress.bind(this)
     };
 
     async componentDidMount() {
@@ -112,6 +123,38 @@ export default class MapPage extends Component<{}, any> {
         console.log(errorMessage)
     };
 
+    onCustomStarRatingPress(rating: any) {
+        console.log('rating', rating)
+        this.setState({
+            customStarCount: rating,
+        });
+    };
+
+    handleReviewText(value: any) {
+        this.setState({
+            reviewText: value
+        })
+    };
+
+    async handleReview() {
+        await shopsStore.postReview(
+            this.props.navigation.state.params.order_id,
+            this.props.navigation.state.params.shop_id,
+            this.state.customStarCount,
+            this.state.reviewText
+        );
+        setTimeout(() => {
+            modalsStore.onShowReviewModal()
+        }, 1000)
+    };
+
+    handleCloseErrorModal = async () => {
+        await this.setState({
+            errorModal: false,
+        }, () => console.log('errorModal', this.state.errorModal))
+    };
+
+
     render() {
         const {onShowReviewModal, isShowReviewModal} = modalsStore;
         return (
@@ -132,8 +175,43 @@ export default class MapPage extends Component<{}, any> {
                     style={{margin: 0}}
                     isVisible={isShowReviewModal}
                 >
-                    <ReviewModal/>
+                    <ReviewModal
+                        name={this.props.navigation.state.params.shop_name}
+                        handleReviewText={this.handleReviewText}
+                        handleReview={this.handleReview}
+                        onCustomStarRatingPress={this.onCustomStarRatingPress}
+                        customStarCount={this.state.customStarCount}
+                    />
                 </Modal>
+                <Modals
+                    visible={this.state.errorModal}
+                    useNativeDriver={false}
+                    footer={
+                        <ModalFooter
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <ModalButton
+                                text="Закрыть"
+                                textStyle={{
+                                    color: '#fff'
+                                }}
+                                onPress={() => this.handleCloseErrorModal()}
+                            />
+                        </ModalFooter>
+                    }
+                    onTouchOutside={() => {
+                        this.setState({errorModal: false});
+                    }}
+                >
+                    <ModalContent>
+                        <ErrorModal
+                            data={this.state.errorData}
+                            handleCloseErrorModal={this.handleCloseErrorModal}
+                        />
+                    </ModalContent>
+                </Modals>
                 <Header
                     headerLeft={
                         <AntDesign

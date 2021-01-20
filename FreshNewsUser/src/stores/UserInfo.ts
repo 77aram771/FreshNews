@@ -26,7 +26,7 @@ class UserInfo {
                         value: toJS(item.address),
                     };
                 });
-                console.log('this.userDataArray', toJS(this.userDataArray))
+                // console.log('this.userDataArray', toJS(this.userDataArray))
             })
             .catch(error => {
                 console.log('getUserData error', error);

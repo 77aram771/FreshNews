@@ -28,7 +28,7 @@ class PaymentStore {
         axios.get(`${SERVER_BASE}/orders/time`, {headers})
             .then((res) => {
                 this.time = res.data;
-                console.log('this.time', toJS(this.time))
+                // console.log('this.time', toJS(this.time))
             })
             .catch((error) => {
                 console.log('error orderUserTime', error);

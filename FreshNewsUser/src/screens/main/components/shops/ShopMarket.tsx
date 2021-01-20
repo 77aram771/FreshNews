@@ -40,7 +40,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token');
-        this.setState({refreshing: true});
+        // this.setState({refreshing: true});
         await shopsStore.getShopsSections();
         setTimeout(() => {
             (async () => {

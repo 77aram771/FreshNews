@@ -268,21 +268,33 @@ class ShopsStore {
 
     @action
     postReview = async (order_id: any, shop_id: any, rating: any, review: any) => {
-        let getToken = await AsyncStorage.getItem('Token')
+        let getToken = await AsyncStorage.getItem('Token');
         // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/reviews?${order_id}&shop_id=${shop_id}&rating=${rating}&review=${review}`)
-        axios.post(`${SERVER_BASE}/reviews?${order_id}&shop_id=${shop_id}&rating=${rating}&review=${review}`, {headers})
-            .then((res) => {
-                // this.allOrders = res.data;
-                console.log('res postReview', res)
+        console.log(`${SERVER_BASE}/reviews/${order_id}?shop_id=${shop_id}&rating=${rating}&review=${review}`)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: headers,
+            redirect: 'follow'
+        };
+
+        fetch(`${SERVER_BASE}/reviews/${order_id}?shop_id=${shop_id}&rating=${rating}&review=${review}`, requestOptions)
+            .then(response => response.json())
+            .then(res => {
+                if (res.status_code !== 200) {
+                    console.log('res if', res)
+                    this.errorData = res
+                } else {
+                    console.log('res else', res)
+                }
             })
-            .catch((error) => {
-                console.log('error postReview', error);
+            .catch(error => {
                 this.errorData = error
-            })
+                console.log('error', error)
+            });
     }
 }
 
