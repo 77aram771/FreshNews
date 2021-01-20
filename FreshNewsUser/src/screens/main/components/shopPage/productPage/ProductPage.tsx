@@ -170,7 +170,7 @@ export default class ProductPage extends Component<intProductPage> {
                                         marginLeft: 8,
                                     }}
                                 >
-                                    {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
+                                    {weight} <Text style={{color: '#8CC83F'}}>кг.</Text>
                                 </Text>
                             </View>
                         </View>

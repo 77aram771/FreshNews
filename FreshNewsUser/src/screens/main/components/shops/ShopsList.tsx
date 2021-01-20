@@ -1,11 +1,9 @@
 import React from 'react';
-import {FlatList, StyleSheet, View, RefreshControl, TouchableOpacity, Text} from 'react-native';
+import {FlatList, View, RefreshControl, TouchableOpacity, Text} from 'react-native';
 import {observer} from 'mobx-react';
-import {toJS} from "mobx";
-import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
+import {MontserratSemiBold} from '../../../../share/fonts';
 import {ShopsListItem} from './ShopsListItem';
-import {size16, size20, WINDOW_WIDTH} from '../../../../share/consts';
-import {NavigationProps} from '../../../../share/interfaces';
+import {size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {HeaderText} from '../HeaderText';
 import shopsStore from "../../../../stores/ShopsStore";
 import {PulseIndicator} from 'react-native-indicators';
@@ -20,56 +18,28 @@ interface ShopsListInterface {
 }
 
 @observer
-export default class ShopsList extends React.Component<ShopsListInterface, NavigationProps> {
+export default class ShopsList extends React.Component<ShopsListInterface, any> {
 
     state = {
-        shopData: [],
         refreshing: true,
     }
 
     async componentDidMount() {
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(() => {
-            // if (toJS(shopsStore.getShopsItem).shops.length > 0) {
-            //     this.setState({
-            //         refreshing: false,
-            //         shopData: toJS(shopsStore.getShopsItem)
-            //     }, () => {
-            //         console.log('shopData', this.state.shopData);
-            //     })
-            // }
-            // else {
-            //     this.setState({
-            //         refreshing: false,
-            //         shopData: []
-            //     })
-            // }
-
-            this.setState({
-                refreshing: false,
-                shopData: toJS(shopsStore.getShopsItem)
-            }, () => {
-                // console.log('shopData', this.state.shopData);
-            })
+            this.setState({refreshing: false})
         }, 1000)
     };
 
     onRefresh() {
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(() => {
-            this.setState({
-                refreshing: false,
-                shopData: toJS(shopsStore.getShopsItem)
-            })
+            this.setState({refreshing: false})
         }, 1000)
     };
 
-    handleNavigation(id: number) {
-        shopsStore.getShop(id)
+    async handleNavigation(id: number) {
+        await shopsStore.getShop(id)
         this.props.navigation.navigate('ShopPage')
     };
 
@@ -114,7 +84,7 @@ export default class ShopsList extends React.Component<ShopsListInterface, Navig
                     scrollEnabled={true}
                     keyExtractor={item => item.id.toString()}
                     showsVerticalScrollIndicator={true}
-                    data={this.state.shopData.shops}
+                    data={shopsStore.getShopsItem.shops}
                     renderItem={({item, index}) => {
                         return (
                             <ShopsListItem

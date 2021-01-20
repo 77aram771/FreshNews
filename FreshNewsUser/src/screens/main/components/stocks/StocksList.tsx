@@ -1,7 +1,6 @@
 import React from 'react';
 import {FlatList, View, RefreshControl, Text, TouchableOpacity} from 'react-native';
 import {observer} from 'mobx-react';
-import {toJS} from "mobx";
 import {MontserratSemiBold} from '../../../../share/fonts';
 import {size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {HeaderText} from '../HeaderText';
@@ -21,39 +20,20 @@ interface ShopsListInterface {
 @observer
 export default class StocksList extends React.Component<ShopsListInterface, any> {
 
-    // @ts-ignore
-    state = {
-        shopData: [],
-        refreshing: true,
-    }
+    state = {refreshing: true}
 
-    async componentDidMount() {
-        this.setState({
-            refreshing: true
-        })
+    componentDidMount() {
+        this.setState({refreshing: true})
         setTimeout(() => {
-            // if (toJS(shopsStore.getShopShares).shops.length > 0) {
-            //     this.setState({
-            //         refreshing: false,
-            //         shopData: toJS(shopsStore.getShopShares)
-            //     })
-            // }
-            this.setState({
-                refreshing: false,
-                shopData: toJS(shopsStore.getShopShares)
-            })
+            this.setState({refreshing: false})
         }, 1000)
+
     };
 
     onRefresh() {
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(() => {
-            this.setState({
-                refreshing: false,
-                shopData: toJS(shopsStore.getShopShares)
-            })
+            this.setState({refreshing: false})
         }, 1000)
     };
 
@@ -105,7 +85,7 @@ export default class StocksList extends React.Component<ShopsListInterface, any>
                     scrollEnabled={true}
                     keyExtractor={item => item.id.toString()}
                     showsVerticalScrollIndicator={true}
-                    data={this.state.shopData.shops}
+                    data={shopsStore.getShopShares.shops}
                     renderItem={({item, index}) => {
                         return (
                             <ShopsListItem

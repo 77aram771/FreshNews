@@ -19,9 +19,6 @@ class PurchaseHistory extends Component<any, any> {
     };
 
     async componentDidMount() {
-        // this.setState({
-        //     refreshing: true
-        // })
         await shopsStore.getAllOrders();
         const newFile = shopsStore.allOrders.map((item: any) => {
             return {...item, bool: false};
@@ -29,8 +26,6 @@ class PurchaseHistory extends Component<any, any> {
         this.setState({
             refreshing: false,
             allOrders: newFile
-        }, () => {
-            // console.log('newFile', toJS(newFile[5].items.product));
         })
     };
 
@@ -91,7 +86,7 @@ class PurchaseHistory extends Component<any, any> {
                     }}
                 >
                     <Text style={{fontSize: 14, fontFamily: MontserratRegular}}>{item.weight}<Text
-                        style={{color: '#8AC83E', fontSize: 14}}> г</Text></Text>
+                        style={{color: '#8AC83E', fontSize: 14}}> кг.</Text></Text>
                     <Text style={{fontSize: 14, fontFamily: MontserratRegular}}>{Math.ceil(parseInt(item.price))}<Text
                         style={{color: '#8AC83E', fontSize: 14}}> Р</Text></Text>
                 </View>

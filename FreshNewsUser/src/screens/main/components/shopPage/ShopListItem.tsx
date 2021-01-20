@@ -51,7 +51,7 @@ export const ShopListItem = ({data}: { data: any; }) => {
                             color: '#000000',
                             marginLeft: 8,
                         }}>
-                        {data.weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
+                        {data.weight} <Text style={{color: '#8CC83F'}}>кг.</Text>
                     </Text>
                 </View>
             </View>

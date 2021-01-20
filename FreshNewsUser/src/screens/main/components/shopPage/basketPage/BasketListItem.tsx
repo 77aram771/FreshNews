@@ -13,23 +13,19 @@ class BasketListItem extends Component<{
     data: { id: number, name: string; price: string; productCount: number, weight: number, quantity: number, product: object };
     index: number;
     onRefresh?: any
-}> {
+}, any> {
 
     state = {
         itemQuantity: 0,
     }
 
     componentDidMount() {
-        this.setState({
-            itemQuantity: this.props.data.quantity
-        })
+        this.setState({itemQuantity: this.props.data.quantity})
     };
 
     async countUpFunction(id: number) {
         this.setState({itemQuantity: ++this.props.data.quantity});
-        setTimeout(() => {
-            basketStore.getUpdateCartItem(id, this.state.itemQuantity)
-        }, 1000)
+        setTimeout(() => {basketStore.getUpdateCartItem(id, this.state.itemQuantity)}, 1000)
     };
 
     async countDownFunction(id: number) {
@@ -43,13 +39,12 @@ class BasketListItem extends Component<{
 
     async handleDeleteItem(id: number) {
         await basketStore.getDeleteCartItem(id);
-        setTimeout(() => {
-            this.props.onRefresh();
-        }, 500)
+        setTimeout(() => {this.props.onRefresh()}, 500)
     }
 
     render() {
         const {id, weight, product} = this.props.data;
+        // @ts-ignore
         const {image} = product;
         let img = image.substr(image.length - 3);
         return (
@@ -85,7 +80,7 @@ class BasketListItem extends Component<{
                             за</Text>
                         </Text>
                         <Text style={styles.weight}>
-                            {weight} <Text style={{color: '#8CC83F'}}>гр.</Text>
+                            {weight} <Text style={{color: '#8CC83F'}}>кг.</Text>
                         </Text>
                     </View>
                     <TouchableOpacity onPress={() => this.handleDeleteItem(id)}>

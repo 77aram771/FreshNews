@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {NavigationProps} from "../../../../../share/interfaces";
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
@@ -19,7 +18,7 @@ let moment = require('moment');
 
 @observer
 export default // @ts-ignore
-class AssemblyPage extends Component<NavigationProps> {
+class AssemblyPage extends Component<any, any> {
 
     state = {
         delivery: 90,

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Platform} from 'react-native';
+import {View, Platform, Button, Text} from 'react-native';
 import {GOOGLE_MAPS_APIKEY} from '../../share/consts';
 import MainHeader from '../../share/components/MainHeader';
 import basketStore from '../../stores/BasketStore';
@@ -14,7 +14,11 @@ import ShopMarket from './components/shops/ShopMarket';
 import AsyncStorage from "@react-native-community/async-storage";
 import * as Location from 'expo-location';
 import {toJS} from "mobx";
+import Pusher from 'pusher-js/react-native';
+import {pusher_app_cluster, pusher_app_key} from "../../share/pusherConfig";
 
+
+// @ts-ignore
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 
 Notifications.setNotificationHandler({
@@ -31,18 +35,31 @@ Notifications.requestPermissionsAsync({
         allowSound: true,
         allowAnnouncements: true,
     },
-});
+}).then(r => console.log('r', r));
+
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true
+
+// Set up pusher instance with main channel subscription
+// Be able to subscribe to the same channel in another component
+// with separate callback but utilizing the existing connection
+const pusher = new Pusher(pusher_app_key, {
+    cluster: pusher_app_cluster,
+    forceTLS: true,
+})
 
 export const MainScreen = ({navigation}: any) => {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [notification, setNotification] = useState(false);
+    const [notifications, setNotifications] = useState(false);
+    const [messages, setMessages] = React.useState([]);
     const notificationListener = useRef();
     const responseListener = useRef();
 
     useEffect(() => {
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
+            console.log('getToken', getToken)
             if (getToken !== null) {
                 await shopsStore.getAllOrders();
                 await basketStore.getCartUserInfo()
@@ -50,13 +67,33 @@ export const MainScreen = ({navigation}: any) => {
                 await paymentStore.orderUserTime();
                 await userInfo.getUserNotifications();
                 await sendPushNotification(expoPushToken);
+                // setTimeout(() => {
+                //     function childEventCallback(data: any) {
+                //         const newMessages = [...messages, data.payload];
+                //         // @ts-ignore
+                //         setMessages(newMessages);
+                //     }
+                //
+                //     console.log('userData',toJS(userInfo.userData.id))
+                //     const channel = pusher.subscribe(`notifications.${userInfo.userData.id}`);
+                //     channel.bind("child-event", childEventCallback);
+                //     channel.bind('App\\Events\\OrderNotificationEvent', (data: any) => {
+                //         console.log('data', data)
+                //     });
+                //     // return () => {
+                //     //     channel.unbind("child-event", childEventCallback);
+                //     // };
+                // }, 1000)
+                // @ts-ignore
             }
             const {status} = await Permissions.askAsync(Permissions.LOCATION);
             if (status !== 'granted') {
                 setErrorMessage('Permission to access location was denied');
+                alert(errorMessage)
             }
             let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
             const {latitude, longitude} = location.coords;
+            // @ts-ignore
             Geocoder.from(latitude, longitude)
                 .then((json: any) => {
                     let addressComponent = `${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`;
@@ -64,22 +101,30 @@ export const MainScreen = ({navigation}: any) => {
                     shopsStore.getAddressUser(addressComponent);
                 })
                 .catch((error: any) => console.warn(error));
+            // @ts-ignore
             registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+            // @ts-ignore
             notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                setNotification(notification);
+                // @ts-ignore
+                setNotifications(notification);
+                console.log(notifications)
             });
+            // @ts-ignore
             responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
                 userInfo.getUserNotificationsRead();
+                // @ts-ignore
                 navigation.navigate('FinishOfferPage', {
                     id: response.notification.request.content.data.body.id,
                 })
             });
             return () => {
+                // @ts-ignore
                 Notifications.removeNotificationSubscription(notificationListener);
+                // @ts-ignore
                 Notifications.removeNotificationSubscription(responseListener);
             };
         })()
-    }, []);
+    }, [messages, pusher]);
 
     async function sendPushNotification(expoPushToken: any) {
         let getToken = await AsyncStorage.getItem('Token');
@@ -141,13 +186,14 @@ export const MainScreen = ({navigation}: any) => {
         const {status} = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
             setErrorMessage('Permission to access location was denied')
+            alert(errorMessage)
         }
         let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
         const {latitude, longitude} = location.coords;
+        // @ts-ignore
         Geocoder.from(latitude, longitude)
             .then((json: any) => {
                 let addressComponent = `${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`;
-                // console.log(`${json.results[0].address_components[1].long_name} ${json.results[0].address_components[0].long_name}`);
                 shopsStore.getAddressUser(addressComponent);
                 shopsStore.getUserAddress(addressComponent);
             })

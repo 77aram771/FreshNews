@@ -1,19 +1,16 @@
 import React, {Component} from "react";
 import {observer} from "mobx-react";
-import {NavigationProps} from "../../../../../share/interfaces";
 import Header from "../../../../../share/components/Header";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import {size14, size16, size20, WINDOW_WIDTH} from "../../../../../share/consts";
 import {ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler} from "react-native";
 import {MontserratBold, MontserratMedium, MontserratRegular, MontserratSemiBold} from "../../../../../share/fonts";
 import {NavigationEvents} from "react-navigation";
-import {toJS} from "mobx";
 import {PulseIndicator} from 'react-native-indicators';
 import paymentStore from "../../../../../stores/PaymentStore";
 
 @observer
-export default // @ts-ignore
-class FinishOfferPage extends Component<NavigationProps> {
+export default class FinishOfferPage extends Component<any, any> {
 
     state = {
         delivery: 90,
@@ -24,37 +21,27 @@ class FinishOfferPage extends Component<NavigationProps> {
     };
 
     async componentDidMount() {
-        console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
         await paymentStore.getOrder(this.props.navigation.state.params.id);
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: toJS(paymentStore.order)
             }, () => {
-                let allSum = this.state.shopData.items.reduce((a, v) => a = a + Math.ceil(parseInt(v.price.replace(/\s/g, ''))), 0)
-                console.log('allSum', allSum);
+                let allSum = paymentStore.order.items.reduce((a, v) => a = a + Math.ceil(parseInt(v.price.replace(/\s/g, ''))), 0)
                 this.setState({
                     sumPrice: allSum
                 })
-
             })
         }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     };
 
     async onRefresh() {
-        // console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id);
         await paymentStore.getOrder(this.props.navigation.state.params.id);
-        await this.setState({
-            refreshing: true
-        })
+        await this.setState({refreshing: true})
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: toJS(paymentStore.order)
             })
         }, 2000);
         this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -114,7 +101,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                     }}
                                 >
                                     <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
-                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>г</Text>
+                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>кг.</Text>
                                     </Text>
                                 </View>
                                 <View
@@ -141,7 +128,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                     }}
                                 >
                                     <Text style={{fontFamily: MontserratBold, fontSize: size14}}>
-                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>г</Text>
+                                        {parseInt(item.weight)} <Text style={{color: '#8CC83F'}}>кг.</Text>
                                     </Text>
                                 </View>
                                 <View
@@ -191,7 +178,7 @@ class FinishOfferPage extends Component<NavigationProps> {
 
     render() {
 
-        const {shopData, delivery, refreshing, sumPrice} = this.state;
+        const {delivery, refreshing, sumPrice} = this.state;
 
         return (
             <>
@@ -214,7 +201,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                             </View>
                         )
                         : (
-                            shopData === null
+                            paymentStore.order === null
                                 ? (
                                     <>
                                         <Header
@@ -227,14 +214,6 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                     size={18}
                                                     color={'#464646'}
                                                 />
-                                            }
-                                            headerMid={
-                                                <Text style={styles.headerMiddleTitle}>
-                                                    Заказы в{' '}
-                                                    {/*<Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>*/}
-                                                    {/*    {shopData.items[0].product.shop.name}*/}
-                                                    {/*</Text>*/}
-                                                </Text>
                                             }
                                         />
                                         <View>
@@ -260,7 +239,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                 <Text style={styles.headerMiddleTitle}>
                                                     Заказы в{' '}
                                                     <Text style={{fontFamily: MontserratSemiBold, color: '#8CC83F'}}>
-                                                        {shopData.items[0].product.shop.name}
+                                                        {paymentStore.order.items[0].product.shop.name}
                                                     </Text>
                                                 </Text>
                                             }
@@ -274,6 +253,9 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                     height: 50,
                                                     backgroundColor: '#F5F4F4',
                                                     justifyContent: 'center',
+                                                    // borderColor: 'red',
+                                                    // borderWidth: 1,
+                                                    // borderStyle: "solid"
                                                 }}
                                             >
                                                 <View
@@ -312,7 +294,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                     color: '#000'
                                                                 }}
                                                             >
-                                                                {shopData.id}
+                                                                {paymentStore.order.id}
                                                             </Text>
                                                         </Text>
                                                     </View>
@@ -398,7 +380,7 @@ class FinishOfferPage extends Component<NavigationProps> {
                                             </View>
                                             <View style={styles.table}>
                                                 {
-                                                    shopData.items.map((item: any) => {
+                                                    paymentStore.order.items.map((item: any) => {
                                                         return this.renderList(item)
                                                     })
                                                 }
@@ -552,8 +534,8 @@ class FinishOfferPage extends Component<NavigationProps> {
                                                                         <TouchableOpacity
                                                                             onPress={() => this.props.navigation.navigate('FinishPaymentPage', {
                                                                                 id: this.props.navigation.state.params.id,
-                                                                                shopName: shopData.items[0].product.shop.name,
-                                                                                finishPayment: Math.ceil(parseInt(shopData.items[0].price.replace(/\s/g, '')) + delivery)
+                                                                                shopName: paymentStore.order.items[0].product.shop.name,
+                                                                                finishPayment: Math.ceil(parseInt(paymentStore.order.items[0].price.replace(/\s/g, '')) + delivery)
                                                                             })}
                                                                             style={{
                                                                                 backgroundColor: '#8CC83F',

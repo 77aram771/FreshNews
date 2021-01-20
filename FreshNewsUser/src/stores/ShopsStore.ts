@@ -11,6 +11,8 @@ class ShopsStore {
     @observable isShowBackgroundInput: boolean = false;
     @observable getShopData: any = [];
     @observable getShopSection: any = [];
+    @observable getShopSectionPromo: any = [];
+    @observable getShopSectionSections: any = [];
     @observable getShopInfo: any = [];
     @observable getShopsItem: any = [];
     @observable getShopShares: any = [];
@@ -28,7 +30,7 @@ class ShopsStore {
 
     @action
     selectCategory = (index: number) => {
-        this.selectedCategory = index;
+        this.selectedCategory = index
     };
 
     @action
@@ -39,7 +41,6 @@ class ShopsStore {
         if (this.clientAddress.length >= 3) {
             setTimeout(() => {
                 this.loader = false;
-                // this.getShops(1)
             }, 3000)
         } else {
             this.loader = false;
@@ -56,7 +57,6 @@ class ShopsStore {
             setTimeout(() => {
                 // console.log('this.loader', this.loader);
                 this.loader = false;
-                // this.getShops(1)
             }, 1000)
         } else {
             this.loader = false;
@@ -107,6 +107,8 @@ class ShopsStore {
         await axios.get(`${SERVER_BASE}/sections`)
             .then((res) => {
                 this.getShopSection = res.data;
+                this.getShopSectionPromo = res.data.promocodes;
+                this.getShopSectionSections = res.data.sections;
             })
             .catch((error) => {
                 console.log('error getShopsSections', error);
@@ -167,7 +169,7 @@ class ShopsStore {
     getPromoCode = async (id: number) => {
         this.getShopShares = [];
         if (this.clientAddress.length > 0) {
-            console.log(` clientAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
+            // console.log(` clientAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.clientAddress}`)
                 .then((res) => {
                     this.getShopShares = res.data;
@@ -177,7 +179,7 @@ class ShopsStore {
                     this.errorData = error
                 })
         } else if (this.userAddress.length > 0) {
-            console.log(` userAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
+            // console.log(` userAddress==>>   ${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}?address=${this.userAddress}`)
                 .then((res) => {
                     this.getShopShares = res.data;
@@ -187,7 +189,7 @@ class ShopsStore {
                     this.errorData = error
                 })
         } else {
-            console.log(` not address ==>>   ${SERVER_BASE}/promocode/${id}`)
+            // console.log(` not address ==>>   ${SERVER_BASE}/promocode/${id}`)
             await axios.get(`${SERVER_BASE}/promocode/${id}`)
                 .then((res) => {
                     this.getShopShares = res.data;
@@ -208,32 +210,31 @@ class ShopsStore {
 
     @action
     onShowShopInformation = () => {
-        this.isShowShopInformation = !this.isShowShopInformation;
+        this.isShowShopInformation = !this.isShowShopInformation
     };
 
     @action
     onShowShopInformationModal = () => {
-        this.isShowShopInformationModal = !this.isShowShopInformationModal;
+        this.isShowShopInformationModal = !this.isShowShopInformationModal
     };
 
     @action
     onShowShopReviewModal = () => {
-        this.isShowShopReviewModal = !this.isShowShopReviewModal;
+        this.isShowShopReviewModal = !this.isShowShopReviewModal
     };
 
     @action
     onShowAddCreditCart = () => {
-        this.isShowAddCreditCart = !this.isShowAddCreditCart;
+        this.isShowAddCreditCart = !this.isShowAddCreditCart
     };
 
     @action
     onShowAddAddressModal = () => {
-        this.isShowAddAddressModal = !this.isShowAddAddressModal;
+        this.isShowAddAddressModal = !this.isShowAddAddressModal
     };
 
     @action
     getAllOrders = async () => {
-        this.allOrdersItem = []
         let getToken = await AsyncStorage.getItem('Token')
         // @ts-ignore
         let str = getToken.slice(1)
@@ -241,6 +242,7 @@ class ShopsStore {
         const headers = {Authorization: `Bearer ${strTrue}`};
         axios.get(`${SERVER_BASE}/orders`, {headers})
             .then((res) => {
+                this.allOrdersItem = [];
                 this.allOrders = res.data;
                 toJS(res.data).map((item: any) => {
                     if (item.status === 4 || item.status === 5) {
@@ -281,6 +283,7 @@ class ShopsStore {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/reviews/${order_id}?shop_id=${shop_id}&rating=${rating}&review=${review}`, requestOptions)
             .then(response => response.json())
             .then(res => {

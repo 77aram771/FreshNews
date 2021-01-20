@@ -1,19 +1,11 @@
 import React, {Component} from 'react';
-import {
-    KeyboardAvoidingView, Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {observer} from 'mobx-react';
 import Header from '../../../../../share/components/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {CustomInput} from '../../../../../share/components/CustomInput';
 import {size16, size20, size44, WINDOW_WIDTH} from '../../../../../share/consts';
 import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
-import {NavigationProps} from '../../../../../share/interfaces';
 import {PaymentElement} from './PaymentElement';
 import paymentStore from "../../../../../stores/PaymentStore";
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -23,8 +15,7 @@ import basketStore from "../../../../../stores/BasketStore";
 let moment = require('moment');
 
 @observer
-export default // @ts-ignore
-class FinishPaymentPage extends Component<NavigationProps> {
+export default class FinishPaymentPage extends Component<any, any> {
 
     state = {
         disabledBool: true,

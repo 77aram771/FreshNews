@@ -9,7 +9,6 @@ import {MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts'
 import BasketListItem from './BasketListItem';
 import Modal from 'react-native-modal';
 import {CheckOut} from './Checkout';
-import {NavigationProps} from '../../../../../share/interfaces';
 import basketStore from '../../../../../stores/BasketStore';
 import modalsStore from "../../../../../stores/ModalsStore";
 import {PulseIndicator} from 'react-native-indicators';
@@ -17,48 +16,42 @@ import {toJS} from "mobx";
 import {SvgUri} from "react-native-svg";
 
 @observer
-export default // @ts-ignore
-class BasketPage extends Component<NavigationProps> {
+export default class BasketPage extends Component<any, any> {
 
     state = {
-        shopData: [],
         deliveryPrice: 90,
         refreshing: true,
         itemQuantity: ''
     };
 
     async componentDidMount() {
-        const {getCartUserInfo, cartUserInfo} = basketStore;
+        const {getCartUserInfo} = basketStore;
         await getCartUserInfo();
         this.setState({refreshing: true});
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo,
             }, () => {
                 this.setState({
-                    itemQuantity: this.state.shopData.length
-                }, () => {
-                    console.log('basketStore.stackItem', toJS(basketStore.stackItem).length);
+                    itemQuantity: basketStore.cartUserInfo.length
                 })
             })
         }, 1000)
     };
 
     async onRefresh() {
-        const {getCartUserInfo, cartUserInfo} = basketStore;
+        const {getCartUserInfo} = basketStore;
         await getCartUserInfo();
         this.setState({refreshing: true});
         setTimeout(() => {
             this.setState({
                 refreshing: false,
-                shopData: cartUserInfo,
             }, () => {
                 this.setState({
-                    itemQuantity: this.state.shopData.length
+                    itemQuantity: basketStore.cartUserInfo.length
                 })
             })
-        }, 2000)
+        }, 1000)
     };
 
     render() {
@@ -133,14 +126,13 @@ class BasketPage extends Component<NavigationProps> {
                             </View>
                         )
                         : (
-                            this.state.shopData.length > 0
+                            basketStore.cartUserInfo.length > 0
                                 ? (
                                     <>
                                         <FlatList
                                             scrollEnabled={true}
-                                            keyExtractor={item => item.id.toString()}
                                             showsVerticalScrollIndicator={true}
-                                            data={this.state.shopData}
+                                            data={basketStore.cartUserInfo}
                                             renderItem={({item, index}) => {
                                                 return (
                                                     <BasketListItem
@@ -474,16 +466,16 @@ class BasketPage extends Component<NavigationProps> {
 }
 
 const styles = StyleSheet.create({
-        container: {
-            backgroundColor: '#FFFFFF',
-            flex: 1,
-        },
-        header: {
-            paddingTop: size16,
-        },
-        headerMiddleTitle: {
-            fontFamily: MontserratRegular,
-            fontSize: size20,
-            color: '#000000',
-        },
-    });
+    container: {
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+    },
+    header: {
+        paddingTop: size16,
+    },
+    headerMiddleTitle: {
+        fontFamily: MontserratRegular,
+        fontSize: size20,
+        color: '#000000',
+    },
+});

@@ -19,7 +19,7 @@ import { Asset } from 'expo-asset';
 export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [weight, setWeight] = useState(1000);
+    const [weight, setWeight] = useState(1);
     const [description, setDescription] = useState('');
     const [image, setImage] = useState(null);
 
@@ -299,7 +299,7 @@ export const AddModal = ({handleCloseAddModal, handleSaveAddItem}: any) => {
                                     backgroundColor: 'grey'
                                 }}
                                 // onChangeText={text => Price(text)}
-                                value={"1000 г."}
+                                value={"1 кг."}
                                 placeholder={'Цена товара'}
                                 keyboardType={"number-pad"}
                                 editable={false}

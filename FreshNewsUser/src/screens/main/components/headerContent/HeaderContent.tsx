@@ -213,9 +213,6 @@ class HeaderContent extends React.Component<HeaderContentInterface, NavigationPr
                                 >
                                     <Icon name={'map-marker'} size={size20} color={'#8CC83F'}/>
                                 </TouchableOpacity>)}
-                                // filterReverseGeocodingByTypes={[
-                                //     "locality", "administrative_area_level_3",
-                                // ]}
                                 debounce={300}
                             />
                         </View>

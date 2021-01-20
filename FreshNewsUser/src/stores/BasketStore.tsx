@@ -15,6 +15,7 @@ class BasketStore {
     @action
     getCartUserInfo = async () => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
@@ -51,10 +52,13 @@ class BasketStore {
     @action
     getAddCartUser = async (id: number, count: number) => {
         let getToken = await AsyncStorage.getItem('Token');
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
+
         myHeaders.append("Authorization", `Bearer ${strTrue}`);
+
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -75,6 +79,7 @@ class BasketStore {
     @action
     getDeleteCartItem = async (id: number) => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -85,6 +90,7 @@ class BasketStore {
             redirect: 'follow'
         };
         console.log(`${SERVER_BASE}/cart/remove/${id}`);
+        // @ts-ignore
         fetch(`${SERVER_BASE}/cart/remove/${id}`, requestOptions)
             .then(res => {
                 console.log('res getDeleteCartItem', res);
@@ -101,6 +107,7 @@ class BasketStore {
     @action
     getDeleteCarAllItem = async () => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -111,6 +118,7 @@ class BasketStore {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/cart/remove-all`, requestOptions)
             .then(res => {
                 if (res.status === 200) {
@@ -126,6 +134,7 @@ class BasketStore {
     @action
     getUpdateCartItem = async (id: number, count: number) => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -136,6 +145,7 @@ class BasketStore {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/cart/update/${id}?quantity=${count}`, requestOptions)
             .then(res => {
                 if (res.status === 200) {

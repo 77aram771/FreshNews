@@ -3,7 +3,6 @@ import {ImageBackground, Platform, RefreshControl, StyleSheet, Text, TouchableOp
 // @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
 import {observer} from 'mobx-react';
-import {NavigationProps} from '../../../../share/interfaces';
 import {MontserratSemiBold} from '../../../../share/fonts';
 import HeaderInfo from './HeaderInfo';
 import {ShopListItem} from './ShopListItem';
@@ -23,7 +22,7 @@ import {ModalReview} from "./modal/ModalReview";
 
 @observer
 export default // @ts-ignore
-class ShopPage extends React.Component<NavigationProps> {
+class ShopPage extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
@@ -38,16 +37,11 @@ class ShopPage extends React.Component<NavigationProps> {
     }
 
     componentDidMount() {
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(async () => {
             const {getShopInfo} = shopsStore;
             let getToken = await AsyncStorage.getItem('Token');
-            if (getToken !== null) {
-                const {getCartUserInfo} = basketStore;
-                await getCartUserInfo();
-            }
+            if (getToken !== null) {await basketStore.getCartUserInfo()}
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
@@ -63,16 +57,11 @@ class ShopPage extends React.Component<NavigationProps> {
     }
 
     onRefresh() {
-        this.setState({
-            refreshing: true
-        })
+        this.setState({refreshing: true})
         setTimeout(async () => {
             const {getShopInfo} = shopsStore;
             let getToken = await AsyncStorage.getItem('Token');
-            if (getToken !== null) {
-                const {getCartUserInfo} = basketStore;
-                await getCartUserInfo();
-            }
+            if (getToken !== null) {await basketStore.getCartUserInfo()}
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
@@ -122,7 +111,8 @@ class ShopPage extends React.Component<NavigationProps> {
     }
 
     handleReview() {
-        shopsStore.postReview()
+        // shopsStore.postReview()
+        alert('test')
     }
 
     render() {

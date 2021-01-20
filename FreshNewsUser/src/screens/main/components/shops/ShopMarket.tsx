@@ -30,8 +30,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
         super(props);
         this.state = {
             refreshing: true,
-            promo: null,
-            sections: null,
             errorModal: false,
             errorData: [],
             items: []
@@ -40,16 +38,10 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
 
     async componentDidMount() {
         let getToken = await AsyncStorage.getItem('Token');
-        // this.setState({refreshing: true});
         await shopsStore.getShopsSections();
         setTimeout(() => {
             (async () => {
-                this.setState({
-                    refreshing: false,
-                    promo: toJS(shopsStore.getShopSection.promocodes),
-                    sections: toJS(shopsStore.getShopSection.sections),
-                    items: []
-                });
+                this.setState({refreshing: false});
                 if (shopsStore.errorData !== null) {
                     let error = toJS(String(shopsStore.errorData));
                     let errorCode = error.substr(error.length - 3);
@@ -65,14 +57,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                 if (getToken !== null) {
                     await shopsStore.getAllOrders();
                     await userInfo.getUserData();
-                    // console.log('toJS(shopsStore.allOrders)', toJS(shopsStore.allOrders));
-                    toJS(shopsStore.allOrders).map((item: any) => {
-                        if (item.status === 4 || item.status === 5) {
-                            this.setState({
-                                items: [...this.state.items, item]
-                            })
-                        }
-                    })
                 }
             })()
         }, 1000);
@@ -84,12 +68,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
         await shopsStore.getShopsSections();
         setTimeout(() => {
             (async () => {
-                this.setState({
-                    refreshing: false,
-                    promo: toJS(shopsStore.getShopSection.promocodes),
-                    sections: toJS(shopsStore.getShopSection.sections),
-                    items: []
-                });
+                this.setState({refreshing: false});
                 if (shopsStore.errorData !== null) {
                     let error = toJS(String(shopsStore.errorData));
                     let errorCode = error.substr(error.length - 3);
@@ -105,14 +84,6 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                 if (getToken !== null) {
                     await shopsStore.getAllOrders();
                     await userInfo.getUserData();
-                    // console.log('toJS(shopsStore.allOrders)', toJS(shopsStore.allOrders));
-                    toJS(shopsStore.allOrders).map((item: any) => {
-                        if (item.status === 4 || item.status === 5) {
-                            this.setState({
-                                items: [...this.state.items, item]
-                            })
-                        }
-                    })
                 }
             })()
         }, 1000);
@@ -145,23 +116,15 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                 <Modal
                     visible={this.state.errorModal}
                     useNativeDriver={false}
-                    footer={
-                        <ModalFooter
-                            style={{
-                                backgroundColor: 'red'
-                            }}
-                        >
-                            <ModalButton
-                                text="Закрыть"
-                                textStyle={{
-                                    color: '#fff'
-                                }}
-                                onPress={() => this.handleCloseErrorModal()}
-                            />
-                        </ModalFooter>
-                    }
+                    footer={<ModalFooter style={{backgroundColor: 'red'}}>
+                        <ModalButton
+                            text="Закрыть"
+                            textStyle={{color: '#fff'}}
+                            onPress={() => this.handleCloseErrorModal()}
+                        />
+                    </ModalFooter>}
                     onTouchOutside={() => {
-                        this.setState({errorModal: false});
+                        this.setState({errorModal: false})
                     }}
                 >
                     <ModalContent>
@@ -186,7 +149,7 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                         <HeaderContent
                             navigation={this.props.navigation}
                             getGeocodeAsync={() => this.props.getGeocodeAsync()}
-                            items={this.state.items}
+                            items={shopsStore.allOrdersItem}
                         />
                     </View>
                     <FlatList
@@ -212,13 +175,13 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                         )
                                         : null
                                 }
-                                <HeaderText title={'Акции'}/>
+                                <HeaderText style={{}} title={'Акции'}/>
                                 <FlatList
                                     style={{paddingTop: 25, zIndex: -1}}
                                     keyExtractor={item => item.id.toString()}
                                     showsHorizontalScrollIndicator={false}
                                     horizontal={true}
-                                    data={this.state.promo}
+                                    data={shopsStore.getShopSectionPromo}
                                     renderItem={({item}) => {
                                         return (
                                             <View key={item.id}>
@@ -232,13 +195,13 @@ class ShopMarket extends React.Component<ShopMarketInterface, any> {
                                         );
                                     }}
                                 />
-                                <HeaderText title={'Рынки'}/>
+                                <HeaderText style={{}} title={'Рынки'}/>
                             </>
                         }
                         scrollEnabled={true}
                         keyExtractor={item => item.id.toString()}
                         showsVerticalScrollIndicator={true}
-                        data={this.state.sections}
+                        data={shopsStore.getShopSectionSections}
                         renderItem={({item, index}) => {
                             return (
                                 <ShopMarketItem

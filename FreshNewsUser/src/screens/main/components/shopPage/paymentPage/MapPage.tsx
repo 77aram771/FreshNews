@@ -1,14 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {observer} from 'mobx-react';
-import {
-    GOOGLE_MAPS_APIKEY,
-    HEADER_HEIGHT,
-    size16,
-    size20,
-    WINDOW_HEIGHT,
-    WINDOW_WIDTH
-} from '../../../../../share/consts';
+import {GOOGLE_MAPS_APIKEY, HEADER_HEIGHT, size16, size20, WINDOW_HEIGHT, WINDOW_WIDTH} from '../../../../../share/consts';
 import MapView, {Marker} from 'react-native-maps';
 import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import {ReviewModal} from './ReviewModal';
@@ -26,14 +19,12 @@ import shopsStore from "../../../../../stores/ShopsStore";
 import Modal from 'react-native-modal';
 import Modals, {ModalContent, ModalFooter, ModalButton} from 'react-native-modals';
 import {ErrorModal} from "../../modals/ErrorModal";
+import {pusher_app_key, pusher_app_cluster} from "../../../../../share/pusherConfig";
 
 const args = {
     number: '+79296014443', // String value with the number to call
     prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
 }
-
-const pusher_app_key = '0f88b1991b1342108a18';
-const pusher_app_cluster = 'eu';
 
 @observer
 export default class MapPage extends Component<any, any> {
@@ -41,20 +32,20 @@ export default class MapPage extends Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            // courierCordinate: null,
-            // userLocation: null,
-            courierCordinate: {
-                latitude: 41.43206,
-                longitude: -81.38992,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            },
-            userLocation: {
-                latitude: 41.43206,
-                longitude: -82.38992,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            },
+            courierCordinate: null,
+            userLocation: null,
+            // courierCordinate: {
+            //     latitude: 41.43206,
+            //     longitude: -81.38992,
+            //     latitudeDelta: 0.0922,
+            //     longitudeDelta: 0.0421,
+            // },
+            // userLocation: {
+            //     latitude: 41.43206,
+            //     longitude: -82.38992,
+            //     latitudeDelta: 0.0922,
+            //     longitudeDelta: 0.0421,
+            // },
             errorText: '',
             deliveryTime: '',
             reviewText: '',
@@ -63,6 +54,9 @@ export default class MapPage extends Component<any, any> {
             errorModal: false,
             errorData: [],
         };
+        // @ts-ignore
+        this.pusher = null;
+        // @ts-ignore
         this.mapView = null;
         this.handleReview = this.handleReview.bind(this)
         this.handleReviewText = this.handleReviewText.bind(this)
@@ -71,11 +65,14 @@ export default class MapPage extends Component<any, any> {
 
     async componentDidMount() {
         Pusher.logToConsole = true;
+        // @ts-ignore
         this.pusher = new Pusher(pusher_app_key, {
             cluster: pusher_app_cluster,
             encrypted: true,
         });
+        // @ts-ignore
         this.users_channel = this.pusher.subscribe(`courier-location.${this.props.navigation.state.params.order_id}`);
+        // @ts-ignore
         this.users_channel.bind('App\\Events\\SendCourierLocationToOrderEvent', (data: any) => {
             this.getGeolocation(data)
         });
@@ -109,6 +106,7 @@ export default class MapPage extends Component<any, any> {
         this.setState({
             deliveryTime: Math.ceil(result.duration)
         })
+        // @ts-ignore
         this.mapView.fitToCoordinates(result.coordinates, {
             edgePadding: {
                 right: (WINDOW_WIDTH / 20),
@@ -365,7 +363,8 @@ export default class MapPage extends Component<any, any> {
                                 <View style={styles.textContainer}>
                                     <TouchableOpacity
                                         onPress={() => call(args).catch(console.error)}
-                                        style={styles.supportTextContainer}>
+                                        style={styles.supportTextContainer}
+                                    >
                                         <Text style={{fontFamily: MontserratRegular, fontSize: size16}}>
                                             Связаться с поддержкой
                                         </Text>

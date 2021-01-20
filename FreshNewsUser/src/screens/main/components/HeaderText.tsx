@@ -1,4 +1,4 @@
-import {StyleProp, Text, View, ViewStyle} from 'react-native';
+import {Text, View} from 'react-native';
 
 import React from 'react';
 import {MontserratBold} from '../../../share/fonts';
@@ -8,8 +8,8 @@ export const HeaderText = ({
                                style,
                                title,
                            }: {
-    style?: StyleProp<ViewStyle>;
-    title: string;
+    style: any;
+    title: any;
 }) => {
     return (
         <View style={{marginHorizontal: 20, marginTop: 29}}>
