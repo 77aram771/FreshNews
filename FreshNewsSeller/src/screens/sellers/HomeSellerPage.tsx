@@ -18,8 +18,7 @@ import {AddModal} from "./modals/AddModal";
 import {ErrorModal} from "./modals/ErrorModal";
 
 @observer
-export default // @ts-ignore
-class HomeSellerPage extends Component<any, any> {
+export default class HomeSellerPage extends Component<any, any> {
 
     constructor(props: any) {
         super(props);
@@ -43,6 +42,7 @@ class HomeSellerPage extends Component<any, any> {
             errorModal: false,
             errorData: [],
         };
+        // @ts-ignore
         this._unsubscribe = null
     }
 
@@ -96,6 +96,7 @@ class HomeSellerPage extends Component<any, any> {
                 })
             })
         }, 2000);
+        // @ts-ignore
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
             this.onRefresh()
         });
@@ -103,6 +104,7 @@ class HomeSellerPage extends Component<any, any> {
     };
 
     componentWillUnmount() {
+        // @ts-ignore
         this._unsubscribe();
         BackHandler.removeEventListener('hardwareBackPress', this.onBackPress);
     };

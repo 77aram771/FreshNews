@@ -1,38 +1,24 @@
 import React, {Component} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {observer} from 'mobx-react';
 import {toJS} from 'mobx';
-import {
-    size14,
-    size16,
-    size20,
-    size24,
-    size34,
-    size44,
-    WINDOW_WIDTH,
-} from '../../../../../share/consts';
-import {
-    MontserratBold,
-    MontserratRegular,
-    MontserratSemiBold,
-} from '../../../../../share/fonts';
+import {size14, size16, size20, size24, size34, size44, WINDOW_WIDTH} from '../../../../../share/consts';
+import {MontserratBold, MontserratRegular, MontserratSemiBold} from '../../../../../share/fonts';
 import shopsStore from "../../../../../stores/ShopsStore";
 import basketStore from "../../../../../stores/BasketStore";
 import AsyncStorage from "@react-native-community/async-storage";
 
 interface intProductPage {
-    refresh?: () => void,
+    refresh: any,
     navigation: any
 }
 
 @observer
-export default class ProductPage extends Component<intProductPage> {
+export default class ProductPage extends Component<intProductPage, any> {
 
-    state = {
-        count: 1,
-    };
+    state = {count: 1};
 
     countUpFunction() {
         this.setState({count: this.state.count + 1});
@@ -46,14 +32,14 @@ export default class ProductPage extends Component<intProductPage> {
 
     async handleAddItem(id: number, count: number) {
         let getToken = await AsyncStorage.getItem('Token');
-        if(getToken === null){
+        if (getToken === null) {
             this.props.navigation.navigate('Login')
         }
         await basketStore.getAddCartUser(id, count)
         await shopsStore.onShowShopInformation()
         setTimeout(() => {
             this.props.refresh()
-        }, 2500)
+        }, 1000)
     }
 
     render() {
@@ -81,7 +67,8 @@ export default class ProductPage extends Component<intProductPage> {
                 >
                     <TouchableOpacity
                         style={{marginLeft: 'auto', paddingTop: 16, paddingRight: 16}}
-                        onPress={onShowShopInformation}>
+                        onPress={onShowShopInformation}
+                    >
                         <EvilIcons name={'close'} size={size34 * 1.5} color={'#464646'}/>
                     </TouchableOpacity>
                     <View style={{alignItems: 'center'}}>

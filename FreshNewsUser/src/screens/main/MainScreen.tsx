@@ -37,16 +37,12 @@ Notifications.requestPermissionsAsync({
     },
 }).then(r => console.log('r', r));
 
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true
-
-// Set up pusher instance with main channel subscription
-// Be able to subscribe to the same channel in another component
-// with separate callback but utilizing the existing connection
-const pusher = new Pusher(pusher_app_key, {
-    cluster: pusher_app_cluster,
-    forceTLS: true,
-})
+// Pusher.logToConsole = true
+//
+// const pusher = new Pusher(pusher_app_key, {
+//     cluster: pusher_app_cluster,
+//     forceTLS: true,
+// })
 
 export const MainScreen = ({navigation}: any) => {
     const [expoPushToken, setExpoPushToken] = useState('');
@@ -59,7 +55,6 @@ export const MainScreen = ({navigation}: any) => {
     useEffect(() => {
         (async () => {
             let getToken = await AsyncStorage.getItem('Token');
-            console.log('getToken', getToken)
             if (getToken !== null) {
                 await shopsStore.getAllOrders();
                 await basketStore.getCartUserInfo()
@@ -124,7 +119,7 @@ export const MainScreen = ({navigation}: any) => {
                 Notifications.removeNotificationSubscription(responseListener);
             };
         })()
-    }, [messages, pusher]);
+    }, [messages]);
 
     async function sendPushNotification(expoPushToken: any) {
         let getToken = await AsyncStorage.getItem('Token');

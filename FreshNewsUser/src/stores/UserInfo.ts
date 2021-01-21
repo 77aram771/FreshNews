@@ -1,4 +1,3 @@
-// @ts-ignore
 import {action, observable, toJS} from 'mobx';
 import AsyncStorage from "@react-native-community/async-storage";
 import {SERVER_BASE} from "../share/consts";
@@ -14,6 +13,7 @@ class UserInfo {
     getUserData = async () => {
         // this.userData = [];
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
@@ -37,6 +37,7 @@ class UserInfo {
     @action
     getUserDataUpdate = async (name: string, email: string, surname: string, sms_notifications: boolean) => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -50,6 +51,7 @@ class UserInfo {
 
         console.log(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&sms_notifications=${sms_notifications ? 1 : 0}`)
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/profile?name=${name}&email=${email}&surname=${surname}&sms_notifications=${sms_notifications ? 1 : 0}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {
@@ -69,6 +71,7 @@ class UserInfo {
     @action
     getUserDataAddAddress = async (address: any, porch: any, floor: any, intercom: any) => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -80,6 +83,7 @@ class UserInfo {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/profile/add-address?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {
@@ -95,6 +99,7 @@ class UserInfo {
     @action
     getUserDataDeleteAddress = async (id: number) => {
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -106,6 +111,7 @@ class UserInfo {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/profile/remove-address/${id}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {
@@ -122,6 +128,7 @@ class UserInfo {
     getUserNotifications = async () => {
         // this.notificationsData = [];
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -133,6 +140,7 @@ class UserInfo {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch("https://fructonosback.ru/api/notifications", requestOptions)
             .then(response => response.json())
             .then(res => {
@@ -146,6 +154,7 @@ class UserInfo {
     getUserNotificationsRead = async () => {
         // this.notificationsData = [];
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -157,6 +166,7 @@ class UserInfo {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch("https://fructonosback.ru/api/notifications/read", requestOptions)
             .then(response => response.json())
             .then(res => {
@@ -169,6 +179,7 @@ class UserInfo {
     @action
     getUserAddCreditCard = async (number: number, month: number, year: number, holder: string, code: number) => {
         let getToken = await AsyncStorage.getItem('Token');
+        // @ts-ignore
         let str = getToken.slice(1);
         let strTrue = str.substring(0, str.length - 1);
         let myHeaders = new Headers();
@@ -180,6 +191,7 @@ class UserInfo {
             redirect: 'follow'
         };
 
+        // @ts-ignore
         fetch(`${SERVER_BASE}/profile/cards?number=${num}&month=${month}&year=${year}&holder=${holder}&code=${code}`, requestOptions)
             .then(res => {
                 console.log('res, getUserAddCreditCard', res);
@@ -195,8 +207,8 @@ class UserInfo {
 
     @action
     getUserDataDeleteCard = async (id: number) => {
-        console.log("id", id);
         let getToken = await AsyncStorage.getItem('Token')
+        // @ts-ignore
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         let myHeaders = new Headers();
@@ -207,6 +219,7 @@ class UserInfo {
             headers: myHeaders,
             redirect: 'follow'
         };
+        // @ts-ignore
         fetch(`${SERVER_BASE}/profile/cards/${id}`, requestOptions)
             .then(res => {
                 if (toJS(res).status === 200) {

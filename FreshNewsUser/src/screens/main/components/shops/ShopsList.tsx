@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {FlatList, View, RefreshControl, TouchableOpacity, Text} from 'react-native';
 import {observer} from 'mobx-react';
 import {MontserratSemiBold} from '../../../../share/fonts';
@@ -18,7 +18,7 @@ interface ShopsListInterface {
 }
 
 @observer
-export default class ShopsList extends React.Component<ShopsListInterface, any> {
+export default class ShopsList extends Component<ShopsListInterface, any> {
 
     state = {
         refreshing: true,

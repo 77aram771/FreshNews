@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import Header from './Header';
 import {LogoAndTitle} from './LogoAndTitle';
@@ -13,8 +13,7 @@ interface MainHeaderProps {
 }
 
 @observer
-export default // @ts-ignore
-class MainHeader extends React.Component<MainHeaderProps> {
+export default class MainHeader extends Component<MainHeaderProps, any> {
 
     render() {
         const {navigation} = this.props;

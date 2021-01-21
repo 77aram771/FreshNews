@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {ImageBackground, Platform, RefreshControl, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 // @ts-ignore
 import {SuperGridSectionList} from 'react-native-super-grid';
@@ -19,10 +19,10 @@ import basketStore from "../../../../stores/BasketStore";
 import AsyncStorage from "@react-native-community/async-storage";
 import {ModalDescription} from "./modal/ModalDescription";
 import {ModalReview} from "./modal/ModalReview";
+import {PulseIndicator} from "react-native-indicators";
 
 @observer
-export default // @ts-ignore
-class ShopPage extends React.Component<any, any> {
+export default class ShopPage extends Component<any, any> {
 
     constructor(props: any) {
         super(props);
@@ -41,11 +41,12 @@ class ShopPage extends React.Component<any, any> {
         setTimeout(async () => {
             const {getShopInfo} = shopsStore;
             let getToken = await AsyncStorage.getItem('Token');
-            if (getToken !== null) {await basketStore.getCartUserInfo()}
+            if (getToken !== null) {
+                await basketStore.getCartUserInfo()
+            }
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
-                    title: 'Заголовок',
                     data: products
                 }
             ]
@@ -61,14 +62,13 @@ class ShopPage extends React.Component<any, any> {
         setTimeout(async () => {
             const {getShopInfo} = shopsStore;
             let getToken = await AsyncStorage.getItem('Token');
-            if (getToken !== null) {await basketStore.getCartUserInfo()}
+            if (getToken !== null) {
+                await basketStore.getCartUserInfo()
+            }
             const {products} = toJS(getShopInfo);
-            let obj = [
-                {
-                    title: 'Заголовок',
-                    data: products
-                }
-            ]
+            let obj = [{
+                data: products
+            }]
             this.setState({
                 shopData: obj,
                 refreshing: false
@@ -87,7 +87,6 @@ class ShopPage extends React.Component<any, any> {
             const {products} = toJS(getShopInfo);
             let obj = [
                 {
-                    title: 'Заголовок',
                     data: products
                 }
             ]
@@ -98,16 +97,11 @@ class ShopPage extends React.Component<any, any> {
     }
 
     onCustomStarRatingPress(rating: any) {
-        console.log('rating', rating)
-        this.setState({
-            customStarCount: rating,
-        });
+        this.setState({customStarCount: rating})
     }
 
     handleReviewText(value: any) {
-        this.setState({
-            reviewText: value
-        })
+        this.setState({reviewText: value})
     }
 
     handleReview() {
@@ -192,7 +186,6 @@ class ShopPage extends React.Component<any, any> {
                     }
                 />
                 <SuperGridSectionList
-                    // keyExtractor={(item, index) => index.toString()}
                     ListHeaderComponent={
                         <View>
                             <ImageBackground
@@ -220,9 +213,6 @@ class ShopPage extends React.Component<any, any> {
                             <ShopListItem data={productData}/>
                         </TouchableOpacity>
                     )}
-                    // renderSectionHeader={({section}: any) => (
-                    //     <Text style={styles.sectionHeader}>{section.title}</Text>
-                    // )}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -230,37 +220,57 @@ class ShopPage extends React.Component<any, any> {
                         />
                     }
                     ListFooterComponent={
-                        <TouchableOpacity
-                            onPress={() => alert('test')}
-                            style={{
-                                width: '100%',
-                                marginTop: 20,
-                                marginBottom: 50,
-                                justifyContent: "center",
-                                alignItems: "center"
-                            }}
-                        >
-                            <View
-                                style={{
-                                    width: WINDOW_WIDTH - 40,
-                                    borderRadius: 10,
-                                    backgroundColor: '#8CC83F',
-                                    justifyContent: 'center',
-                                    alignItems: "center",
-                                    padding: 15,
-                                }}
-                            >
-                                <Text
+                        this.state.refreshing
+                            ? (
+                                <View
                                     style={{
-                                        color: '#fff',
-                                        fontSize: 18,
-                                        fontFamily: MontserratSemiBold
+                                        flex: 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        alignContent: 'center',
+                                        alignSelf: 'center',
+                                        marginTop: 10
                                     }}
                                 >
-                                    Показать ещё
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
+                                    <PulseIndicator
+                                        size={100}
+                                        color='#8CC83F'
+                                    />
+                                </View>
+                            )
+                            : (
+                                <TouchableOpacity
+                                    onPress={() => alert('test')}
+                                    style={{
+                                        width: '100%',
+                                        marginTop: 20,
+                                        marginBottom: 50,
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            width: WINDOW_WIDTH - 40,
+                                            borderRadius: 10,
+                                            backgroundColor: '#8CC83F',
+                                            justifyContent: 'center',
+                                            alignItems: "center",
+                                            padding: 15,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: '#fff',
+                                                fontSize: 18,
+                                                fontFamily: MontserratSemiBold
+                                            }}
+                                        >
+                                            Показать ещё
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
                     }
                 />
                 <FooterPanel

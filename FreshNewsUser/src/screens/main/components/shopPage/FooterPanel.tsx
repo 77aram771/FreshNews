@@ -29,11 +29,8 @@ export const FooterPanel = ({onPress}: { onPress: () => void }) => {
                             </View>
                         </>
                     )
-                    : (
-                        <View/>
-                    )
+                    : <View/>
             }
-
         </View>
     );
 };

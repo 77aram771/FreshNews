@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
@@ -31,7 +31,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 
 @observer
 export default // @ts-ignore
-class LoginScreen extends React.Component<NavigationProps> {
+class LoginScreen extends Component<NavigationProps> {
 
     constructor(props: any) {
         super(props);

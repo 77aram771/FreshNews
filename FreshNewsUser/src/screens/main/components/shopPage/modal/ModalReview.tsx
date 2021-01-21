@@ -67,7 +67,7 @@ export const ModalReview = ({name, customStarCount, handleReviewText, handleRevi
 
     const renderItem = (item: any) => {
         return (
-            <View style={{
+            <View key={item.id} style={{
                 width: WINDOW_WIDTH - 100,
                 padding: 15,
                 flexDirection: "column",

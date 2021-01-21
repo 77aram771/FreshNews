@@ -1,23 +1,9 @@
-import React from 'react';
-import {CustomInput} from '../../../../share/components/CustomInput';
-import {
-    size18, WINDOW_HEIGHT,
-    WINDOW_WIDTH,
-} from '../../../../share/consts';
-import {
-    StyleSheet,
-    View,
-    Linking,
-    Text,
-    ImageBackground,
-    TouchableOpacity,
-    Animated,
-} from 'react-native';
+import React, {Component} from 'react';
+import {WINDOW_HEIGHT, WINDOW_WIDTH} from '../../../../share/consts';
+import {StyleSheet, View, Text, ImageBackground} from 'react-native';
 import {imagesPaths} from '../../../../share/info';
 import {MontserratRegular} from '../../../../share/fonts';
-import {NavigationProps} from '../../../../share/interfaces';
 import {observer} from 'mobx-react';
-import shopsStore from '../../../../stores/ShopsStore';
 
 interface HeaderContentInterface {
     navigation: any,
@@ -25,7 +11,7 @@ interface HeaderContentInterface {
 }
 
 @observer
-export default class HeaderContentMarket extends React.Component<HeaderContentInterface, NavigationProps> {
+export default class HeaderContentMarket extends Component<HeaderContentInterface, any> {
 
     render() {
         return (

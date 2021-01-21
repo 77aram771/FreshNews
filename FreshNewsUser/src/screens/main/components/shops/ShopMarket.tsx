@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {FlatList, View, RefreshControl, Text, TouchableOpacity, ScrollView} from 'react-native';
 import {observer} from 'mobx-react';
 import {toJS} from "mobx";
@@ -24,7 +24,7 @@ interface ShopMarketInterface {
 
 @observer
 export default // @ts-ignore
-class ShopMarket extends React.Component<ShopMarketInterface, any> {
+class ShopMarket extends Component<ShopMarketInterface, any> {
 
     constructor(props: any) {
         super(props);

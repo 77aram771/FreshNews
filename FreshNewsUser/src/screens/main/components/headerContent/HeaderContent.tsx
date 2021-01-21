@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {GOOGLE_MAPS_APIKEY, size20, WINDOW_WIDTH} from '../../../../share/consts';
 import {View, Text, ImageBackground, TouchableOpacity} from 'react-native';
 import {imagesPaths} from '../../../../share/info';
 import {MontserratRegular, MontserratSemiBold} from '../../../../share/fonts';
-import {NavigationProps} from '../../../../share/interfaces';
 import {observer} from 'mobx-react';
 import shopsStore from '../../../../stores/ShopsStore';
 import {AntDesign} from "@expo/vector-icons";
@@ -17,8 +16,7 @@ interface HeaderContentInterface {
 }
 
 @observer
-export default // @ts-ignore
-class HeaderContent extends React.Component<HeaderContentInterface, NavigationProps> {
+export default class HeaderContent extends Component<HeaderContentInterface, any> {
     render() {
         const {
             clientAddress,
