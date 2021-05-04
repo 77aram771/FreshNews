@@ -44,7 +44,6 @@ class PaymentStore {
         let str = getToken.slice(1)
         let strTrue = str.substring(0, str.length - 1)
         const headers = {Authorization: `Bearer ${strTrue}`};
-        console.log(`${SERVER_BASE}/orders/show/${id}`);
         axios.get(`${SERVER_BASE}/orders/show/${id}`, {headers})
             .then((res) => {
                 this.order = res.data;
@@ -67,7 +66,7 @@ class PaymentStore {
             headers: myHeaders,
             redirect: 'follow'
         };
-        // console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`);
+        console.log(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`);
         // @ts-ignore
         fetch(`${SERVER_BASE}/orders/checkout?address=${address}&porch=${porch}&floor=${floor}&intercom=${intercom}comment=${this.commentText}&date=${date}&time=${time}`, requestOptions)
             .then(res => {
@@ -119,7 +118,7 @@ class PaymentStore {
         fetch(`${SERVER_BASE}/transactions/?order_id=${id}&type=${pay}`, requestOptions)
             .then((res) => {
                 console.log('res finishPayment', res)
-                this.order = res;
+                // this.order = res;
             })
             .catch((error) => {
                 console.log('error getOrder', error);

@@ -115,7 +115,7 @@ class AssemblyPage extends Component<any, any> {
                     this.setState({
                         errorData: toJS(paymentStore.errorData),
                         errorModal: true
-                    })
+                    }, () => console.log('errorData', this.state.errorData))
                 } else {
                     this.props.navigation.navigate('CloudPayment')
                 }
@@ -134,7 +134,7 @@ class AssemblyPage extends Component<any, any> {
                             } else {
                                 this.props.navigation.navigate('CloudPayment')
                             }
-                        }, 1000)
+                        }, 3000)
 
                     }
                 }

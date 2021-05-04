@@ -1,11 +1,5 @@
 import React, {Component} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    KeyboardAvoidingView, Platform, TouchableOpacity
-} from 'react-native';
+import {StyleSheet, Text, View, Image, KeyboardAvoidingView, Platform, TouchableOpacity} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {observer} from 'mobx-react';
 import {NavigationProps} from '../../share/interfaces';

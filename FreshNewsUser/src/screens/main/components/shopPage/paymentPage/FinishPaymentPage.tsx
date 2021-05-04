@@ -42,8 +42,13 @@ export default class FinishPaymentPage extends Component<any, any> {
     };
 
     async handlePayment() {
+        console.log('this.props.navigation.state.params.id', this.props.navigation.state.params.id)
+        console.log('paymentStore.isSelectedPayment', paymentStore.isSelectedPayment)
         await paymentStore.finishPayment(this.props.navigation.state.params.id, paymentStore.isSelectedPayment)
         this.props.navigation.navigate('FinishPaymentScreen')
+        console.log('test ============')
+        console.log('test ============ paymentStore.isSelectedPayment', paymentStore.isSelectedPayment)
+        console.log('test ============ this.props.navigation.state.params.id', this.props.navigation.state.params.id)
     };
 
     handleChangeMethods(value: string) {

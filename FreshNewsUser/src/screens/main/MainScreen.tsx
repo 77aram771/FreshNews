@@ -17,7 +17,6 @@ import {toJS} from "mobx";
 import Pusher from 'pusher-js/react-native';
 import {pusher_app_cluster, pusher_app_key} from "../../share/pusherConfig";
 
-
 // @ts-ignore
 Geocoder.init(GOOGLE_MAPS_APIKEY, {language: "ru"});
 
@@ -35,20 +34,20 @@ Notifications.requestPermissionsAsync({
         allowSound: true,
         allowAnnouncements: true,
     },
-}).then(r => console.log('r', r));
+});
 
-// Pusher.logToConsole = true
-//
-// const pusher = new Pusher(pusher_app_key, {
-//     cluster: pusher_app_cluster,
-//     forceTLS: true,
-// })
+Pusher.logToConsole = true
+
+const pusher = new Pusher(pusher_app_key, {
+    cluster: pusher_app_cluster,
+    forceTLS: true,
+})
 
 export const MainScreen = ({navigation}: any) => {
     const [expoPushToken, setExpoPushToken] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [notifications, setNotifications] = useState(false);
-    const [messages, setMessages] = React.useState([]);
+    const [notificationMessages, setNotificationMessages] = React.useState(null);
     const notificationListener = useRef();
     const responseListener = useRef();
 
@@ -61,25 +60,16 @@ export const MainScreen = ({navigation}: any) => {
                 await userInfo.getUserData();
                 await paymentStore.orderUserTime();
                 await userInfo.getUserNotifications();
-                await sendPushNotification(expoPushToken);
-                // setTimeout(() => {
-                //     function childEventCallback(data: any) {
-                //         const newMessages = [...messages, data.payload];
-                //         // @ts-ignore
-                //         setMessages(newMessages);
-                //     }
-                //
-                //     console.log('userData',toJS(userInfo.userData.id))
-                //     const channel = pusher.subscribe(`notifications.${userInfo.userData.id}`);
-                //     channel.bind("child-event", childEventCallback);
-                //     channel.bind('App\\Events\\OrderNotificationEvent', (data: any) => {
-                //         console.log('data', data)
-                //     });
-                //     // return () => {
-                //     //     channel.unbind("child-event", childEventCallback);
-                //     // };
-                // }, 1000)
-                // @ts-ignore
+                setTimeout(() => {
+                    console.log('userData', toJS(userInfo.userData.id))
+                    const channel = pusher.subscribe(`notifications.${userInfo.userData.id}`);
+                    channel.bind('App\\Events\\OrderNotificationEvent', (data: any) => {
+                        setNotificationMessages(JSON.parse(data.notification.data))
+                        setTimeout(() => {
+                            return sendPushNotification(expoPushToken);
+                        }, 1000)
+                    });
+                }, 1000)
             }
             const {status} = await Permissions.askAsync(Permissions.LOCATION);
             if (status !== 'granted') {
@@ -106,8 +96,9 @@ export const MainScreen = ({navigation}: any) => {
             });
             // @ts-ignore
             responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                userInfo.getUserNotificationsRead();
+                // userInfo.getUserNotificationsRead();
                 // @ts-ignore
+                console.log('response', response);
                 navigation.navigate('FinishOfferPage', {
                     id: response.notification.request.content.data.body.id,
                 })
@@ -119,33 +110,25 @@ export const MainScreen = ({navigation}: any) => {
                 Notifications.removeNotificationSubscription(responseListener);
             };
         })()
-    }, [messages]);
+    }, []);
 
     async function sendPushNotification(expoPushToken: any) {
-        let getToken = await AsyncStorage.getItem('Token');
-        if (getToken !== null) {
-            await userInfo.getUserNotifications();
-        }
-        if (toJS(userInfo.notificationsData) !== null) {
-            let lastNotification = toJS(userInfo.notificationsData[userInfo.notificationsData.length - 1]);
-            setTimeout(async () => {
-                await fetch('https://exp.host/--/api/v2/push/send', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Accept-encoding': 'gzip, deflate',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        to: expoPushToken,
-                        sound: 'default',
-                        title: lastNotification.data.message,
-                        data: {id: lastNotification.id},
-
-                    }),
-                })
-            }, 3000);
-        }
+        console.log('notificationMessages.message', notificationMessages.message)
+        console.log('notificationMessages.order_id', notificationMessages.order_id)
+        await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                to: expoPushToken,
+                sound: 'default',
+                title: notificationMessages.message,
+                data: {id: notificationMessages.order_id},
+            }),
+        })
     }
 
     async function registerForPushNotificationsAsync() {

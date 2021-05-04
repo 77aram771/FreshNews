@@ -3,10 +3,9 @@ import {Text, View} from 'react-native';
 import {size20} from '../../../../../share/consts';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MontserratSemiBold} from '../../../../../share/fonts';
-import {NavigationProps} from '../../../../../share/interfaces';
 import basketStore from "../../../../../stores/BasketStore";
 
-export class FinishPaymentScreen extends Component<NavigationProps> {
+export class FinishPaymentScreen extends Component<any,any> {
 
     async componentDidMount() {
         await basketStore.getCartUserInfo()

@@ -32,20 +32,20 @@ export default class MapPage extends Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            courierCordinate: null,
-            userLocation: null,
-            // courierCordinate: {
-            //     latitude: 41.43206,
-            //     longitude: -81.38992,
-            //     latitudeDelta: 0.0922,
-            //     longitudeDelta: 0.0421,
-            // },
-            // userLocation: {
-            //     latitude: 41.43206,
-            //     longitude: -82.38992,
-            //     latitudeDelta: 0.0922,
-            //     longitudeDelta: 0.0421,
-            // },
+            // courierCordinate: null,
+            // userLocation: null,
+            courierCordinate: {
+                latitude: 41.43206,
+                longitude: -81.38992,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            },
+            userLocation: {
+                latitude: 41.43206,
+                longitude: -82.38992,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            },
             errorText: '',
             deliveryTime: '',
             reviewText: '',
